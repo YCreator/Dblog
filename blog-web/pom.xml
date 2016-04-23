@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.dong.blog</groupId>
+		<artifactId>blog</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>blog-web</artifactId>
+	<packaging>war</packaging>
+	<name>blog-web Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.dong.blog</groupId>
+			<artifactId>blog-applicationImpl</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.dong.blog</groupId>
+			<artifactId>blog-conf</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.dong.blog</groupId>
+			<artifactId>blog-lucene</artifactId>
+			<version>${project.parent.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>blog-application</artifactId>
+					<groupId>com.dong.blog</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>blog-util</artifactId>
+					<groupId>com.dong.blog</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.dong.blog</groupId>
+			<artifactId>blog-util</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20160212</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>  
+		</dependency>
+		
+		<dependency>
+			<groupId>com.baidu</groupId>
+			<artifactId>ueditor</artifactId>
+			<version>2.4</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/ueditor-1.1.2.jar</systemPath>
+		</dependency>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<finalName>blog-web</finalName>
+		<plugins>
+	    	<!-- 配置加入jetty服务器，在开发时我们一般使用jetty服务 -->
+	    	<plugin>
+	    		<groupId>org.mortbay.jetty</groupId>
+	    		<artifactId>maven-jetty-plugin</artifactId>
+	    		<version>8.1.16.v20140903</version>
+	    		<configuration>
+	    			<!-- 设置扫描target/classes内部文件变化时间间隔 -->
+	    			<scanIntervalSeconds>3</scanIntervalSeconds>
+	    			<webApp>
+	    				<contextPath>/</contextPath>
+	    			</webApp>
+	    			<connectors>  
+	                    <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">  
+	                        <port>8088</port>  
+	                    </connector>  
+	                </connectors>  
+	    		</configuration>
+	    	</plugin>
+    	</plugins>
+	</build>
+</project>
