@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.dong.blog</groupId>
+	<artifactId>blog</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>blog</name>
+	<modules>
+	  <module>blog-web</module>
+	  <module>blog-conf</module>
+    <module>blog-core</module>
+    <module>blog-application</module>
+    <module>blog-applicationImpl</module>
+    <module>blog-util</module>
+    <module>blog-infra</module>
+    <module>blog-lucene</module>
+  </modules>
+	
+	<build>
+		<pluginManagement>
+	    	<plugins>
+		    	<!--支持src/main/resouces下的二进制文件复�? -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<configuration>
+						<nonFilteredFileExtensions>
+							<nonFilteredFileExtension>dll</nonFilteredFileExtension>
+							<nonFilteredFileExtension>so</nonFilteredFileExtension>
+							<nonFilteredFileExtension>dylib</nonFilteredFileExtension>
+						</nonFilteredFileExtensions>
+						<encoding>UTF-8</encoding><!-- 指定编码格式，否则在DOS下运行mvn命令时当发生文件资源copy时将使用系统默认使用GBK编码 -->  
+					</configuration>
+				</plugin>
+			</plugins>
+	    </pluginManagement>
+	    
+	    <resources>
+	    	<resource>
+	    		<directory>src/main/resources</directory>
+	    		<filtering>true</filtering>
+	    	</resource>
+	    </resources>
+	</build>
+	
+	<!-- 全局变量 -->
+	<properties>
+		<!-- 4.1.7.RELEASE -->
+	  	<org.springframework-version>4.2.5.RELEASE</org.springframework-version>
+	  	<org.apache.shiro-version>1.2.4</org.apache.shiro-version>
+	  	<org.hibernate-version>5.1.0.Final</org.hibernate-version>
+	  	<org.apache.lucene-version>5.3.1</org.apache.lucene-version>
+	  	<dddlib.version>4.5.0</dddlib.version>
+  	</properties>
+  	
+  	<profiles>
+	  	<!-- MYSQL DB -->
+	  	<profile>
+	  		<id>MySQL</id>
+	  		<activation>
+	  			<activeByDefault>true</activeByDefault>
+	  		</activation>
+	  		<properties>
+	  			<hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
+	  			<hibernate.show_sql>true</hibernate.show_sql>
+	  			<hibernate.dialect>org.hibernate.dialect.MySQL5Dialect</hibernate.dialect>
+				<db.jdbcDriver>com.mysql.jdbc.Driver</db.jdbcDriver>
+				<db.connectionURL>
+					jdbc:mysql://localhost:3306/db_blog3?useUnicode=true&amp;characterEncoding=UTF-8
+				</db.connectionURL>
+				<db.username>admin</db.username>
+				<db.password>admin</db.password>
+				<db.Type>MYSQL</db.Type>
+				<db.testsql>select 1</db.testsql>
+				<db.generateDdl>true</db.generateDdl>
+				<db.groupId>mysql</db.groupId>
+				<db.artifactId>mysql-connector-java</db.artifactId>	
+				<db.version>5.1.37</db.version>
+	  		</properties>
+	  	</profile>
+	</profiles>
+	
+	  <dependencyManagement>
+	  	<!-- 依赖管理 -->
+	  	<dependencies>
+		  	<!-- 添加Servlet支持 -->
+		  	<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>3.1.0</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>javax.servlet.jsp</groupId>
+				<artifactId>javax.servlet.jsp-api</artifactId>
+				<version>2.3.1</version>
+			</dependency>
+			
+			<!-- 添加jtl支持 -->
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>jstl</artifactId>
+				<version>1.2</version>
+			</dependency>
+		  
+		  	<!-- 添加Spring支持 -->
+			<dependency>
+		  		<groupId>org.springframework</groupId>
+		  		<artifactId>spring-core</artifactId>
+		  		<version>${org.springframework-version}</version>
+		  	</dependency>
+		  	
+		  	<dependency>
+		  		<groupId>org.springframework</groupId>
+		  		<artifactId>spring-orm</artifactId>
+		  		<version>${org.springframework-version}</version>
+		  	</dependency>
+		  	
+		  	<dependency>
+		  		<groupId>org.springframework</groupId>
+		  		<artifactId>spring-beans</artifactId>
+		  		<version>${org.springframework-version}</version>
+		  	</dependency>
+		  	
+		  	<dependency>
+		         <groupId>org.springframework</groupId>
+		         <artifactId>spring-tx</artifactId>
+		         <version>${org.springframework-version}</version> 
+		     </dependency>
+		     
+		  	<dependency>
+		  		<groupId>org.springframework</groupId>
+		  		<artifactId>spring-context</artifactId>
+		  		<version>${org.springframework-version}</version>
+		  	</dependency>
+		  	
+		  	<dependency>
+		  		<groupId>org.springframework</groupId>
+		  		<artifactId>spring-context-support</artifactId>
+		  		<version>${org.springframework-version}</version>
+		  	</dependency>
+		  	
+		  	<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${org.springframework-version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${org.springframework-version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-aop</artifactId>
+				<version>${org.springframework-version}</version>
+			</dependency>
+		
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-aspects</artifactId>
+				<version>${org.springframework-version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+				<version>${org.springframework-version}</version>
+			</dependency>
+		  
+		  
+		  	<!-- 添加 mybatis -->
+			<dependency>
+				<groupId>org.mybatis</groupId>
+				<artifactId>mybatis-spring</artifactId>
+				<version>1.2.3</version>
+			</dependency>
+			
+		  
+		  	<!-- 添加日志支持 -->
+		  	<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.17</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.7.12</version>
+			</dependency>
+		
+			<!-- 添加mybatis支持 -->
+			 <dependency>
+				<groupId>org.mybatis</groupId>
+				<artifactId>mybatis</artifactId>
+				<version>3.3.0</version>
+			</dependency>
+			
+			
+			<!-- jdbc驱动  -->
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>5.1.37</version>
+			</dependency>
+			
+			
+			<!-- 添加shiro支持 -->
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-core</artifactId>
+				<version>${org.apache.shiro-version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>slf4j-api</artifactId>
+						<groupId>org.slf4j</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-web</artifactId>
+				<version>${org.apache.shiro-version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-spring</artifactId>
+				<version>${org.apache.shiro-version}</version>
+			</dependency>
+			
+			
+			<!-- 添加百度编辑器ueditor支持 -->
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>1.3.1</version>
+			</dependency>
+			
+			
+			<!-- apache公共�?? -->
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>1.10</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>commons-lang</groupId>
+				<artifactId>commons-lang</artifactId>
+				<version>2.5</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>1.9.2</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>
+				<version>3.2.1</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>1.1.1</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>net.sf.ezmorph</groupId>
+				<artifactId>ezmorph</artifactId>
+				<version>1.0.6</version>
+			</dependency>
+			
+			<!-- 添加lucene支持 -->
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-core</artifactId>
+				<version>${org.apache.lucene-version}</version>
+			  </dependency>
+			  
+			  <dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-analyzers-common</artifactId>
+				<version>${org.apache.lucene-version}</version>
+			 </dependency>
+			 
+			 <dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-analyzers-smartcn</artifactId>
+				<version>${org.apache.lucene-version}</version>
+			</dependency>
+			 
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-queryparser</artifactId>
+				<version>${org.apache.lucene-version}</version>
+			</dependency>
+			 
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-highlighter</artifactId>
+				<version>${org.apache.lucene-version}</version>
+			</dependency>
+			
+			
+			<!-- 添加连接池druid支持 -->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid</artifactId>
+				<version>1.0.16</version>
+			</dependency>
+			
+			
+			<!-- 添加jsoup支持 -->
+			<dependency>
+				<groupId>org.jsoup</groupId>
+				<artifactId>jsoup</artifactId>
+				<version>1.8.3</version>
+			</dependency>
+			
+			
+			<!-- hibernate begin -->
+			<!-- 添加hibernate支持 -->
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${org.hibernate-version}</version>
+			</dependency>
+			
+			<dependency>
+		    	<groupId>org.hibernate</groupId>
+		    	<artifactId>hibernate-entitymanager</artifactId>
+		    	<version>${org.hibernate-version}</version>
+			</dependency>
+			
+			<dependency>
+		    	<groupId>org.hibernate</groupId>
+		    	<artifactId>hibernate-validator</artifactId>
+		    	<version>5.3.0.Alpha1</version>
+			</dependency>
+			
+			<!-- spring对jpa的支�?? -->
+			<dependency>
+		        <groupId>org.springframework.data</groupId>
+		        <artifactId>spring-data-jpa</artifactId>
+		        <version>1.1.2.RELEASE</version>
+		    </dependency>
+		    
+		    <dependency>
+		        <groupId>commons-dbcp</groupId>
+		        <artifactId>commons-dbcp</artifactId>
+		        <version>1.4</version>
+		    </dependency>
+		    
+			<!-- hibernate end -->
+			
+			<!-- AspectJ -->
+		    <dependency>
+		        <groupId>org.aspectj</groupId>
+		        <artifactId>aspectjrt</artifactId>
+		        <version>1.8.5</version>
+		    </dependency>
+		    
+		    <dependency>
+		        <groupId>org.aspectj</groupId>
+		        <artifactId>aspectjweaver</artifactId>
+		        <version>1.8.5</version>
+		    </dependency>
+		    
+		    <!-- DDDLIB -->
+		    <dependency>
+		    	<groupId>org.dayatang.dddlib</groupId>
+		    	<artifactId>dddlib-utils</artifactId>
+		    	<version>${dddlib.version}</version>
+		    </dependency>
+		
+		    <dependency>
+		    	<groupId>org.dayatang.dddlib</groupId>
+		    	<artifactId>dddlib-domain</artifactId>
+		    	<version>${dddlib.version}</version>
+		    </dependency>
+		
+		    <dependency>
+		    	<groupId>org.dayatang.dddlib</groupId>
+		    	<artifactId>dddlib-db</artifactId>
+		    	<version>${dddlib.version}</version>
+		    </dependency>
+		
+		    <dependency>
+		    	<groupId>org.dayatang.dddlib</groupId>
+				<artifactId>dddlib-ioc-spring</artifactId>
+				<version>${dddlib.version}</version>
+		    </dependency>
+		
+		    <dependency>
+				<groupId>org.dayatang.dddlib</groupId>
+				<artifactId>dddlib-persistence-hibernate</artifactId>
+				<version>${dddlib.version}</version>
+		    </dependency>
+		
+		    <dependency>
+				<groupId>org.dayatang.dddlib</groupId>
+				<artifactId>dddlib-query-channel</artifactId>
+				<version>${dddlib.version}</version>
+		    </dependency>
+		
+		    <dependency>
+				<groupId>org.dayatang.dddlib</groupId>
+				<artifactId>dddlib-spring-test</artifactId>
+				<version>${dddlib.version}</version>
+				<scope>test</scope>
+		    </dependency>
+		
+		    <dependency>
+				<groupId>org.dayatang.dddlib</groupId>
+				<artifactId>dddlib-persistence-jpa</artifactId>
+				<version>${dddlib.version}</version>
+		    </dependency>
+		
+		    <dependency>
+				<groupId>org.dayatang.dddlib</groupId>
+				<artifactId>dddlib-cache-memcached</artifactId>
+				<version>${dddlib.version}</version>
+		    </dependency>
+		
+		    <dependency>
+				<groupId>org.dayatang.dddlib</groupId>
+				<artifactId>dddlib-datasource-router</artifactId>
+				<version>${dddlib.version}</version>
+		    </dependency>
+		
+		    <dependency>
+				<groupId>org.dayatang.dddlib</groupId>
+				<artifactId>dddlib-excel</artifactId>
+				<version>${dddlib.version}</version>
+		    </dependency>
+		
+		    <dependency>
+				<groupId>org.dayatang.dddlib</groupId>
+				<artifactId>dddlib-i18n</artifactId>
+				<version>${dddlib.version}</version>
+		    </dependency>
+		
+		    <dependency>
+				<groupId>org.dayatang.dddlib</groupId>
+				<artifactId>dddlib-rule-engine</artifactId>
+				<version>${dddlib.version}</version>
+		    </dependency>
+					
+		    <dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.8.1</version>
+		    </dependency>	
+		</dependencies>
+	  
+	</dependencyManagement>
+  
+	<repositories>
+		<repository>
+			<id>dayatang-releases</id>
+			<url>http://nexus.dayatang.org/content/groups/public-releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		
+		<repository>
+			<id>dayatang-snapshots</id>
+			<url>http://nexus.dayatang.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	
+</project>
