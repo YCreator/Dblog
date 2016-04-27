@@ -48,7 +48,7 @@ public class CommentAdminController {
 		List<CommentDTO> commentList = commentApplication.getPage(dto, pageBean.getPage(), pageBean.getPageSize()).getData();
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("state", state); // 评论状态
-		Long total=commentApplication.getTotal(map).longValue();
+		Long total=commentApplication.getTotal(map);
 		JSONObject result=new JSONObject();
 		JsonConfig jsonConfig=new JsonConfig();
 		jsonConfig.registerJsonValueProcessor(java.util.Date.class, new DateJsonValueProcessor("yyyy-MM-dd"));

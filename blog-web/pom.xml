@@ -85,6 +85,7 @@
 	    		<configuration>
 	    			<!-- 设置扫描target/classes内部文件变化时间间隔 -->
 	    			<scanIntervalSeconds>3</scanIntervalSeconds>
+	    			<reload>manual</reload>
 	    			<webApp>
 	    				<contextPath>/</contextPath>
 	    			</webApp>

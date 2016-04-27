@@ -1,6 +1,5 @@
 package com.dong.blog.application;
 
-import java.math.BigInteger;
 import java.util.Map;
 
 import org.dayatang.utils.Page;
@@ -14,7 +13,7 @@ public interface CommentApplication extends BaseApplication<CommentDTO, Long> {
 	 * @param params
 	 * @return
 	 */
-	BigInteger getTotal(Map<String, Object> params);
+	Long getTotal(Map<String, Object> params);
 	
 	Page<CommentDTO> getPage(CommentDTO dto, int currentPage, int pageSize);
 

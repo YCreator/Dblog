@@ -21,24 +21,33 @@
 	<!-- JPA实体管理工厂的配置 -->  
     <bean id="entityManagerFactory"  class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource" />  
-        <property name="packagesToScan" value="com.dong.blog.core.domain" />
-        <property name="persistenceUnitName" value="default" />
+        <property name="packagesToScan" > 
+        	<list>
+        		<value>com.dong.blog.core.domain</value>
+        		<value>com.dong.blog.core.test</value>
+        	</list>
+        </property>
+        <property name="persistenceUnitName" value="persistenceUnit" />
+        <property name="persistenceProvider" ref="persistenceProvider"/>
         <property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
-        <property name="jpaProperties">
+        <property name="jpaDialect" ref="jpaDialect" />
+        <!-- <property name="jpaProperties">
         <props>
         	<prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
 	        <prop key="hibernate.show_sql">true</prop>  
             <prop key="hibernate.hbm2ddl.auto">update</prop> 
         </props>
-        </property>
+        </property> -->
     </bean>
+  
+    <bean id="persistenceProvider" class="org.hibernate.ejb.HibernatePersistence"/>
     
     <!--指定实现JPA的适配器--> 
     <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-        <property name="database" value="MYSQL" />
-        <property name="showSql" value="true" />
-        <property name="generateDdl" value="true" />
-        <property name="databasePlatform" value="org.hibernate.dialect.MySQL5Dialect" /> 
+        <property name="database" value="${database.Type}" />
+        <property name="showSql" value="${hibernate.show_sql}" />
+        <property name="generateDdl" value="${generateDdl}" />
+        <property name="databasePlatform" value="${db.jdbc.dialect}" /> 
     </bean>
     
     <!-- 配置数据源 -->
@@ -77,7 +86,6 @@
 	<!-- Jpa 事务配置 --> 
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
-		<property name="jpaDialect" ref="jpaDialect" />
 	</bean>
 	
 	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />

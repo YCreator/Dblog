@@ -25,15 +25,15 @@ public class Blog extends AbstractEntity {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@Column
+	@Column(nullable=false)
 	private String title; // 博客标题
 	@Column
 	private String summary; // 摘要
-	@Column
+	@Column(nullable=false)
 	private Date releaseDate; // 发布日期
-	@Column
+	@Column(nullable=false)
  	private Integer clickHit; // 查看次数
-	@Column
+	@Column(nullable=false)
 	private Integer replyHit; // 回复次数
 	@Column
 	private String content; // 博客内容

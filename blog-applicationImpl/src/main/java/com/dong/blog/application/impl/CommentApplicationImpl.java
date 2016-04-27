@@ -1,7 +1,6 @@
 package com.dong.blog.application.impl;
 
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,7 @@ import com.dong.blog.core.domain.Comment;
 
 
 @Named
-@Transactional
+@Transactional(rollbackFor=Exception.class)
 public class CommentApplicationImpl extends BaseApplicationImpl implements CommentApplication {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -81,12 +80,12 @@ public class CommentApplicationImpl extends BaseApplicationImpl implements Comme
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public BigInteger getTotal(Map<String, Object> params) {
+	public Long getTotal(Map<String, Object> params) {
 		String jpql = "select count(*) from Comment _comment";
 		if (params != null && params.containsKey("state")) {
 			jpql += String.format(" where _comment.state = %s", params.get("state"));
 		}
-		return (BigInteger) this.getQueryChannelService().createJpqlQuery(jpql).list().get(0);
+		return (Long) this.getQueryChannelService().createJpqlQuery(jpql).singleResult();
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

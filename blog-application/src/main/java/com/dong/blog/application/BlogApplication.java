@@ -1,6 +1,5 @@
 package com.dong.blog.application;
 
-
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
@@ -22,4 +21,6 @@ public interface BlogApplication extends BaseApplication<BlogDTO, Long> {
 	BlogDTO getNextBlog(Long id); //查找下一篇博客
 	
 	List<BlogDTO> getBlogByTypeId(Long typeId); //根据博客类型获取博客列表
+	
+	boolean updateBlog(BlogDTO blogDTO); //修改博客
 }

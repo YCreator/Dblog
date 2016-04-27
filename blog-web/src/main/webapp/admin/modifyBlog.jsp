@@ -35,7 +35,7 @@
 			alert("请输入内容！");
 		}else{
 			$.post("${pageContext.request.contextPath}/admin/blog/save.do"
-					,{'id':'${param.id}','title':title,'blogType.id':blogTypeId,'content':content,'contentNoTag':UE.getEditor('editor').getContentTxt()
+					,{'id':'${param.id}','title':title,'blogTypeDTO.id':blogTypeId,'content':content,'contentNoTag':UE.getEditor('editor').getContentTxt()
 				,'summary':UE.getEditor('editor').getContentTxt().substr(0,155),'keyWord':keyWord,'picPath':picPath},function(result){
 				if(result.success){
 					alert("博客修改成功！");
@@ -61,7 +61,7 @@
    		<tr>
    			<td>所属类别：</td>
    			<td>
-   				<select class="easyui-combobox" style="width: 154px" id="blogTypeId" name="blogType.id" editable="false" panelHeight="auto" >
+   				<select class="easyui-combobox" style="width: 154px" id="blogTypeId" name="blogTypeDTO.id" editable="false" panelHeight="auto" >
 					<option value="">请选择博客类别...</option>	
 				    <c:forEach var="blogType" items="${blogTypeCountList }">
 				    	<option value="${blogType.id }">${blogType.typeName }</option>
@@ -106,10 +106,10 @@
                 async : false,  
                 data:{"id":"${param.id}"},
                 onsuccess:function(result){
-                	result = eval("(" + result.responseText + ")");  
+                	result = eval("(" + result.responseText + ")"); 
                 	$("#title").val(result.title);
                 	$("#keyWord").val(result.keyWord);
-       				$("#blogTypeId").combobox("setValue",result.blogType.id);
+       				$("#blogTypeId").combobox("setValue",result.blogTypeDTO.id);
        				$("#picPath").val(result.picPath);
        				UE.getEditor('editor').setContent(result.content);
                 }

@@ -19,9 +19,9 @@ public class Blogger extends AbstractEntity {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@Column
+	@Column(nullable=false)
 	private String username; // 用户名
-	@Column
+	@Column(nullable=false)
 	private String password; // 密码
 	@Column
 	private String nickName; // 昵称

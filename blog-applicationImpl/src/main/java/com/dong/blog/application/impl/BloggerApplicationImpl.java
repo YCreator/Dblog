@@ -13,7 +13,7 @@ import com.dong.blog.application.dto.BloggerDTO;
 import com.dong.blog.core.domain.Blogger;
 
 @Named
-@Transactional
+@Transactional(rollbackFor=Exception.class)
 public class BloggerApplicationImpl extends BaseApplicationImpl implements  BloggerApplication {
 	
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

@@ -19,7 +19,7 @@ public class BlogType extends AbstractEntity{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@Column
+	@Column(nullable=false)
 	private String typeName; // 博客类型名称
 	@Column
 	private Integer orderNo; // 排序  从小到大排序显示

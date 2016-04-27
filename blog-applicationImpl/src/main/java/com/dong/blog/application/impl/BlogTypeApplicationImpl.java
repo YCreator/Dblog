@@ -18,7 +18,7 @@ import com.dong.blog.core.domain.BlogType;
 
 /*@Service("blogTypeApplication")*/
 @Named
-@Transactional
+@Transactional(rollbackFor=Exception.class)
 public class BlogTypeApplicationImpl extends BaseApplicationImpl implements BlogTypeApplication {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

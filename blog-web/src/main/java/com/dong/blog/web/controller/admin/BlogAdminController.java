@@ -12,16 +12,19 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dong.blog.application.BlogApplication;
+import com.dong.blog.application.BlogTypeApplication;
 import com.dong.blog.application.dto.BlogDTO;
 import com.dong.blog.application.dto.PageBean;
 import com.dong.blog.lucene.BlogIndex;
-import com.dong.blog.web.util.ResponseUtil;
 import com.dong.blog.util.StringUtil;
+import com.dong.blog.web.util.ResponseUtil;
+import com.google.gson.Gson;
 
 
 /**
@@ -36,6 +39,9 @@ public class BlogAdminController {
 	@Inject
 	private BlogApplication blogApplication;
 	
+	@Inject
+	private BlogTypeApplication blogTypeApplication;
+	
 	// 博客索引
 	private BlogIndex blogIndex=new BlogIndex();
 	
@@ -48,13 +54,14 @@ public class BlogAdminController {
 	 */
 	@RequestMapping("/save")
 	public String save(BlogDTO blog,HttpServletResponse response)throws Exception{
-		System.out.println("save===========================>");
 		boolean isUpdateSuccess = false;
 		if(blog.getId()==null){
 			blog = blogApplication.save(blog);
 			blogIndex.addIndex(blog); // 添加博客索引
 		}else{
-			isUpdateSuccess = blogApplication.update(blog);
+		//	Logger.getLogger(BlogAdminController.class).debug(new Gson().toJson(blog));
+			blog.setBlogTypeDTO(blogTypeApplication.get(blog.getBlogTypeDTO().getId()));
+			isUpdateSuccess = blogApplication.updateBlog(blog);
 			blogIndex.updateIndex(blog); // 更新博客索引
 		}
 		JSONObject result=new JSONObject();
@@ -81,6 +88,7 @@ public class BlogAdminController {
 		PageBean pageBean=new PageBean(Integer.parseInt(page),Integer.parseInt(rows));
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("title", StringUtil.formatLike(s_blog.getTitle()));
+		Logger.getLogger(BlogAdminController.class).debug(map.get("title")+"=============>"+page+"================>"+rows);
 		List<BlogDTO> blogList=blogApplication.pageQuery(map, pageBean.getPage(), pageBean.getPageSize()).getData();
 		Long total=blogApplication.getTotal(map).longValue();
 		JSONObject result=new JSONObject();
@@ -122,10 +130,9 @@ public class BlogAdminController {
 	 */
 	@RequestMapping("/findById")
 	public String findById(@RequestParam(value="id")String id,HttpServletResponse response)throws Exception{
-		System.out.println("find======================>");
 		BlogDTO blog=blogApplication.get(Long.valueOf(id));
-		JSONObject jsonObject=JSONObject.fromObject(blog);
-		ResponseUtil.write(response, jsonObject);
+		//JSONObject jsonObject=JSONObject.fromObject(blog);
+		ResponseUtil.write(response, new Gson().toJson(blog));
 		return null;
 	}
 	

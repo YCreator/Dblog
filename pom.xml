@@ -20,7 +20,7 @@
 	<build>
 		<pluginManagement>
 	    	<plugins>
-		    	<!--支持src/main/resouces下的二进制文件复�? -->
+		    	<!--支持src/main/resouces下的二进制文件复�? -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
@@ -67,7 +67,7 @@
 	  			<hibernate.dialect>org.hibernate.dialect.MySQL5Dialect</hibernate.dialect>
 				<db.jdbcDriver>com.mysql.jdbc.Driver</db.jdbcDriver>
 				<db.connectionURL>
-					jdbc:mysql://localhost:3306/db_blog3?useUnicode=true&amp;characterEncoding=UTF-8
+					jdbc:mysql://localhost:3306/db_blog3?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=round
 				</db.connectionURL>
 				<db.username>admin</db.username>
 				<db.password>admin</db.password>
@@ -243,7 +243,7 @@
 			</dependency>
 			
 			
-			<!-- apache公共�?? -->
+			<!-- apache公共�?? -->
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
@@ -348,7 +348,7 @@
 		    	<version>5.3.0.Alpha1</version>
 			</dependency>
 			
-			<!-- spring对jpa的支�?? -->
+			<!-- spring对jpa的支�?? -->
 			<dependency>
 		        <groupId>org.springframework.data</groupId>
 		        <artifactId>spring-data-jpa</artifactId>

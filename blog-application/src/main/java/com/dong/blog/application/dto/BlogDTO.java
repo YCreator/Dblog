@@ -90,7 +90,7 @@ public class BlogDTO implements Serializable {
 	 * 使用BeanUtils 复制一个实体到另一个实体时，需要实现get方法,同时方法名要以get+源实体对应的属性名来命名，才能获取到值,例如: blog.blogType值注入对应blogTypeDTO.getBlogType方法
 	 * @return
 	 */
-	public BlogTypeDTO getBlogType() {
+	public BlogTypeDTO getBlogTypeDTO() {
 		return blogTypeDTO;
 	}
 	public void setBlogTypeDTO(BlogTypeDTO blogTypeDTO) {

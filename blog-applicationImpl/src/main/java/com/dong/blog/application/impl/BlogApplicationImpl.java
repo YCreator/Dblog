@@ -19,7 +19,7 @@ import com.dong.blog.core.domain.Blog;
 import com.dong.blog.core.domain.BlogType;
 
 @Named
-@Transactional
+@Transactional(rollbackFor=Exception.class)
 public class BlogApplicationImpl extends BaseApplicationImpl implements BlogApplication {
 	
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -27,7 +27,10 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 		Blog blog = Blog.load(Blog.class, pk);
 		BlogDTO blogDTO = new BlogDTO();
 		try {
-			BeanUtils.copyProperties(blogDTO, blog);	
+			BeanUtils.copyProperties(blogDTO, blog);
+			BlogTypeDTO blogTypeDTO = new BlogTypeDTO();
+			BeanUtils.copyProperties(blogTypeDTO, blog.getBlogType());
+			blogDTO.setBlogTypeDTO(blogTypeDTO);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -43,6 +46,9 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 			BlogDTO blogDTO = new BlogDTO();
 			try {
 				BeanUtils.copyProperties(blogDTO, blog);	
+				BlogTypeDTO blogTypeDTO = new BlogTypeDTO();
+				BeanUtils.copyProperties(blogTypeDTO, blog.getBlogType());
+				blogDTO.setBlogTypeDTO(blogTypeDTO);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -91,8 +97,8 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 	public Page<BlogDTO> pageQuery(BlogDTO dto, int currentPage, int pageSize) {
 		List<BlogDTO> list = new ArrayList<BlogDTO>();
 		StringBuilder jpql = new StringBuilder("select _blog from Blog _blog");
-		if (dto.getBlogType() != null) {
-			jpql.append(" where _blog.blogType.id = ").append(dto.getBlogType().getId());
+		if (dto.getBlogTypeDTO() != null) {
+			jpql.append(" where _blog.blogType.id = ").append(dto.getBlogTypeDTO().getId());
 		}
 		jpql.append(" order by _blog.releaseDate desc");
 		@SuppressWarnings("unchecked")
@@ -126,10 +132,18 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 		}
 		@SuppressWarnings("unchecked")
 		Page<Blog> pages = this.getQueryChannelService().createJpqlQuery(jpql.toString()).setPage(currentPage, pageSize).pagedList();
-		for (Blog blog : pages.getData()) {
+		List<Blog> blogs = pages.getData();
+		for (Blog blog : blogs) {
 			BlogDTO blogDTO = new BlogDTO();
 			try {
-				BeanUtils.copyProperties(blogDTO, blog);	
+				BeanUtils.copyProperties(blogDTO, blog);
+				BlogTypeDTO type = new BlogTypeDTO();
+				try {
+					BeanUtils.copyProperties(type, blog.getBlogType());
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+				blogDTO.setBlogTypeDTO(type);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -143,12 +157,12 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 		String sql = "SELECT COUNT(*) FROM t_blog";
 		if (params.containsKey("typeId")) { //根据博客类型查询总数
 			sql = sql + " WHERE typeId="+params.get("typeId");
-		} else if (params.containsKey("title")) {
+		} else if (params.containsKey("title") && params.get("title") != null) {
 			sql = sql + " WHERE title LIKE '" + params.get("title") +"'"; //根据关键字查询总数
 		} else if (params.containsKey("releaseDateStr")) {
 			sql = sql + " WHERE DATE_FORMAT(releaseDate, '%Y年%m月')=" + params.get("releaseDateStr"); //根据日期查询总数
 		}
-		return (BigInteger) this.getQueryChannelService().createSqlQuery(sql).list().get(0);
+		return (BigInteger) this.getQueryChannelService().createSqlQuery(sql).singleResult();
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -183,11 +197,34 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 			BlogDTO dto = new BlogDTO();
 			try {
 				BeanUtils.copyProperties(dto, blog);
+				BlogTypeDTO type = new BlogTypeDTO();
+				BeanUtils.copyProperties(type, blog.getBlogType());
+				dto.setBlogTypeDTO(type);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
 			dtos.add(dto);
 		}
 		return dtos;
+	}
+
+	public boolean updateBlog(BlogDTO blogDTO) {
+		Blog blog = Blog.get(Blog.class, blogDTO.getId());
+		boolean isSuccess;
+		try {
+		//	BlogType type = new BlogType();
+		//	BeanUtils.copyProperties(type, blogDTO.getBlogTypeDTO());
+			blog.setBlogType(BlogType.get(BlogType.class, blogDTO.getBlogTypeDTO().getId()));
+			blog.setTitle(blogDTO.getTitle());
+			blog.setContent(blogDTO.getContent());
+			blog.setKeyWord(blogDTO.getKeyWord());
+			blog.setPicPath(blogDTO.getPicPath());
+			blog.setSummary(blogDTO.getSummary());
+			isSuccess = true;
+		} catch(Exception e) {
+			e.printStackTrace();
+			isSuccess = false;
+		}
+		return isSuccess;
 	}
 }

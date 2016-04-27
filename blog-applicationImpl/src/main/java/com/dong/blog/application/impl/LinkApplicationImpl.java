@@ -16,7 +16,7 @@ import com.dong.blog.core.domain.Link;
 
 
 @Named
-@Transactional
+@Transactional(rollbackFor=Exception.class)
 public class LinkApplicationImpl extends BaseApplicationImpl implements LinkApplication {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
