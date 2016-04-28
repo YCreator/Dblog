@@ -1,20 +1,20 @@
 package com.dong.blog.application.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Named;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.dayatang.utils.Page;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dong.blog.application.CommentApplication;
+import com.dong.blog.application.dto.BlogDTO;
 import com.dong.blog.application.dto.CommentDTO;
 import com.dong.blog.core.domain.Comment;
+import com.dong.blog.util.BeanCopierUtil;
 
 
 @Named
@@ -23,36 +23,20 @@ public class CommentApplicationImpl extends BaseApplicationImpl implements Comme
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommentDTO get(Long pk) {
-		CommentDTO commentDTO = new CommentDTO();
 		Comment comment = Comment.load(Comment.class, pk);
-		try {
-			BeanUtils.copyProperties(commentDTO, comment);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return commentDTO;
+		return transformBeanData(comment);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommentDTO> findAll() {
-		List<CommentDTO> dtos = new ArrayList<CommentDTO>();
 		List<Comment> list = Comment.findAll(Comment.class);
-		for (Comment comment : list) {
-			CommentDTO dto = new CommentDTO();
-			try {
-				BeanUtils.copyProperties(dto, comment);	
-			} catch(Exception e) {
-				e.printStackTrace();
-			}	
-			dtos.add(dto);
-		}
-		return dtos;
+		return transformBeanDatas(list);
 	}
 
 	public CommentDTO save(CommentDTO t) {
 		Comment comment = new Comment();
 		try {
-			BeanUtils.copyProperties(comment, t);
+			BeanCopierUtil.copyProperties(t, comment);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -92,8 +76,8 @@ public class CommentApplicationImpl extends BaseApplicationImpl implements Comme
 	public Page<CommentDTO> getPage(CommentDTO dto, int currentPage,
 			int pageSize) {
 		StringBuilder jpql = new StringBuilder("select _comment from Comment _comment where 1=1");
-		if (dto.getBlogId() != null) {
-			jpql.append(" and _comment.blogId = ").append(dto.getBlogId());
+		if (dto.getBlogDTO() != null && dto.getBlogDTO().getId() != null) {
+			jpql.append(" and _comment.blog.id = ").append(dto.getBlogDTO().getId());
 		}
 		if (dto.getState() != null) {
 			jpql.append(" and _comment.state = ").append(dto.getState());
@@ -102,19 +86,33 @@ public class CommentApplicationImpl extends BaseApplicationImpl implements Comme
 		@SuppressWarnings("unchecked")
 		Page<Comment> pages = this.getQueryChannelService().createJpqlQuery(jpql.toString()).setPage(currentPage, pageSize).pagedList();
 		List<Comment> list = pages.getData();
-		List<CommentDTO> dtos = new ArrayList<CommentDTO>();
-		for (Comment comment : list) {
-			CommentDTO d = new CommentDTO();
+		List<CommentDTO> dtos = transformBeanDatas(list);
+		return new Page<CommentDTO>(pages.getStart(), pages.getResultCount(), pageSize, dtos);
+	}
+	
+	private List<CommentDTO> transformBeanDatas(List<Comment> source) {
+		List<CommentDTO> list = new ArrayList<CommentDTO>();
+		for (Comment comment : source) {
+			list.add(transformBeanData(comment));
+		}
+		return list;
+	}
+	
+	private CommentDTO transformBeanData(Comment source) {
+		CommentDTO commentDTO = new CommentDTO();
+		try {
+			BeanCopierUtil.copyProperties(source, commentDTO);
+			BlogDTO blogDTO = new BlogDTO();
 			try {
-				BeanUtils.copyProperties(d, comment);
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
+				BeanCopierUtil.copyProperties(blogDTO, source.getBlog());
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			dtos.add(d);
+			commentDTO.setBlogDTO(blogDTO);
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
-		return new Page<CommentDTO>(pages.getStart(), pages.getResultCount(), pageSize, dtos);
+		return commentDTO;
 	}
 
 

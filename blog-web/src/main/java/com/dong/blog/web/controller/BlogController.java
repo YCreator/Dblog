@@ -57,9 +57,10 @@ public class BlogController {
 		}
 		mav.addObject("blog", blogDTO);
 		blogDTO.setClickHit(blogDTO.getClickHit()+1); // 博客点击次数加1
-		Logger.getLogger(BlogController.class).debug("statu=====================>"+blogApplication.update(blogDTO));
+		blogApplication.update(blogDTO);
+		Logger.getLogger(BlogController.class).debug("=============>"+blogDTO.getBlogTypeDTO().getTypeName());
 		CommentDTO commentDTO = new CommentDTO();
-		commentDTO.setBlogId(blogDTO.getId());
+		commentDTO.setBlogDTO(blogDTO);
 		commentDTO.setState(1); // 查询审核通过的评论
 		mav.addObject("commentList", commentApplication.getPage(commentDTO, 0, 100).getData()); 
 		mav.addObject("pageCode", this.genUpAndDownPageCode(blogApplication.getLastBlog(id),blogApplication.getNextBlog(id),request.getServletContext().getContextPath()));

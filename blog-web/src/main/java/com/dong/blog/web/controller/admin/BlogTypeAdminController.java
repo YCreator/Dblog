@@ -51,7 +51,7 @@ public class BlogTypeAdminController {
 		map.put("start", pageBean.getStart());
 		map.put("size", pageBean.getPageSize());
 		List<BlogTypeDTO> blogTypeList=blogTypeApplication.getPage(null, pageBean.getPage(), pageBean.getPageSize()).getData();
-		Long total=blogTypeApplication.getTotal().longValue();
+		Long total=blogTypeApplication.getTotal();
 		JSONObject result=new JSONObject();
 		JSONArray jsonArray=JSONArray.fromObject(blogTypeList);
 		result.put("rows", jsonArray);
@@ -97,7 +97,8 @@ public class BlogTypeAdminController {
 		String []idsStr=ids.split(",");
 		JSONObject result=new JSONObject();
 		for(int i=0;i<idsStr.length;i++){
-			List<BlogDTO> dto = blogApplication.getBlogByTypeId(Long.valueOf(idsStr[i]));
+			BlogTypeDTO blogTypeDTO = blogTypeApplication.get(Long.valueOf(idsStr[i]));
+			List<BlogDTO> dto = blogApplication.getBlogsByProperty("blogType", blogTypeDTO);
 			if(dto.size() > 0){
 				result.put("exist", "博客类别下有博客，不能删除！");
 			}else{

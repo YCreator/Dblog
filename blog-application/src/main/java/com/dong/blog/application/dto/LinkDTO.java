@@ -1,12 +1,18 @@
 package com.dong.blog.application.dto;
 
+import java.io.Serializable;
+
 /**
  * 友情链接实体
  * @author Administrator
  *
  */
-public class LinkDTO {
+public class LinkDTO implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7330054172602286923L;
 	private Long id; // 编号
 	private String linkName; // 链接名称
 	private String linkUrl; // 链接地址

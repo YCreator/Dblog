@@ -52,7 +52,7 @@ public class CommentController {
 			if(comment.getId()==null){
 				comment = commentApplication.save(comment);
 				// 该博客的回复次数加1
-				BlogDTO blog=blogApplication.get(comment.getBlogId());
+				BlogDTO blog=comment.getBlogDTO();
 				blog.setReplyHit(blog.getReplyHit()+1);
 				blogApplication.update(blog);
 			}

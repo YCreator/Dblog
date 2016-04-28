@@ -1,5 +1,6 @@
 package com.dong.blog.application.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -7,12 +8,16 @@ import java.util.Date;
  * @author Administrator
  *
  */
-public class CommentDTO {
+public class CommentDTO implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2807417249713564677L;
 	private Long id; // 编号
 	private String userIp; // 用户IP
 	private String content; // 评论内容
-	private Long blogId; // 被评论的博客
+	private BlogDTO blogDTO; // 被评论的博客
 	private Date commentDate; // 评论日期
 	private Integer state; // 审核状态  0 待审核 1 审核通过 2 审核未通过
 	
@@ -34,11 +39,11 @@ public class CommentDTO {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public Long getBlogId() {
-		return blogId;
+	public BlogDTO getBlogDTO() {
+		return blogDTO;
 	}
-	public void setBlogId(Long blogId) {
-		this.blogId = blogId;
+	public void setBlogDTO(BlogDTO blogDTO) {
+		this.blogDTO = blogDTO;
 	}
 	public Date getCommentDate() {
 		return commentDate;

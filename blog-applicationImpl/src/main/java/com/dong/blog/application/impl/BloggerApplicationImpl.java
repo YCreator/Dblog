@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dong.blog.application.BloggerApplication;
 import com.dong.blog.application.dto.BloggerDTO;
 import com.dong.blog.core.domain.Blogger;
+import com.dong.blog.util.BeanCopierUtil;
 
 @Named
 @Transactional(rollbackFor=Exception.class)
@@ -21,7 +22,7 @@ public class BloggerApplicationImpl extends BaseApplicationImpl implements  Blog
 		Blogger blogger = Blogger.get(Blogger.class, pk);
 		BloggerDTO bloggerDTO = new BloggerDTO();
 		try {
-			BeanUtils.copyProperties(bloggerDTO, blogger);
+			BeanCopierUtil.copyProperties(blogger, bloggerDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -67,7 +68,7 @@ public class BloggerApplicationImpl extends BaseApplicationImpl implements  Blog
 				.createJpqlQuery(jpql).singleResult();
 		BloggerDTO bloggerDTO = new BloggerDTO();
 		try {
-			BeanUtils.copyProperties(bloggerDTO,  blogger);
+			BeanCopierUtil.copyProperties(blogger, bloggerDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

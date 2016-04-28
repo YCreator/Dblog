@@ -2,8 +2,12 @@ package com.dong.blog.core.domain;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.dayatang.domain.AbstractEntity;
@@ -25,8 +29,9 @@ public class Comment extends AbstractEntity{
 	private String userIp; // 用户IP
 	@Column
 	private String content; // 评论内容
-	@Column
-	private Long blogId; // 被评论的博客
+	@JoinColumn(name="blogId",referencedColumnName="id")
+	@ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},fetch=FetchType.LAZY)
+	private Blog blog; // 被评论的博客
 	@Column
 	private Date commentDate; // 评论日期
 	@Column
@@ -45,11 +50,11 @@ public class Comment extends AbstractEntity{
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public Long getBlogId() {
-		return blogId;
+	public Blog getBlog() {
+		return blog;
 	}
-	public void setBlog(Long blogId) {
-		this.blogId = blogId;
+	public void setBlog(Blog blog) {
+		this.blog = blog;
 	}
 	public Date getCommentDate() {
 		return commentDate;

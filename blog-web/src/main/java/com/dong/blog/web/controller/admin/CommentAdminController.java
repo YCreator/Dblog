@@ -44,6 +44,9 @@ public class CommentAdminController {
 	public String list(@RequestParam(value="page",required=false)String page,@RequestParam(value="rows",required=false)String rows,@RequestParam(value="state",required=false)String state,HttpServletResponse response)throws Exception{
 		PageBean pageBean=new PageBean(Integer.parseInt(page),Integer.parseInt(rows));
 		CommentDTO dto = new CommentDTO();
+		if (state == null) {
+			state = "1";
+		}
 		dto.setState(Integer.parseInt(state));
 		List<CommentDTO> commentList = commentApplication.getPage(dto, pageBean.getPage(), pageBean.getPageSize()).getData();
 		Map<String,Object> map=new HashMap<String,Object>();

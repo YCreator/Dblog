@@ -20,7 +20,9 @@ public interface BlogApplication extends BaseApplication<BlogDTO, Long> {
 	
 	BlogDTO getNextBlog(Long id); //查找下一篇博客
 	
-	List<BlogDTO> getBlogByTypeId(Long typeId); //根据博客类型获取博客列表
+	List<BlogDTO> getBlogsByProperty(String propertyName, Object propertyValue); //根据键值 key==value条件查询
+	
+	List<BlogDTO> getBlogsByProperties(Map<String, Object> properties);//根据多个键值 key==value条件查询
 	
 	boolean updateBlog(BlogDTO blogDTO); //修改博客
 }

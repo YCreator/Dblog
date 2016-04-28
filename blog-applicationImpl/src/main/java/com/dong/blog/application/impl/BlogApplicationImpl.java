@@ -1,13 +1,13 @@
 package com.dong.blog.application.impl;
 
 import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Named;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.dayatang.utils.Page;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +17,7 @@ import com.dong.blog.application.dto.BlogDTO;
 import com.dong.blog.application.dto.BlogTypeDTO;
 import com.dong.blog.core.domain.Blog;
 import com.dong.blog.core.domain.BlogType;
+import com.dong.blog.util.BeanCopierUtil;
 
 @Named
 @Transactional(rollbackFor=Exception.class)
@@ -25,42 +26,21 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BlogDTO get(Long pk) {
 		Blog blog = Blog.load(Blog.class, pk);
-		BlogDTO blogDTO = new BlogDTO();
-		try {
-			BeanUtils.copyProperties(blogDTO, blog);
-			BlogTypeDTO blogTypeDTO = new BlogTypeDTO();
-			BeanUtils.copyProperties(blogTypeDTO, blog.getBlogType());
-			blogDTO.setBlogTypeDTO(blogTypeDTO);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		BlogDTO blogDTO = transformBeanData(blog);
 		blogDTO.setId((java.lang.Long)blog.getId());
 		return blogDTO;
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<BlogDTO> findAll() {
-		List<BlogDTO> list = new ArrayList<BlogDTO>();
-		List<Blog> all = Blog.findAll(Blog.class);
-		for (Blog blog : all) {
-			BlogDTO blogDTO = new BlogDTO();
-			try {
-				BeanUtils.copyProperties(blogDTO, blog);	
-				BlogTypeDTO blogTypeDTO = new BlogTypeDTO();
-				BeanUtils.copyProperties(blogTypeDTO, blog.getBlogType());
-				blogDTO.setBlogTypeDTO(blogTypeDTO);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-			list.add(blogDTO);
-		}
-		return list;
+		List<Blog> all = Blog.findAll(Blog.class);	
+		return transformBeanDatas(all);
 	}
 
 	public BlogDTO save(BlogDTO t) {
 		Blog blog = new Blog();
 		try {
-			BeanUtils.copyProperties(blog, t);
+			BeanCopierUtil.copyProperties(t, blog);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -73,7 +53,13 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 		Blog blog = Blog.get(Blog.class, t.getId());
 		boolean isSuccess;
 		try {
-			BeanUtils.copyProperties(blog, t);
+			BeanCopierUtil.copyProperties(t, blog);
+			BlogType blogType = new BlogType();
+			try {
+				BeanCopierUtil.copyProperties(t.getBlogTypeDTO(), blogType);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 			isSuccess = true;
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -95,7 +81,6 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Page<BlogDTO> pageQuery(BlogDTO dto, int currentPage, int pageSize) {
-		List<BlogDTO> list = new ArrayList<BlogDTO>();
 		StringBuilder jpql = new StringBuilder("select _blog from Blog _blog");
 		if (dto.getBlogTypeDTO() != null) {
 			jpql.append(" where _blog.blogType.id = ").append(dto.getBlogTypeDTO().getId());
@@ -104,25 +89,18 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 		@SuppressWarnings("unchecked")
 		Page<Blog> pages = this.getQueryChannelService().createJpqlQuery(jpql.toString()).setPage(currentPage, pageSize).pagedList();
 		List<Blog> blogs = pages.getData();
-		for (Blog blog : blogs) {
-			BlogDTO blogDTO = new BlogDTO();
-			try {
-				BeanUtils.copyProperties(blogDTO, blog);
-				BlogTypeDTO typeDTO = new BlogTypeDTO();
-				BeanUtils.copyProperties(typeDTO, blog.getBlogType());
-				blogDTO.setBlogTypeDTO(typeDTO);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-			list.add(blogDTO);
-		}
+		List<BlogDTO> list = this.transformBeanDatas(blogs);
 		return new Page<BlogDTO>(pages.getStart(), pages.getResultCount(), pageSize, list);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Page<BlogDTO> pageQuery(Map<String, Object> map, int currentPage, int pageSize) {
-		List<BlogDTO> list = new ArrayList<BlogDTO>();
 		StringBuilder jpql = new StringBuilder("select _blog from Blog _blog where 1=1");
+		List<Object> conditionVals = new ArrayList<Object>();
+		if (map.get("title") != null) {
+			jpql.append(" and _blog.title like ?");
+			conditionVals.add(MessageFormat.format("%{0}%", map.get("title")));
+		}
 		if (map.get("orderType") != null) {
 			if (map.get("orderType").toString().equals("clickHit")) {
 				jpql.append(" order by _blog.clickHit desc");
@@ -131,24 +109,9 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 			}
 		}
 		@SuppressWarnings("unchecked")
-		Page<Blog> pages = this.getQueryChannelService().createJpqlQuery(jpql.toString()).setPage(currentPage, pageSize).pagedList();
+		Page<Blog> pages = this.getQueryChannelService().createJpqlQuery(jpql.toString()).setParameters(conditionVals).setPage(currentPage, pageSize).pagedList();
 		List<Blog> blogs = pages.getData();
-		for (Blog blog : blogs) {
-			BlogDTO blogDTO = new BlogDTO();
-			try {
-				BeanUtils.copyProperties(blogDTO, blog);
-				BlogTypeDTO type = new BlogTypeDTO();
-				try {
-					BeanUtils.copyProperties(type, blog.getBlogType());
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-				blogDTO.setBlogTypeDTO(type);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-			list.add(blogDTO);
-		}
+		List<BlogDTO> list = this.transformBeanDatas(blogs);
 		return new Page<BlogDTO>(pages.getStart(), pages.getResultCount(), pageSize, list);
 	}
 
@@ -189,25 +152,6 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 		return dto;
 	}
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BlogDTO> getBlogByTypeId(Long typeId) {
-		List<Blog> list = Blog.findByProperty(Blog.class, "blogType", BlogType.load(BlogType.class, typeId));
-		List<BlogDTO> dtos = new ArrayList<BlogDTO>();
-		for (Blog blog : list) {
-			BlogDTO dto = new BlogDTO();
-			try {
-				BeanUtils.copyProperties(dto, blog);
-				BlogTypeDTO type = new BlogTypeDTO();
-				BeanUtils.copyProperties(type, blog.getBlogType());
-				dto.setBlogTypeDTO(type);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-			dtos.add(dto);
-		}
-		return dtos;
-	}
-
 	public boolean updateBlog(BlogDTO blogDTO) {
 		Blog blog = Blog.get(Blog.class, blogDTO.getId());
 		boolean isSuccess;
@@ -226,5 +170,52 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 			isSuccess = false;
 		}
 		return isSuccess;
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<BlogDTO> getBlogsByProperty(String propertyName, Object propertyValue) {
+		List<Blog> list = Blog.findByProperty(Blog.class, propertyName, propertyValue);
+		return transformBeanDatas(list);
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<BlogDTO> getBlogsByProperties(Map<String, Object> properties) {
+		List<Blog> list = Blog.findByProperties(Blog.class, properties);
+		return transformBeanDatas(list);
+	}
+	
+	/**
+	 * 转换对象数组
+	 * @param source
+	 * @return
+	 */
+	private List<BlogDTO> transformBeanDatas(List<Blog> source) {
+		List<BlogDTO> list = new ArrayList<BlogDTO>();
+		for (Blog blog : source) {
+			list.add(transformBeanData(blog));
+		}
+		return list;
+	}
+	
+	/**
+	 * 转换对象
+	 * @param source
+	 * @return
+	 */
+	private BlogDTO transformBeanData(Blog source) {
+		BlogDTO blogDTO = new BlogDTO();
+		try {
+			BeanCopierUtil.copyProperties(source, blogDTO);
+			BlogTypeDTO blogTypeDTO = new BlogTypeDTO();
+			try {
+				BeanCopierUtil.copyProperties(source.getBlogType(), blogTypeDTO);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			blogDTO.setBlogTypeDTO(blogTypeDTO);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return blogDTO;
 	}
 }
