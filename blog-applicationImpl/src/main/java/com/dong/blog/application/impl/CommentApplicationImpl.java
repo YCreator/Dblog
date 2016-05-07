@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dong.blog.application.CommentApplication;
 import com.dong.blog.application.dto.BlogDTO;
 import com.dong.blog.application.dto.CommentDTO;
+import com.dong.blog.core.domain.Blog;
 import com.dong.blog.core.domain.Comment;
 import com.dong.blog.util.BeanCopierUtil;
 
@@ -83,6 +84,7 @@ public class CommentApplicationImpl extends BaseApplicationImpl implements Comme
 			jpql.append(" and _comment.state = ").append(dto.getState());
 		}
 		jpql.append("order by _comment.commentDate desc");
+		getLog().debug(jpql.toString());
 		@SuppressWarnings("unchecked")
 		Page<Comment> pages = this.getQueryChannelService().createJpqlQuery(jpql.toString()).setPage(currentPage, pageSize).pagedList();
 		List<Comment> list = pages.getData();
@@ -102,13 +104,16 @@ public class CommentApplicationImpl extends BaseApplicationImpl implements Comme
 		CommentDTO commentDTO = new CommentDTO();
 		try {
 			BeanCopierUtil.copyProperties(source, commentDTO);
-			BlogDTO blogDTO = new BlogDTO();
 			try {
-				BeanCopierUtil.copyProperties(blogDTO, source.getBlog());
+				Blog blog = source.getBlog();
+				if (blog != null) {
+					BlogDTO blogDTO = new BlogDTO();
+					BeanCopierUtil.copyProperties(blog, blogDTO);
+					commentDTO.setBlogDTO(blogDTO);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			commentDTO.setBlogDTO(blogDTO);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

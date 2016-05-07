@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.dayatang.domain.AbstractEntity;
 
@@ -29,7 +30,7 @@ public class Comment extends AbstractEntity{
 	private String userIp; // 用户IP
 	@Column
 	private String content; // 评论内容
-	@JoinColumn(name="blogId",referencedColumnName="id")
+	@JoinColumn(name="blogId", referencedColumnName="id")
 	@ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},fetch=FetchType.LAZY)
 	private Blog blog; // 被评论的博客
 	@Column
