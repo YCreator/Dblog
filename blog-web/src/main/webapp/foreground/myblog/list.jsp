@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <div class="topnews">
-      <h2><span><a href="/" target="_blank">栏目标题</a><a href="/" target="_blank">栏目标题</a><a href="/" target="_blank">栏目标题</a></span><b>文章</b>推荐</h2>
+      <h2><!-- <span><a href="/" target="_blank">栏目标题</a><a href="/" target="_blank">栏目标题</a><a href="/" target="_blank">栏目标题</a></span> --><b>文章</b>推荐</h2>
       <c:forEach var = "blog" items = "${blogList }">
 	      <div class="blogs">
 	        <figure><img src="${pageContext.request.contextPath}${blog.picPath}"></figure>

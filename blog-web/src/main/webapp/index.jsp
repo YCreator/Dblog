@@ -83,10 +83,11 @@
 		<nav id="topnav" class="f_r">
 			<ul>
 				<a href="${pageContext.request.contextPath}/index.html">首页</a>
-				<a href="p.html" target="_blank">文章</a>
-				<a href="a.html" target="_blank">相册</a>
+				<a href="p.html" target="_blank">博文</a>
+				<a href="a.html" target="_blank">图库</a>
 				<a href="c.html" target="_blank">资源</a>
-				<a href="b.html" target="_blank">留言</a>
+				<a href="c.html" target="_blank">源码</a>
+				<a href="b.html" target="_blank">论坛</a>
 				<a href="news.html" target="_blank">关于我</a>
 			</ul>
 			<script src="js/nav.js"></script>
@@ -158,12 +159,9 @@
 					</div>
 					<div class="bd bd-news">
 						<ul>
-							<li><a href="/" target="_blank">手机的16个惊人小秘密，据说99.999%的人都不知</a></li>
-							<li><a href="/" target="_blank">你面对的是生活而不是手机</a></li>
-							<li><a href="/" target="_blank">住在手机里的朋友</a></li>
-							<li><a href="/" target="_blank">豪雅手机正式发布! 在法国全手工打造的奢侈品</a></li>
-							<li><a href="/" target="_blank">教你怎样用欠费手机拨打电话</a></li>
-							<li><a href="/" target="_blank">原来以为，一个人的勇敢是，删掉他的手机号码...</a></li>
+							<c:forEach var="blog" items="${clickBlogs }">
+								<li><a href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">${blog.title }</a></li>
+							</c:forEach>
 						</ul>
 					</div>
 				</div>
@@ -177,26 +175,22 @@
 					<c:forEach var="blogTypeCount" items="${blogTypeCountList }">
 						<li><a href="${pageContext.request.contextPath}/index.html?typeId=${blogTypeCount.id }">${blogTypeCount.typeName }</a></li>
 					</c:forEach>
-					<!-- <li><a href="/">个人博客</a></li>
-					<li><a href="/">web开发</a></li>
-					<li><a href="/">前端设计</a></li>
-					<li><a href="/">Html</a></li>
-					<li><a href="/">CSS3</a></li>
-					<li><a href="/">Html5+css3</a></li>
-					<li><a href="/">百度</a></li>
-					<li><a href="/">Javasript</a></li>
-					<li><a href="/">web开发</a></li>
-					<li><a href="/">前端设计</a></li>
-					<li><a href="/">Html</a></li>
-					<li><a href="/">CSS3</a></li>
-					<li><a href="/">Html5+css3</a></li>
-					<li><a href="/">百度</a></li> -->
 				</ul>
 			</div>
 			<div class="tuwen">
 				<h3>图文推荐</h3>
 				<ul>
-					<li><a href="/"><img
+					<c:forEach var="blog" items="${dateBlogs }">
+						<li><a href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">
+							<img src="${pageContext.request.contextPath}${blog.picPath}"><b>${blog.title}</b></a>
+							<p>
+							<span class="tulanmu"><a href="/">${blog.blogTypeDTO.typeName }</a></span><span
+								class="tutime">${blog.releaseDate }</span>
+							</p>
+						</li>
+					</c:forEach>
+				
+					<%-- <li><a href="/"><img
 							src="${pageContext.request.contextPath}/resources/images/01.jpg"><b>住在手机里的朋友</b></a>
 						<p>
 							<span class="tulanmu"><a href="/">手机配件</a></span><span
@@ -225,7 +219,7 @@
 						<p>
 							<span class="tulanmu"><a href="/">手机配件</a></span><span
 								class="tutime">2015-02-15</span>
-						</p></li>
+						</p></li> --%>
 				</ul>
 			</div>
 			<div class="ad">

@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.dong.blog.application.BlogApplication;
 import com.dong.blog.application.BlogTypeApplication;
@@ -53,7 +54,10 @@ public class BlogAdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/save")
-	public String save(BlogDTO blog,HttpServletResponse response)throws Exception{
+	public String save(@RequestParam("imageFile") MultipartFile imageFile, BlogDTO blog,HttpServletResponse response)throws Exception{
+		if (!imageFile.isEmpty()) {
+		
+		}
 		boolean isUpdateSuccess = false;
 		if(blog.getId()==null){
 			blog = blogApplication.save(blog);

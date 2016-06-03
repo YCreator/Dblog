@@ -1,10 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=gbk"
 	import="com.baidu.ueditor.ActionEnter"
-    pageEncoding="UTF-8"%>
+    pageEncoding="gbk"%>
 <%@ page trimDirectiveWhitespaces="true" %>
 <%
 
-    request.setCharacterEncoding( "utf-8" );
+    request.setCharacterEncoding( "gbk" );
 	response.setHeader("Content-Type" , "text/html");
 	
 	String rootPath = application.getRealPath( "/" );

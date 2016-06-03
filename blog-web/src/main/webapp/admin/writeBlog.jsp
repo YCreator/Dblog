@@ -51,6 +51,31 @@
 		$("#keyWord").val("");
 	}
 	
+	function checkImage() {
+		var img = new Image();
+		//var obj = $("#imageFile").files.item(0).getAsDataURL();
+		alert($("#imageFile").val());
+		//img.src = getFullPath($("#imageFile"));
+	}
+	
+	function getFullPath(obj){ 
+		if(obj) { 
+			 //ie 
+			 if (window.navigator.userAgent.indexOf("MSIE")>=1)  { 
+			 	obj.select(); 
+			 	return document.selection.createRange().text; 
+			 } 
+			 //firefox 
+			 else if(window.navigator.userAgent.indexOf("Firefox")>=1) { 
+			 	if(obj.files) { 
+			 		return obj.files.item(0).getAsDataURL(); 
+			 	} 
+			 	return obj.value; 
+			 } 
+			 return obj.value; 
+		} 
+	} 
+	
 </script>
 </head>
 <body style="margin: 10px">
@@ -81,6 +106,10 @@
    			<td>关键字：</td>
    			<td><input type="text" id="keyWord" name="keyWord" style="width: 400px;"/>&nbsp;(多个关键字中间用空格隔开)</td>
    		</tr>
+   		<tr>
+	   		<td>图片介绍：</td>
+	   			<td><input type="file" id="imageFile" name="imageFile" style="width: 400px;"  onchange="checkImage();"/></td>
+	   		</tr>
    		<tr>
    			<td>图片介绍：</td>
    			<td><input type="text" id="picPath" name="picPath" style="width: 400px;"/></td>
