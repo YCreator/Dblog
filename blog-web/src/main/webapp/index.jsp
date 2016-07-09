@@ -28,6 +28,8 @@
 	src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/static/mystyle/js/jquery.min.js"></script>
+	<script type="text/javascript"
+	src="${pageContext.request.contextPath}/static/mystyle/js/jquery.cookie.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/static/mystyle/js/sliders.js"></script>
 <!--[if lt IE 9]>
@@ -52,6 +54,10 @@
 			}
 			function backToTop() {
 				$('body,html').animate({scrollTop:0},500);
+			}
+			function clearCookie() {
+				$.cookie('网站客服21224', null, { path: '/' });	
+				$.cookie('网站客服21224', null, { path: '/' });	
 			}
 		</script>
 		<div class="topbg">
@@ -82,13 +88,9 @@
 		</div>
 		<nav id="topnav" class="f_r">
 			<ul>
-				<a href="${pageContext.request.contextPath}/index.html">首页</a>
-				<a href="p.html" target="_blank">博文</a>
-				<a href="a.html" target="_blank">图库</a>
-				<a href="c.html" target="_blank">资源</a>
-				<a href="c.html" target="_blank">源码</a>
-				<a href="b.html" target="_blank">论坛</a>
-				<a href="news.html" target="_blank">关于我</a>
+				<a href="${pageContext.request.contextPath}/index.html">文章首页</a>
+				<a href="p.html" target="_blank">热门文章</a>
+				<a href="news.html" target="_blank">关于</a>	
 			</ul>
 			<script src="js/nav.js"></script>
 		</nav>
@@ -98,18 +100,7 @@
 			<jsp:include page="${mainPage }"></jsp:include>
 		</div>
 		<div class="r_box f_r">
-			<div class="tit01">
-				<h3>关注我</h3>
-				<div class="gzwm">
-					<ul>
-						<li><a class="xlwb" href="#" target="_blank">新浪微博</a></li>
-						<li><a class="txwb" href="#" target="_blank">腾讯微博</a></li>
-						<li><a class="rss" href="portal.php?mod=rss" target="_blank">RSS</a></li>
-						<li><a class="wx" href="mailto:admin@admin.com">邮箱</a></li>
-					</ul>
-				</div>
-			</div>
-			<!--tit01 end-->
+		
 			<div class="ad300x100">
 				<img
 					src="${pageContext.request.contextPath}/static/mystyle/images/ad300x100.jpg">
@@ -130,16 +121,16 @@
 								this.className = "cur";
 								for (var n = 0; n < oUl.length; n++)
 									oUl[n].style.display = "none";
-								oUl[this.index].style.display = "block"
+								oUl[this.index].style.display = "block";
 							}
 						}
 					}
 				</script>
 				<div class="ms-top">
 					<ul class="hd" id="tab">
-						<li class="cur"><a href="/">点击排行</a></li>
+						<li class="cur"><a href="/">热门文章</a></li>
 						<li><a href="/">最新文章</a></li>
-						<li><a href="/">站长推荐</a></li>
+						<li><a href="/">点击排行</a></li>
 					</ul>
 				</div>
 				<div class="ms-main" id="ms-main">
@@ -190,42 +181,26 @@
 						</li>
 					</c:forEach>
 				
-					<%-- <li><a href="/"><img
-							src="${pageContext.request.contextPath}/resources/images/01.jpg"><b>住在手机里的朋友</b></a>
-						<p>
-							<span class="tulanmu"><a href="/">手机配件</a></span><span
-								class="tutime">2015-02-15</span>
-						</p></li>
-					<li><a href="/"><img
-							src="${pageContext.request.contextPath}/resources/images/02.jpg"><b>教你怎样用欠费手机拨打电话</b></a>
-						<p>
-							<span class="tulanmu"><a href="/">手机配件</a></span><span
-								class="tutime">2015-02-15</span>
-						</p></li>
-					<li><a href="/" title="手机的16个惊人小秘密，据说99.999%的人都不知"><img
-							src="${pageContext.request.contextPath}/resources/images/03.jpg"><b>手机的16个惊人小秘密，据说...</b></a>
-						<p>
-							<span class="tulanmu"><a href="/">手机配件</a></span><span
-								class="tutime">2015-02-15</span>
-						</p></li>
-					<li><a href="/"><img
-							src="${pageContext.request.contextPath}/resources/images/06.jpg"><b>住在手机里的朋友</b></a>
-						<p>
-							<span class="tulanmu"><a href="/">手机配件</a></span><span
-								class="tutime">2015-02-15</span>
-						</p></li>
-					<li><a href="/"><img
-							src="${pageContext.request.contextPath}/resources/images/04.jpg"><b>教你怎样用欠费手机拨打电话</b></a>
-						<p>
-							<span class="tulanmu"><a href="/">手机配件</a></span><span
-								class="tutime">2015-02-15</span>
-						</p></li> --%>
 				</ul>
 			</div>
 			<div class="ad">
 				<img
 					src="${pageContext.request.contextPath}/resources/images/03.jpg">
 			</div>
+			
+			<div class="tit01">
+				<h3>关注我</h3>
+				<div class="gzwm">
+					<ul>
+						<li><a class="xlwb" href="#" target="_blank">新浪微博</a></li>
+						<li><a class="txwb" href="#" target="_blank">腾讯微博</a></li>
+						<li><a class="rss" href="portal.php?mod=rss" target="_blank">RSS</a></li>
+						<li><a class="wx" href="mailto:admin@admin.com">邮箱</a></li>
+					</ul>
+				</div>
+			</div>
+			<!--tit01 end-->
+			
 			<div class="links">
 				<h3>
 					<span>[<a href="/">申请友情链接</a>]
@@ -244,9 +219,58 @@
 		<p class="ft-copyright">Dong博客 Design by DanceSmile
 			蜀ICP备11002373号-1</p>
 		<div id="tbox">
-			<a id="togbook" href="javascript:void(0)"></a> <a id="gotop" href="javascript:backToTop()"></a>
+			<a id="togbook" href="javascript:bind();" ></a><!-- onclick='easemobim.bind({tenantId: 21064, emgroup: "订单客服"})' -->
+			<a id="gotop" href="javascript:backToTop()"></a>
 		</div>
 	</footer>
+	<script type="text/javascript">
+		window.easemobim = window.easemobim || {};
+		easemobim.config = {
+		    hide: true,		//是否隐藏小的悬浮按钮
+		    autoConnect: true,    //自动连接
+		    resources: true,	 //是否启用收消息同步
+		    
+		    visitor: {
+		    	trueName: 'ling',
+		        qq: '567**34',
+		        phone: '188****8888',
+		        companyName: '环信',
+		        userNickname: 'hello16',
+		        description: '描述信息',
+		        email: '123456@**.com'
+		    },
+		    
+		};
+		
+		function bind() {
+			easemobim.bind({
+				tenantId: 21064,
+				emgroup: "订单客服",
+				
+				onready: function () { 
+					/* alert('onReady'); */
+				},
+				
+				onmessage: function ( message ) {
+					// alert(message.to.username);
+					/*  $.each(message,function(key,val){
+					      if($.isPlainObject(val) || $.isArray(val)){
+					          subObj(val);
+					      }else{
+					          alert(key+'='+val);
+					      }
+					  }); */
+				},
+				
+				onsessionclosed: function () {
+					$.cookie('订单客服21064', '', { path: '/' });
+				},
+			});
+		}
+		
+			
+	</script>
+	<script src='//kefu.easemob.com/webim/easemob.js?tenantId=21064' async='async'></script>
 </body>
 <%
 	if (request.getAttribute("clickBlogs") != null) {
