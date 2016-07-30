@@ -16,9 +16,92 @@
 	var url;
 	
 	function openLinkAddDialog(){
-		$("#dlg").dialog("open").dialog("setTitle","添加友情链接信息");
+		/* $.ajax({
+			type:'POST',
+			url:'${pageContext.request.contextPath}/admin/blogType/list.do?page=1&rows=10',
+			dataType:'json',
+			success:function(data){
+				var description = "";
+				var rows = data['rows'];
+				var tableStr = "<table border='1'>";
+				  tableStr = tableStr + "<thead><tr><th></th><th>博客类型名称</th></tr></thead>";
+			    for(var i in rows){   
+			        var property=rows[i];
+			        tableStr = tableStr + "<tr><td><input type='checkbox' /></td><td>" + property['typeName'] + "</td></tr>"
+			    }   
+			    tableStr = tableStr + "</table>";
+			    $("#dataTable").html(tableStr); 
+			},
+			error:function(XMLHttpRequest, textStatus, errorThrown) {
+				 alert(XMLHttpRequest.status);
+				 alert(XMLHttpRequest.readyState);
+				 alert(textStatus);
+			}
+		}); */
+		$.post("${pageContext.request.contextPath}/admin/blogType/list.do",
+					{
+						page:"1",
+						rows:"100"
+					},
+					function(data, status) {
+						if (status == "success") {
+							var obj = $.parseJSON(data);
+							var rows = obj.rows;
+							var len = getJsonLength(rows);
+							var l = Math.floor(len / 5);
+							var r = len % 5;
+							var tableStr = "<table>";
+							if (l > 0) {
+								var z = 0;
+								for (var i = 0; i < len; i = i + z) {
+									if (r > 0) {
+										z = l + 1;
+										r--;
+									} else {
+										z = l;
+									}
+									tableStr = tableStr + "<tr>";
+									for (var j = 0; j < z; j++) {
+										tableStr = tableStr + "<td><input type='checkbox' /></td><td>" + rows[i+j].typeName + "</td>";		
+									}
+									tableStr = tableStr + "</tr>";
+								}
+							} else if (l == 0) {
+								for (var i = 0; i < len; i++) {		
+									tableStr = tableStr + "<tr>"
+										+"<td><input type='checkbox' /></td><td>" + rows[i].typeName + "</td>"
+										+"</tr>";	
+								}
+							}
+							tableStr = tableStr + "</table>";
+						    $("#dataTable").html(tableStr);
+						}
+						
+					}
+				);
+		$("#dlg").dialog({height:300, width:530}).dialog("open").dialog("setTitle","添加主分类信息");
 		url="${pageContext.request.contextPath}/admin/category/save.do";
 	}
+	
+	function printObject(obj) {
+		var description = ""; 
+	    for(var i in obj){   
+	        var property=obj[i];   
+	        description+=i+" = "+property+"\n";
+	    }   
+	    alert(description); 
+	}
+	
+	function getJsonLength(jsonData){
+		var jsonLength = 0;
+		for(var item in jsonData){
+			jsonLength++;
+
+		}
+		return jsonLength;
+
+	}
+	
 </script>
 </head>
 <body style="margin: 1px">
@@ -47,7 +130,7 @@
    closed="true" buttons="#dlg-buttons">
    
    <form id="fm" method="post">
-   	<table cellspacing="8px">
+   	<table cellspacing="8px" style="width:500px;height:200px">
    		<tr>
    			<td>主分类名称：</td>
    			<td><input type="text" id="linkName" name="linkName" class="easyui-validatebox" required="true"/></td>
@@ -59,16 +142,7 @@
    		<tr>
    			<td>关联博客类别：</td>
    			<td>
-				<table id="dg" title=""
-					   fitColumns="true" pagination="true" rownumbers="true"
-					   url="${pageContext.request.contextPath}/admin/blogType/list.do" fit="true" toolbar="#tb">
-					   <thead>
-					   	<tr>
-					   		<th field="cb" checkbox="true" align="center"></th>
-					   		<th field="typeName" width="100" align="center">博客类型名称</th>
-					   	</tr>
-					   </thead>
-					 </table>
+				<div id="dataTable"></div>
 			</td>
    		</tr>
    	</table>
