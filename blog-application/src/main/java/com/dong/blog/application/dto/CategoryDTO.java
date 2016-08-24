@@ -6,13 +6,24 @@ import java.util.List;
 
 public class CategoryDTO implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String categoryName;
 	private String ids;
 	private Integer sort;
 	
 	private List<BlogTypeDTO> list = new ArrayList<BlogTypeDTO>();
+	private List<String> blogTypeJsons;
 	
+	public List<String> getBlogTypeJsons() {
+		return blogTypeJsons;
+	}
+	public void setBlogTypeJsons(List<String> blogTypeJsons) {
+		this.blogTypeJsons = blogTypeJsons;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -43,6 +54,13 @@ public class CategoryDTO implements Serializable {
 	public void setList(List<BlogTypeDTO> list) {
 		this.list = list;
 	}
+	
+	@Override
+	public String toString() {
+		return "CategoryDTO [id=" + id + ", categoryName=" + categoryName
+				+ ", ids=" + ids + ", sort=" + sort + ", list=" + blogTypeJsons + "]";
+	}
+	
 	
 	
 

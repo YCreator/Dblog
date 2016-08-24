@@ -44,6 +44,11 @@ public class BlogTypeDTO implements Serializable{
 	public void setOrderNo(Integer orderNo) {
 		this.orderNo = orderNo;
 	}
+	@Override
+	public String toString() {
+		return "BlogTypeDTO [id=" + id + ", typeName=" + typeName
+				+ ", blogCount=" + blogCount + ", orderNo=" + orderNo + "]";
+	}
 	
 
 	

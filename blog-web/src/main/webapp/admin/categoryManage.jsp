@@ -62,14 +62,14 @@
 									}
 									tableStr = tableStr + "<tr>";
 									for (var j = 0; j < z; j++) {
-										tableStr = tableStr + "<td><input type='checkbox' /></td><td>" + rows[i+j].typeName + "</td>";		
+										tableStr = tableStr + "<td><input name='blogTypeJsons' type='checkbox' value='"+ JSON.stringify(rows[i+j]) +"' /></td><td>" + rows[i+j].typeName+ "</td>";		
 									}
 									tableStr = tableStr + "</tr>";
 								}
 							} else if (l == 0) {
 								for (var i = 0; i < len; i++) {		
 									tableStr = tableStr + "<tr>"
-										+"<td><input type='checkbox' /></td><td>" + rows[i].typeName + "</td>"
+										+"<td><input name='blogTypeJsons' type='checkbox' value='"+ JSON.stringify(rows[i]) +"' /></td><td>" + rows[i].typeName + "</td>"
 										+"</tr>";	
 								}
 							}
@@ -83,6 +83,58 @@
 		url="${pageContext.request.contextPath}/admin/category/save.do";
 	}
 	
+	function saveCategory() {
+		$("#fm").form("submit", {
+			url:url,
+			onSubmit:function() {
+				/* var array = new Array();
+				$('input:checkbox').each(function(i, item){
+					if ($(this).attr("checked")) {
+						alert($(this).val());
+					} 
+				}); */
+				return true;
+			},
+			success:function(result) {
+				var result=eval('('+result+')');
+				if (result.success) {
+					$.messager.alert("系统提示","保存成功！");
+					resetValue();
+					$("#dlg").dialog("close");
+					$("#dg").datagrid("reload");
+				} else {
+					$.messager.alert("系统提示","保存失败！");
+					return;
+				}
+			}
+		});
+	}
+	
+	function check() {
+		var content = $('#fm').serialize();
+		/* var obj = new Object();
+		obj.categoryName = $("#category").val();
+		obj.sort = $("#sort").val();
+		var content = "result:";
+		$('input:checkbox').each(function(){
+			if ($(this).attr("checked")) {
+				content = content + $(this).val() + ",";
+			} else {
+				content = content + ",";
+			}
+		}); */
+		alert(content);
+	}
+	
+	function checkClick(obj) {
+		if ($(obj).attr("checked")) {
+			$(obj).attr("checked", false);
+		} else {
+			$(obj).attr("checked", true);
+		}
+	}
+	
+	/*打印对象内的所有属性值 */
 	function printObject(obj) {
 		var description = ""; 
 	    for(var i in obj){   
@@ -92,6 +144,7 @@
 	    alert(description); 
 	}
 	
+	/*获取json内的对象长度 */
 	function getJsonLength(jsonData){
 		var jsonLength = 0;
 		for(var item in jsonData){
@@ -112,8 +165,8 @@
    	<tr>
    		<th field="cb" checkbox="true" align="center"></th>
    		<th field="id" width="10" align="center">编号</th>
-   		<th field="categoryname" width="30" align="center">博客主分类名称</th>
-   		<th field="typeIds" width="50" align="center">包含的博客类别名称</th>
+   		<th field="categoryName" width="30" align="center">博客主分类名称</th>
+   		<th field="ids" width="50" align="center">包含的博客类别名称</th>
    		<th field="sort" width="20" align="center">排序序号</th>
    	</tr>
    </thead>
@@ -133,11 +186,11 @@
    	<table cellspacing="8px" style="width:500px;height:200px">
    		<tr>
    			<td>主分类名称：</td>
-   			<td><input type="text" id="linkName" name="linkName" class="easyui-validatebox" required="true"/></td>
+   			<td><input type="text" id="categoryName" name="categoryName" class="easyui-validatebox" required="true"/></td>
    		</tr>
    		<tr>
    			<td>分类排序：</td>
-   			<td><input type="text" id="orderNo" name="orderNo" class="easyui-numberbox" required="true" style="width: 60px"/>&nbsp;(友情链接根据排序序号从小到大排序)</td>
+   			<td><input type="text" id="sort" name="sort" class="easyui-numberbox" required="true" style="width: 60px"/>&nbsp;(友情链接根据排序序号从小到大排序)</td>
    		</tr>
    		<tr>
    			<td>关联博客类别：</td>
@@ -150,7 +203,7 @@
  </div>
  
  <div id="dlg-buttons">
- 	<a href="javascript:void()" class="easyui-linkbutton" iconCls="icon-ok">保存</a>
+ 	<a href="javascript:saveCategory()" class="easyui-linkbutton" iconCls="icon-ok">保存</a>
  	<a href="javascript:void()" class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
  </div>
 </body>

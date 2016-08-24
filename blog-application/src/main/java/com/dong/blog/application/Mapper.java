@@ -1,11 +1,11 @@
 package com.dong.blog.application;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface Mapper<K, V> {
 	
 	V transformBeanData(K source);
 	
-	List<V> transformBeanDatas(List<K> sources);
+	Collection<V> transformBeanDatas(Collection<K> sources);
 
 }
