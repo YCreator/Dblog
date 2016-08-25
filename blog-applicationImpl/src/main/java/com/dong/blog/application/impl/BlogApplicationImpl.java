@@ -174,6 +174,11 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<BlogDTO> getBlogsByProperty(String propertyName, Object propertyValue) {
+		if (propertyValue instanceof BlogTypeDTO) {
+			BlogType blogType = new BlogType();
+			BeanCopierUtil.copyProperties(propertyValue, blogType);
+			propertyValue = blogType;
+		}
 		List<Blog> list = Blog.findByProperty(Blog.class, propertyName, propertyValue);
 		return transformBeanDatas(list);
 	}

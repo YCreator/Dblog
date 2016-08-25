@@ -18,7 +18,7 @@ import com.dong.blog.application.CategoryApplication;
 import com.dong.blog.application.dto.BlogTypeDTO;
 import com.dong.blog.application.dto.CategoryDTO;
 import com.dong.blog.application.dto.PageBean;
-import com.dong.blog.core.domain.BlogType;
+import com.dong.blog.util.StringUtil;
 import com.dong.blog.web.util.ResponseUtil;
 import com.google.gson.Gson;
 
@@ -29,6 +29,14 @@ public class CategoryAdminController {
 	@Inject
 	private CategoryApplication categoryApplication;
 
+	/**
+	 * 分页查询分类信息
+	 * @param page
+	 * @param rows
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/list")
 	public String list(
 			@RequestParam(value = "page", required = false) String page,
@@ -39,10 +47,10 @@ public class CategoryAdminController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("start", pageBean.getStart());
 		map.put("size", pageBean.getPageSize());
-		List<CategoryDTO> blogTypeList = categoryApplication.getPage(
+		List<CategoryDTO> categoryList = categoryApplication.getPage(
 				pageBean.getPage(), pageBean.getPageSize()).getData();
-		if (blogTypeList != null) {
-			for (CategoryDTO dto : blogTypeList) {
+		if (categoryList != null) {
+			for (CategoryDTO dto : categoryList) {
 				StringBuilder builder = new StringBuilder();
 				for (BlogTypeDTO type : dto.getList()) {
 					builder.append(type.getTypeName()).append(",");
@@ -53,22 +61,32 @@ public class CategoryAdminController {
 				dto.setIds(builder.toString());
 			}
 		}
+		Long total = categoryApplication.getTotal();
 		JSONObject result = new JSONObject();
-		JSONArray jsonArray = JSONArray.fromObject(blogTypeList);
+		JSONArray jsonArray = JSONArray.fromObject(categoryList);
 		result.put("rows", jsonArray);
+		result.put("total", total);
 		ResponseUtil.write(response, result);
 		return null;
 	}
 
+	/**
+	 * 添加或修改分类信息
+	 * @param dto
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/save")
 	public String save(CategoryDTO dto, HttpServletResponse response)
 			throws Exception {
 		for (String json : dto.getBlogTypeJsons()) {
-			System.out.println(json);
-			//BlogTypeDTO d = new Gson().fromJson(json, BlogTypeDTO.class);
-			//dto.getList().add(d);
+			if (StringUtil.isNotEmpty(json)) {
+				BlogTypeDTO d = new Gson().fromJson(json, BlogTypeDTO.class);
+				dto.getList().add(d);
+			}
 		}
-		/*boolean isUpdateSuccess = false;
+		boolean isUpdateSuccess = false;
 		if (dto.getId() == null) {
 			dto = categoryApplication.save(dto);
 		} else {
@@ -80,7 +98,26 @@ public class CategoryAdminController {
 		} else {
 			result.put("success", false);
 		}
-		ResponseUtil.write(response, result);*/
+		ResponseUtil.write(response, result);
+		return null;
+	}
+	
+	/**
+	 * 删除分类信息
+	 * @param ids
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/delete")
+	public String delete(@RequestParam(value="ids")String ids, HttpServletResponse response) throws Exception {
+		String[] idsStr = ids.split(",");
+		JSONObject object = new JSONObject();
+		for (int i = 0; i < idsStr.length; i++) {
+			categoryApplication.remove(Long.parseLong(idsStr[i]));
+		}
+		object.put("success", true);
+		ResponseUtil.write(response, object);
 		return null;
 	}
 

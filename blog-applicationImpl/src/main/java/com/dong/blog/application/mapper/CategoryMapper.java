@@ -1,5 +1,6 @@
 package com.dong.blog.application.mapper;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Named;
@@ -13,7 +14,7 @@ import com.dong.blog.util.BeanCopierUtil;
 @Named
 public class CategoryMapper extends AbstractMapper<Category, CategoryDTO> {
 
-	public CategoryDTO transformBeanData(Category source) {
+	public CategoryDTO transformBeanData(Category source) throws Exception {
 		CategoryDTO dto = new CategoryDTO();
 		try {
 			BeanCopierUtil.copyProperties(source, dto);
@@ -27,6 +28,25 @@ public class CategoryMapper extends AbstractMapper<Category, CategoryDTO> {
 			e.printStackTrace();
 		}
 		return dto;
+	}
+
+	public Category transformEntityData(CategoryDTO source) throws Exception {
+		return transformEntityData(new Category(), source);
+	}
+
+	@Override
+	public Category transformEntityData(Category target, CategoryDTO source) throws Exception {
+		try {
+			BeanCopierUtil.copyProperties(source, target);
+			Set<BlogType> set = new HashSet<BlogType>();
+			for (BlogTypeDTO dto : source.getList()) {
+				set.add(BlogType.get(BlogType.class, dto.getId()));
+			}
+			target.setBlogTypes(set);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return target;
 	}
 
 }

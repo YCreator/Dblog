@@ -1,5 +1,6 @@
 package com.dong.blog.application.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,30 +31,48 @@ public class CategoryApplicationImpl extends BaseApplicationImpl implements
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CategoryDTO get(Long pk) {
 		Category category = Category.load(Category.class, pk);
-		return categoryMapper.transformBeanData(category);
+		CategoryDTO dto;
+		try {
+			dto = categoryMapper.transformBeanData(category);
+		} catch (Exception e) {
+			dto = new CategoryDTO();
+			e.printStackTrace();
+		}
+		return dto;
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CategoryDTO> findAll() {
 		List<Category> list = Category.findAll(Category.class);
-		return (List<CategoryDTO>) categoryMapper.transformBeanDatas(list);
+		List<CategoryDTO> dtos;
+		try {
+			dtos = (List<CategoryDTO>) categoryMapper.transformBeanDatas(list);
+		} catch (Exception e) {
+			dtos = new ArrayList<CategoryDTO>();
+			e.printStackTrace();
+		}
+		return dtos;
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public CategoryDTO save(CategoryDTO t) {
-		Category category = new Category();
+		//Category category = new Category();
 		try {
-			BeanCopierUtil.copyProperties(t, category);
+			/*BeanCopierUtil.copyProperties(t, category);
 			Set<BlogType> set = new HashSet<BlogType>();
 			for (BlogTypeDTO dto : t.getList()) {
 				set.add(BlogType.get(BlogType.class, dto.getId()));
 			}
-			category.setBlogTypes(set);
+			category.setBlogTypes(set);*/
+			Category category = categoryMapper.transformEntityData(t);
+			category.save();
+			t.setId(category.getId());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		category.save();
-		t.setId(category.getId());
+		/*category.save();
+		t.setId(category.getId());*/
 		return t;
 	}
 
@@ -61,7 +80,13 @@ public class CategoryApplicationImpl extends BaseApplicationImpl implements
 		Category category = Category.get(Category.class, t.getId());
 		boolean isSuccess;
 		try {
-			BeanCopierUtil.copyProperties(t, category);
+			categoryMapper.transformEntityData(category, t);
+			/*BeanCopierUtil.copyProperties(t, category);
+			Set<BlogType> set = new HashSet<BlogType>();
+			for (BlogTypeDTO dto : t.getList()) {
+				set.add(BlogType.get(BlogType.class, dto.getId()));
+			}
+			category.setBlogTypes(set);*/
 			isSuccess = true;
 		} catch (Exception e) {
 			isSuccess = false;
@@ -86,13 +111,22 @@ public class CategoryApplicationImpl extends BaseApplicationImpl implements
 	public Page<CategoryDTO> getPage(int currentPage, int pageSize) {
 		@SuppressWarnings("unchecked")
 		Page<Category> pages = this.getQueryChannelService()
-				.createJpqlQuery("select _category from Category _category")
+				.createJpqlQuery("select _category from Category _category order by _category.sort asc")
 				.setPage(currentPage, pageSize).pagedList();
 		List<Category> list = pages.getData();
-		List<CategoryDTO> dtos = (List<CategoryDTO>) categoryMapper
-				.transformBeanDatas(list);
+		List<CategoryDTO> dtos;
+		try {
+			dtos = (List<CategoryDTO>) categoryMapper.transformBeanDatas(list);
+		} catch (Exception e) {
+			dtos = new ArrayList<CategoryDTO>();
+			e.printStackTrace();
+		}
 		return new Page<CategoryDTO>(pages.getStart(), pages.getResultCount(),
 				pageSize, dtos);
+	}
+
+	public Long getTotal() {
+		return (Long) this.getQueryChannelService().createJpqlQuery("select count(*) from Category _category ").singleResult();
 	}
 
 }
