@@ -11,6 +11,7 @@
 <style type="text/css">
 a:hover{text-decoration:none}
 .xlwb,.txwb,.rss,.wx{font-size:10px}
+.verCode img{display:inline; margin:0 0 0 10px;}
 </style>
 <script type="text/javascript">
 	function loadimage(){
@@ -119,7 +120,7 @@ a:hover{text-decoration:none}
 				<textarea style="width: 100%" rows="3" id="content" name="content" placeholder="来说两句吧..."></textarea>
 			</div>
 			<div class="verCode">
-				验证码：<input type="text" value="${imageCode }" name="imageCode"  id="imageCode" size="10" onkeydown= "if(event.keyCode==13)form1.submit()"/>&nbsp;<img onclick="javascript:loadimage();"  title="换一张试试" name="randImage" id="randImage" src="${pageContext.request.contextPath}/image.jsp" width="60" height="20" border="1" align="absmiddle"> 
+				验证码：<input type="text" value="${imageCode }" name="imageCode"  id="imageCode" size="10" onkeydown= "if(event.keyCode==13)form1.submit()"/><img onclick="javascript:loadimage(); "  title="换一张试试" name="randImage" id="randImage" src="${pageContext.request.contextPath}/image.jsp" width="60" height="24" border="1" align="absmiddle"> 
 			</div>
 			<div class="publishButton">
 				<button class="btn btn-primary" type="button" onclick="submitData()">发表评论</button>

@@ -1,9 +1,7 @@
 package com.dong.blog.application.impl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -13,12 +11,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dong.blog.application.CategoryApplication;
-import com.dong.blog.application.dto.BlogTypeDTO;
 import com.dong.blog.application.dto.CategoryDTO;
 import com.dong.blog.application.mapper.CategoryMapper;
-import com.dong.blog.core.domain.BlogType;
 import com.dong.blog.core.domain.Category;
-import com.dong.blog.util.BeanCopierUtil;
 
 @Named
 @Transactional(rollbackFor = Exception.class)
@@ -56,23 +51,13 @@ public class CategoryApplicationImpl extends BaseApplicationImpl implements
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public CategoryDTO save(CategoryDTO t) {
-		//Category category = new Category();
 		try {
-			/*BeanCopierUtil.copyProperties(t, category);
-			Set<BlogType> set = new HashSet<BlogType>();
-			for (BlogTypeDTO dto : t.getList()) {
-				set.add(BlogType.get(BlogType.class, dto.getId()));
-			}
-			category.setBlogTypes(set);*/
 			Category category = categoryMapper.transformEntityData(t);
 			category.save();
 			t.setId(category.getId());
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		/*category.save();
-		t.setId(category.getId());*/
 		return t;
 	}
 
@@ -81,12 +66,6 @@ public class CategoryApplicationImpl extends BaseApplicationImpl implements
 		boolean isSuccess;
 		try {
 			categoryMapper.transformEntityData(category, t);
-			/*BeanCopierUtil.copyProperties(t, category);
-			Set<BlogType> set = new HashSet<BlogType>();
-			for (BlogTypeDTO dto : t.getList()) {
-				set.add(BlogType.get(BlogType.class, dto.getId()));
-			}
-			category.setBlogTypes(set);*/
 			isSuccess = true;
 		} catch (Exception e) {
 			isSuccess = false;
@@ -127,6 +106,22 @@ public class CategoryApplicationImpl extends BaseApplicationImpl implements
 
 	public Long getTotal() {
 		return (Long) this.getQueryChannelService().createJpqlQuery("select count(*) from Category _category ").singleResult();
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CategoryDTO> findAllBySort() {
+		String jpql = "select c from Category c order by c.sort asc";
+		@SuppressWarnings("unchecked")
+		List<Category> list = this.getQueryChannelService().createJpqlQuery(jpql).list();
+		List<CategoryDTO> dtos;
+		try {
+			dtos = (List<CategoryDTO>) categoryMapper.transformBeanDatas(list);
+		} catch (Exception e) {
+			dtos = new ArrayList<CategoryDTO>();
+			e.printStackTrace();
+		}
+		
+		return dtos;
 	}
 
 }

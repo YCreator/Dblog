@@ -12,9 +12,13 @@
 <link
 	href="${pageContext.request.contextPath}/static/images/mini_logo.ico"
 	rel="SHORTCUT ICON">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/static/bootstrap3/css/bootstrap.min.css">
-<link href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
-<link href="${pageContext.request.contextPath}/static/css/blog.css" rel="stylesheet">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/static/bootstrap3/css/bootstrap.min.css">
+<link
+	href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+	rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/blog.css"
+	rel="stylesheet">
 <link
 	href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -28,7 +32,7 @@
 	src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/static/mystyle/js/jquery.min.js"></script>
-	<script type="text/javascript"
+<script type="text/javascript"
 	src="${pageContext.request.contextPath}/static/mystyle/js/jquery.cookie.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/static/mystyle/js/sliders.js"></script>
@@ -53,18 +57,24 @@
 				}
 			}
 			function backToTop() {
-				$('body,html').animate({scrollTop:0},500);
+				$('body,html').animate({
+					scrollTop : 0
+				}, 500);
 			}
 			function clearCookie() {
-				$.cookie('网站客服21224', null, { path: '/' });	
-				$.cookie('网站客服21224', null, { path: '/' });	
+				$.cookie('网站客服21224', null, {
+					path : '/'
+				});
+				$.cookie('网站客服21224', null, {
+					path : '/'
+				});
 			}
 		</script>
 		<div class="topbg">
 			<ul class="topnav">
-				<a href="http://www.jiyouh.com/ " target="_blank">Home</a>
-				<a href="http://weibo.com/jiyouh" target="_blank">官方微博</a>
-				<a href="http://www.jiyouh.com/about.html " target="_blank">关于我们</a>
+				<li class="tag"><a href="${pageContext.request.contextPath}/index.html">Home</a></li>
+				<li class="tag"><a href="http://weibo.com/jiyouh" target="_blank"><font color="red">热门文章</font></a></li>
+				<li class="tag"><a href="http://www.jiyouh.com/about.html " target="_blank">关于我们</a></li>
 			</ul>
 		</div>
 		<div class="topbgline"></div>
@@ -88,9 +98,10 @@
 		</div>
 		<nav id="topnav" class="f_r">
 			<ul>
-				<a href="${pageContext.request.contextPath}/index.html">文章首页</a>
-				<a href="p.html" target="_blank">热门文章</a>
-				<a href="news.html" target="_blank">关于</a>	
+				<li><a href="${pageContext.request.contextPath}/index.html">文章首页</a></li>
+				<c:forEach var="category" items="${categorys }">
+					<li><a href="">${category.categoryName }</a></li>
+				</c:forEach>
 			</ul>
 			<script src="js/nav.js"></script>
 		</nav>
@@ -100,7 +111,7 @@
 			<jsp:include page="${mainPage }"></jsp:include>
 		</div>
 		<div class="r_box f_r">
-		
+
 			<div class="ad300x100">
 				<img
 					src="${pageContext.request.contextPath}/static/mystyle/images/ad300x100.jpg">
@@ -137,21 +148,24 @@
 					<div style="display: block;" class="bd bd-news">
 						<ul>
 							<c:forEach var="blog" items="${clickBlogs }">
-								<li><a href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">${blog.title }</a></li>
+								<li><a
+									href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">${blog.title }</a></li>
 							</c:forEach>
 						</ul>
 					</div>
 					<div class="bd bd-news">
 						<ul>
 							<c:forEach var="blog" items="${dateBlogs }">
-								<li><a href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">${blog.title }</a></li>
+								<li><a
+									href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">${blog.title }</a></li>
 							</c:forEach>
 						</ul>
 					</div>
 					<div class="bd bd-news">
 						<ul>
 							<c:forEach var="blog" items="${clickBlogs }">
-								<li><a href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">${blog.title }</a></li>
+								<li><a
+									href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">${blog.title }</a></li>
 							</c:forEach>
 						</ul>
 					</div>
@@ -164,7 +178,8 @@
 				<h3>标签云</h3>
 				<ul>
 					<c:forEach var="blogTypeCount" items="${blogTypeCountList }">
-						<li><a href="${pageContext.request.contextPath}/index.html?typeId=${blogTypeCount.id }">${blogTypeCount.typeName }</a></li>
+						<li><a
+							href="${pageContext.request.contextPath}/index.html?typeId=${blogTypeCount.id }">${blogTypeCount.typeName }</a></li>
 					</c:forEach>
 				</ul>
 			</div>
@@ -172,22 +187,24 @@
 				<h3>图文推荐</h3>
 				<ul>
 					<c:forEach var="blog" items="${dateBlogs }">
-						<li><a href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">
-							<img src="${pageContext.request.contextPath}${blog.picPath}"><b>${blog.title}</b></a>
+						<li><a
+							href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">
+								<img src="${pageContext.request.contextPath}${blog.picPath}"><b>${blog.title }</b>
+							</a>
 							<p>
-							<span class="tulanmu"><a href="/">${blog.blogTypeDTO.typeName }</a></span><span
-								class="tutime">${blog.releaseDate }</span>
+								<span class="tulanmu"><a href="/">${blog.blogTypeDTO.typeName }</a></span><span
+									class="tutime">${blog.releaseDate }</span>
 							</p>
 						</li>
 					</c:forEach>
-				
+
 				</ul>
 			</div>
 			<div class="ad">
 				<img
 					src="${pageContext.request.contextPath}/resources/images/03.jpg">
 			</div>
-			
+
 			<div class="tit01">
 				<h3>关注我</h3>
 				<div class="gzwm">
@@ -200,7 +217,7 @@
 				</div>
 			</div>
 			<!--tit01 end-->
-			
+
 			<div class="links">
 				<h3>
 					<span>[<a href="/">申请友情链接</a>]
@@ -219,65 +236,59 @@
 		<p class="ft-copyright">Dong博客 Design by DanceSmile
 			蜀ICP备11002373号-1</p>
 		<div id="tbox">
-			<a id="togbook" href="javascript:bind();" ></a><!-- onclick='easemobim.bind({tenantId: 21064, emgroup: "订单客服"})' -->
+			<a id="togbook" href="javascript:bind();"></a>
+			<!-- onclick='easemobim.bind({tenantId: 21064, emgroup: "订单客服"})' -->
 			<a id="gotop" href="javascript:backToTop()"></a>
 		</div>
 	</footer>
 	<script type="text/javascript">
 		window.easemobim = window.easemobim || {};
 		easemobim.config = {
-		    hide: true,		//是否隐藏小的悬浮按钮
-		    autoConnect: true,    //自动连接
-		    resources: true,	 //是否启用收消息同步
-		    
-		    visitor: {
-		    	trueName: 'ling',
-		        qq: '567**34',
-		        phone: '188****8888',
-		        companyName: '环信',
-		        userNickname: 'hello16',
-		        description: '描述信息',
-		        email: '123456@**.com'
-		    },
-		    
+			hide : true, //是否隐藏小的悬浮按钮
+			autoConnect : true, //自动连接
+			resources : true, //是否启用收消息同步
+
+			visitor : {
+				trueName : 'ling',
+				qq : '567**34',
+				phone : '188****8888',
+				companyName : '环信',
+				userNickname : 'hello16',
+				description : '描述信息',
+				email : '123456@**.com'
+			},
+
 		};
-		
+
 		function bind() {
 			easemobim.bind({
-				tenantId: 21064,
-				emgroup: "订单客服",
-				
-				onready: function () { 
-					/* alert('onReady'); */
+				tenantId : 21064,
+				emgroup : "订单客服",
+				onready : function() {
 				},
-				
-				onmessage: function ( message ) {
-					// alert(message.to.username);
-					/*  $.each(message,function(key,val){
-					      if($.isPlainObject(val) || $.isArray(val)){
-					          subObj(val);
-					      }else{
-					          alert(key+'='+val);
-					      }
-					  }); */
+
+				onmessage : function(message) {
 				},
-				
-				onsessionclosed: function () {
-					$.cookie('订单客服21064', '', { path: '/' });
+
+				onsessionclosed : function() {
+					$.cookie('订单客服21064', '', {
+						path : '/'
+					});
 				},
 			});
 		}
-		
-			
 	</script>
-	<script src='//kefu.easemob.com/webim/easemob.js?tenantId=21064' async='async'></script>
+	<script src='//kefu.easemob.com/webim/easemob.js?tenantId=21064'
+		async='async'></script>
 </body>
 <%
 	if (request.getAttribute("clickBlogs") != null) {
-		application.setAttribute("clickBlogs", request.getAttribute("clickBlogs"));
+		application.setAttribute("clickBlogs",
+				request.getAttribute("clickBlogs"));
 	}
 	if (request.getAttribute("dateBlogs") != null) {
-		application.setAttribute("dateBlogs", request.getAttribute("dateBlogs"));
+		application.setAttribute("dateBlogs",
+				request.getAttribute("dateBlogs"));
 	}
 %>
 </html>

@@ -14,9 +14,11 @@ import org.springframework.stereotype.Component;
 
 import com.dong.blog.application.BlogTypeApplication;
 import com.dong.blog.application.BloggerApplication;
+import com.dong.blog.application.CategoryApplication;
 import com.dong.blog.application.LinkApplication;
 import com.dong.blog.application.dto.BlogTypeDTO;
 import com.dong.blog.application.dto.BloggerDTO;
+import com.dong.blog.application.dto.CategoryDTO;
 import com.dong.blog.application.dto.LinkDTO;
 
 
@@ -33,6 +35,7 @@ public class InitComponent implements ServletContextListener,ApplicationContextA
 	private LinkApplication linkApplication;
 	private BlogTypeApplication blogTypeApplication;
 	private BloggerApplication bloggerApplication;
+	private CategoryApplication categoryApplication;
 	
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext=applicationContext;
@@ -58,6 +61,13 @@ public class InitComponent implements ServletContextListener,ApplicationContextA
 		}
 		return bloggerApplication;
 	}
+	
+	private CategoryApplication getCategoryApplication() {
+		if (categoryApplication == null) {
+			categoryApplication = InstanceFactory.getInstance(CategoryApplication.class);
+		}
+		return categoryApplication;
+	}
 
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
 		ServletContext application=servletContextEvent.getServletContext();
@@ -71,6 +81,9 @@ public class InitComponent implements ServletContextListener,ApplicationContextA
 		BloggerDTO blogger = getBloggerApplication().getBlogger();
 		blogger.setPassword(null);
 		application.setAttribute("blogger", blogger);
+		
+		List<CategoryDTO> categoryDTOs = getCategoryApplication().findAllBySort(); //获取主分类
+		application.setAttribute("categorys", categoryDTOs);
 		
 		//BloggerService bloggerService=(BloggerService) applicationContext.getBean("bloggerService");
 		/*Blogger blogger=bloggerService.find(); // 查询博主信息

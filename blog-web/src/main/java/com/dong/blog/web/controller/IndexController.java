@@ -35,7 +35,7 @@ public class IndexController {
 
 	@Inject
 	private BlogApplication blogApplication;
-	
+		
 	/**
 	 * 请求主页
 	 * @return
@@ -157,7 +157,6 @@ public class IndexController {
 		params.put("orderType", "releaseDate");
 		List<BlogDTO> dateBlogs = blogApplication.pageQuery(params, 0, 6).getData(); //查询最新的六篇博客
 		mav.addObject("dateBlogs", dateBlogs);
-		
 		
 		mav.addObject("pageTitle","Dong博客系统");
 		mav.addObject("mainPage", "foreground/myblog/home.jsp");
