@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.dayatang.domain.AbstractEntity;
+import com.dong.blog.core.AbstractEntity;
 
 /**
  * 博主实体
@@ -23,13 +23,13 @@ public class Blogger extends AbstractEntity {
 	private String username; // 用户名
 	@Column(nullable=false)
 	private String password; // 密码
-	@Column
+	@Column(name = "nick_name")
 	private String nickName; // 昵称
 	@Column
 	private String sign; // 个性签名
-	@Column
+	@Column(name = "profile")
 	private String proFile; // 个人简介
-	@Column
+	@Column(name = "image_name")
 	private String imageName; // 博主头像
 	
 	public String getUsername() {

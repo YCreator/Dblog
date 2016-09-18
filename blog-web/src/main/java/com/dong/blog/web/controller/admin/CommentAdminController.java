@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -14,11 +13,13 @@ import net.sf.json.JsonConfig;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.dong.blog.application.BlogApplication;
 import com.dong.blog.application.CommentApplication;
+import com.dong.blog.application.dto.BlogDTO;
 import com.dong.blog.application.dto.CommentDTO;
 import com.dong.blog.application.dto.PageBean;
-import com.dong.blog.web.util.ResponseUtil;
 
 /**
  * 管理员评论Controller层
@@ -32,16 +33,23 @@ public class CommentAdminController {
 	@Inject
 	private CommentApplication commentApplication;
 	
+	@Inject
+	private BlogApplication blogApplication;
+	
 	/**
 	 * 分页查询评论信息
 	 * @param page
 	 * @param rows
-	 * @param response
 	 * @return
 	 * @throws Exception
 	 */
+	@ResponseBody
 	@RequestMapping("/list")
-	public String list(@RequestParam(value="page",required=false)String page,@RequestParam(value="rows",required=false)String rows,@RequestParam(value="state",required=false)String state,HttpServletResponse response)throws Exception{
+	public String list(
+			@RequestParam(value="page",required=false)String page,
+			@RequestParam(value="rows",required=false)String rows,
+			@RequestParam(value="state",required=false)String state) throws Exception{
+		
 		PageBean pageBean=new PageBean(Integer.parseInt(page),Integer.parseInt(rows));
 		CommentDTO dto = new CommentDTO();
 		if (state == null) {
@@ -52,14 +60,14 @@ public class CommentAdminController {
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("state", state); // 评论状态
 		Long total=commentApplication.getTotal(map);
+		
 		JSONObject result=new JSONObject();
 		JsonConfig jsonConfig=new JsonConfig();
 		jsonConfig.registerJsonValueProcessor(java.util.Date.class, new DateJsonValueProcessor("yyyy-MM-dd"));
 		JSONArray jsonArray=JSONArray.fromObject(commentList,jsonConfig);
 		result.put("rows", jsonArray);
 		result.put("total", total);
-		ResponseUtil.write(response, result);
-		return null;
+		return result.toString();
 	}
 	
 	/**
@@ -69,16 +77,17 @@ public class CommentAdminController {
 	 * @return
 	 * @throws Exception
 	 */
+	@ResponseBody
 	@RequestMapping("/delete")
-	public String delete(@RequestParam(value="ids")String ids,HttpServletResponse response)throws Exception{
+	public Map<String, Object> delete(@RequestParam(value="ids")String ids) throws Exception {
+		
 		String []idsStr=ids.split(",");
 		for(int i=0;i<idsStr.length;i++){
 			commentApplication.remove(Long.parseLong(idsStr[i]));
 		}
-		JSONObject result=new JSONObject();
+		Map<String, Object> result=new HashMap<String, Object>();
 		result.put("success", true);
-		ResponseUtil.write(response, result);
-		return null;
+		return result;
 	}
 	
 	/**
@@ -88,18 +97,27 @@ public class CommentAdminController {
 	 * @return
 	 * @throws Exception
 	 */
+	@ResponseBody
 	@RequestMapping("/review")
-	public String review(@RequestParam(value="ids")String ids,@RequestParam(value="state")Integer state,HttpServletResponse response)throws Exception{
+	public Map<String, Object> review(
+			@RequestParam(value="ids")String ids,
+			@RequestParam(value="state")Integer state) throws Exception {
+		
 		String []idsStr=ids.split(",");
-		for(int i=0;i<idsStr.length;i++){
+		for(int i = 0; i < idsStr.length; i++){
 			CommentDTO comment=new CommentDTO();
 			comment.setState(state);
 			comment.setId(Long.parseLong(idsStr[i]));
 			commentApplication.update(comment);
+			if (state == 1) {
+				// 该博客的回复次数加1
+				comment = commentApplication.get(Long.parseLong(idsStr[i]));
+				BlogDTO blogDTO = comment.getBlogDTO();
+				blogApplication.updateReplyHit(blogDTO.getId(), blogDTO.getReplyHit() + 1);
+			}
 		}
-		JSONObject result=new JSONObject();
+		Map<String, Object> result=new HashMap<String, Object>();
 		result.put("success", true);
-		ResponseUtil.write(response, result);
-		return null;
+		return result;
 	}
 }

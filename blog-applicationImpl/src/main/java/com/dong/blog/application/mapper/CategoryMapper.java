@@ -16,36 +16,37 @@ public class CategoryMapper extends AbstractMapper<Category, CategoryDTO> {
 
 	public CategoryDTO transformBeanData(Category source) throws Exception {
 		CategoryDTO dto = new CategoryDTO();
-		try {
-			BeanCopierUtil.copyProperties(source, dto);
-			Set<BlogType> sets = source.getBlogTypes();
-			for (BlogType blogType : sets) {
-				BlogTypeDTO blogTypeDTO = new BlogTypeDTO();
-				BeanCopierUtil.copyProperties(blogType, blogTypeDTO);
-				dto.getList().add(blogTypeDTO);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		BeanCopierUtil.copyProperties(source, dto);
+		Set<BlogType> sets = source.getBlogTypes();
+		for (BlogType blogType : sets) {
+			BlogTypeDTO blogTypeDTO = new BlogTypeDTO();
+			BeanCopierUtil.copyProperties(blogType, blogTypeDTO);
+			dto.getList().add(blogTypeDTO);
 		}
 		return dto;
 	}
 
 	public Category transformEntityData(CategoryDTO source) throws Exception {
-		return transformEntityData(new Category(), source);
+		Category category = new Category();
+		BeanCopierUtil.copyProperties(source, category);
+		Set<BlogType> set = new HashSet<BlogType>();
+		for (BlogTypeDTO dto : source.getList()) {
+			set.add(BlogType.get(BlogType.class, dto.getId()));
+		}
+		category.setBlogTypes(set);
+		return category;
 	}
 
 	@Override
-	public Category transformEntityData(Category target, CategoryDTO source) throws Exception {
-		try {
-			BeanCopierUtil.copyProperties(source, target);
-			Set<BlogType> set = new HashSet<BlogType>();
-			for (BlogTypeDTO dto : source.getList()) {
-				set.add(BlogType.get(BlogType.class, dto.getId()));
-			}
-			target.setBlogTypes(set);
-		} catch (Exception e) {
-			e.printStackTrace();
+	public Category transformEntityData(Category target, CategoryDTO source)
+			throws Exception {
+		target.setCategoryName(source.getCategoryName());
+		target.setSort(source.getSort());
+		Set<BlogType> set = new HashSet<BlogType>();
+		for (BlogTypeDTO dto : source.getList()) {
+			set.add(BlogType.get(BlogType.class, dto.getId()));
 		}
+		target.setBlogTypes(set);
 		return target;
 	}
 

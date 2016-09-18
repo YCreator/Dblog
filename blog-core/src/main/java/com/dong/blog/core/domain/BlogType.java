@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.dayatang.domain.AbstractEntity;
+import com.dong.blog.core.AbstractEntity;
 
 /**
  * 博客类型实体
@@ -23,9 +23,9 @@ public class BlogType extends AbstractEntity{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@Column(nullable=false)
+	@Column(name = "type_name", nullable = false)
 	private String typeName; // 博客类型名称
-	@Column
+	@Column(name = "order_no")
 	private Integer orderNo; // 排序  从小到大排序显示
 	@ManyToMany(mappedBy="blogTypes")
 	private Set<Category> categorys = new HashSet<Category>();

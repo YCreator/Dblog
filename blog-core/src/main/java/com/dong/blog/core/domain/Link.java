@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.dayatang.domain.AbstractEntity;
+import com.dong.blog.core.AbstractEntity;
 
 /**
  * 友情链接实体
@@ -19,11 +19,11 @@ public class Link extends AbstractEntity{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@Column
+	@Column(name = "link_name")
 	private String linkName; // 链接名称
-	@Column
+	@Column(name = "link_url")
 	private String linkUrl; // 链接地址
-	@Column
+	@Column(name = "order_no")
 	private Integer orderNo; // 排序序号 从小到大排序
 	
 	public String getLinkName() {

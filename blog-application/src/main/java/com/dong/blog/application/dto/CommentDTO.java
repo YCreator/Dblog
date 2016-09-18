@@ -21,6 +21,20 @@ public class CommentDTO implements Serializable {
 	private Date commentDate; // 评论日期
 	private Integer state; // 审核状态  0 待审核 1 审核通过 2 审核未通过
 	
+	public CommentDTO() {}
+	
+	public CommentDTO(Long id, String userIp, String content, Date commentDate, Integer state, Long blogId, String title, Integer replyHit) {
+		this.setId(id);
+		this.setUserIp(userIp);
+		this.setContent(content);
+		this.setCommentDate(commentDate);
+		this.setState(state);
+		blogDTO = new BlogDTO();
+		blogDTO.setId(blogId);
+		blogDTO.setTitle(title);
+		blogDTO.setReplyHit(replyHit);
+	}
+	
 	public Long getId() {
 		return id;
 	}

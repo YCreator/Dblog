@@ -9,9 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
-import org.dayatang.domain.AbstractEntity;
+import com.dong.blog.core.AbstractEntity;
 
 /**
  * 评论实体
@@ -26,14 +25,14 @@ public class Comment extends AbstractEntity{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@Column
+	@Column(name = "user_ip")
 	private String userIp; // 用户IP
 	@Column
 	private String content; // 评论内容
-	@JoinColumn(name="blogId", referencedColumnName="id")
+	@JoinColumn(name="blog_id", referencedColumnName="id")
 	@ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},fetch=FetchType.LAZY)
 	private Blog blog; // 被评论的博客
-	@Column
+	@Column(name = "comment_date")
 	private Date commentDate; // 评论日期
 	@Column
 	private Integer state; // 审核状态  0 待审核 1 审核通过 2 审核未通过

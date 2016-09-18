@@ -10,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.dayatang.domain.AbstractEntity;
+import com.dong.blog.core.AbstractEntity;
 
 /**
  * 博客实体
@@ -25,26 +25,26 @@ public class Blog extends AbstractEntity {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private String title; // 博客标题
 	@Column
 	private String summary; // 摘要
-	@Column(nullable=false)
+	@Column(name = "release_date", nullable = false)
 	private Date releaseDate; // 发布日期
-	@Column(nullable=false)
+	@Column(name = "click_hit", nullable = false, columnDefinition = "int(11) default 0")
  	private Integer clickHit; // 查看次数
-	@Column(nullable=false)
+	@Column(name = "reply_hit", nullable = false, columnDefinition = "int(11) default 0")
 	private Integer replyHit; // 回复次数
 	@Column
 	private String content; // 博客内容
-	@JoinColumn(name="typeId",referencedColumnName="id")//外键  设置对应数据表的列名和引用的数据表的列名
+	@JoinColumn(name="type_id", referencedColumnName="id")//外键  设置对应数据表的列名和引用的数据表的列名
 	@ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},fetch=FetchType.LAZY)
 	private BlogType blogType; // 博客类型
-	@Column
+	@Column(name = "keyword")
 	private String keyWord; // 关键字 空格隔开
-	@Column
+	@Column(name = "pic_path")
 	private String picPath; //博客图片介绍地址
-
+	
 	public String getTitle() {
 		return title;
 	}

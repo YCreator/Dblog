@@ -7,6 +7,7 @@ import java.util.Map;
 import org.dayatang.utils.Page;
 
 import com.dong.blog.application.dto.BlogDTO;
+import com.dong.blog.application.dto.CategoryDTO;
 
 public interface BlogApplication extends BaseApplication<BlogDTO, Long> {
 	
@@ -24,5 +25,10 @@ public interface BlogApplication extends BaseApplication<BlogDTO, Long> {
 	
 	List<BlogDTO> getBlogsByProperties(Map<String, Object> properties);//根据多个键值 key==value条件查询
 	
-	boolean updateBlog(BlogDTO blogDTO); //修改博客
+	boolean updateClickHit(Long id, Integer clickHit); //修改点击数
+	
+	Page<BlogDTO> pageQueryByCate(CategoryDTO dto, int currentPage, int pageSize);	//根据大分类查询博客
+	
+	boolean updateReplyHit(Long id, Integer replyHit); // 修改评论数
+		
 }

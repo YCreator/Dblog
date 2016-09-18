@@ -7,7 +7,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,12 +55,13 @@ public class BlogController {
 			mav.addObject("keyWords",null);			
 		}
 		mav.addObject("blog", blogDTO);
-		blogDTO.setClickHit(blogDTO.getClickHit()+1); // 博客点击次数加1
-		blogApplication.update(blogDTO);
-		Logger.getLogger(BlogController.class).debug("=============>"+blogDTO.getBlogTypeDTO().getTypeName());
+		blogDTO.setClickHit(blogDTO.getClickHit() + 1);
+		blogApplication.updateClickHit(blogDTO.getId(), blogDTO.getClickHit()); // 博客点击次数加1
+		
 		CommentDTO commentDTO = new CommentDTO();
 		commentDTO.setBlogDTO(blogDTO);
 		commentDTO.setState(1); // 查询审核通过的评论
+		
 		mav.addObject("commentList", commentApplication.getPage(commentDTO, 0, 100).getData()); 
 		mav.addObject("pageCode", this.genUpAndDownPageCode(blogApplication.getLastBlog(id),blogApplication.getNextBlog(id),request.getServletContext().getContextPath()));
 		mav.addObject("mainPage", "foreground/blog/view.jsp");

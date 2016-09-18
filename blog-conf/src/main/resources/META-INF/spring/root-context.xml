@@ -42,6 +42,7 @@
     </bean>
   
     <bean id="persistenceProvider" class="org.hibernate.ejb.HibernatePersistence"/>
+    <!-- <bean id="persistenceProvider" class="org.hibernate.jpa.HibernatePersistenceProvider"/> -->
     
     <!--指定实现JPA的适配器--> 
     <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">

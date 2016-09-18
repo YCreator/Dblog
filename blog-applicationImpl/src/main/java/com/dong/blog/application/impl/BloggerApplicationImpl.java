@@ -2,28 +2,33 @@ package com.dong.blog.application.impl;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dong.blog.application.BloggerApplication;
 import com.dong.blog.application.dto.BloggerDTO;
+import com.dong.blog.application.mapper.BloggerMapper;
 import com.dong.blog.core.domain.Blogger;
 import com.dong.blog.util.BeanCopierUtil;
 
 @Named
 @Transactional(rollbackFor=Exception.class)
-public class BloggerApplicationImpl extends BaseApplicationImpl implements  BloggerApplication {
+public class BloggerApplicationImpl extends BaseApplicationImpl implements BloggerApplication {
+	
+	@Inject
+	private BloggerMapper bloggerMapper;
 	
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BloggerDTO get(Long pk) {
 		Blogger blogger = Blogger.get(Blogger.class, pk);
-		BloggerDTO bloggerDTO = new BloggerDTO();
+		BloggerDTO bloggerDTO;
 		try {
-			BeanCopierUtil.copyProperties(blogger, bloggerDTO);
+			bloggerDTO = bloggerMapper.transformBeanData(blogger);
 		} catch (Exception e) {
+			bloggerDTO = new BloggerDTO();
 			e.printStackTrace();
 		}
 		return bloggerDTO;
@@ -42,7 +47,7 @@ public class BloggerApplicationImpl extends BaseApplicationImpl implements  Blog
 		Blogger blogger = Blogger.get(Blogger.class, t.getId());
 		boolean isSuccess;
 		try {
-			BeanUtils.copyProperties(blogger, t);
+			bloggerMapper.transformEntityData(blogger, t);
 			isSuccess = true;
 		} catch(Exception e) {
 			e.printStackTrace();

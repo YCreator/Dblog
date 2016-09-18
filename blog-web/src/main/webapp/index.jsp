@@ -69,6 +69,7 @@
 					path : '/'
 				});
 			}
+			
 		</script>
 		<div class="topbg">
 			<ul class="topnav">
@@ -100,7 +101,7 @@
 			<ul>
 				<li><a href="${pageContext.request.contextPath}/index.html">文章首页</a></li>
 				<c:forEach var="category" items="${categorys }">
-					<li><a href="">${category.categoryName }</a></li>
+					<li><a href="${pageContext.request.contextPath}/index/${category.id }.html">${category.categoryName }</a></li>
 				</c:forEach>
 			</ul>
 			<script src="js/nav.js"></script>
@@ -136,6 +137,7 @@
 							}
 						}
 					}
+					
 				</script>
 				<div class="ms-top">
 					<ul class="hd" id="tab">
@@ -187,13 +189,12 @@
 				<h3>图文推荐</h3>
 				<ul>
 					<c:forEach var="blog" items="${dateBlogs }">
-						<li><a
-							href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">
+						<li><a href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">
 								<img src="${pageContext.request.contextPath}${blog.picPath}"><b>${blog.title }</b>
 							</a>
 							<p>
-								<span class="tulanmu"><a href="/">${blog.blogTypeDTO.typeName }</a></span><span
-									class="tutime">${blog.releaseDate }</span>
+								<span class="tulanmu"><a href="/">${blog.blogTypeDTO.typeName }</a></span>
+								<span class="tutime">${blog.releaseDate }</span>
 							</p>
 						</li>
 					</c:forEach>

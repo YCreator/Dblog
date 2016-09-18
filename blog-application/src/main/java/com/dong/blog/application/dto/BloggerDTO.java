@@ -63,6 +63,13 @@ public class BloggerDTO implements Serializable {
 	public void setImageName(String imageName) {
 		this.imageName = imageName;
 	}
+	@Override
+	public String toString() {
+		return "BloggerDTO [id=" + id + ", username=" + username
+				+ ", password=" + password + ", nickName=" + nickName
+				+ ", sign=" + sign + ", proFile=" + proFile + ", imageName="
+				+ imageName + "]";
+	}
 	
     
 	

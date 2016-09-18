@@ -13,12 +13,12 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath*:META-INF/spring/applicationContext.xml</param-value>
 	</context-param>
+	
 	<!-- Spring监听器  提供Ioc容器实例给dddlib里的 InstanceProvider从而初始化 InstanceProvider
 		,进而让充当IoC容器的门面d的InstanceFactory 能够-获得部署在IoC容器中的Bean的实例来提供spring注入 -->
 	<listener>
 		<listener-class>org.dayatang.ioc.spring.webapp.DayatangContextLoaderListener</listener-class>
 	</listener>
-	
 	
 	<!-- 编码过滤器 -->
 	<filter>
@@ -71,10 +71,12 @@
 		<load-on-startup>1</load-on-startup>
 		<async-supported>true</async-supported>
 	</servlet>
+	
 	<servlet-mapping>
 		<servlet-name>springMVC</servlet-name>
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
+	
 	<servlet-mapping>
 		<servlet-name>springMVC</servlet-name>
 		<url-pattern>*.html</url-pattern>
@@ -84,10 +86,12 @@
 		<exception-type>java.lang.Throwable</exception-type>
 		<location>/error/500.html</location>
 	</error-page>
+	
 	<error-page>
 		<error-code>500</error-code>
 		<location>/error/500.html</location>
 	</error-page>
+	
 	<error-page>
 		<error-code>404</error-code>
 		<location>/error/404.jsp</location>

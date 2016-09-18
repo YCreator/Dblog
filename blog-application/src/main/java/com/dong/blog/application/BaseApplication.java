@@ -42,6 +42,5 @@ public interface BaseApplication<T, PK extends Serializable> {
 	 * @param pks
 	 */
 	void removes(PK[] pks);
-
 	
 }

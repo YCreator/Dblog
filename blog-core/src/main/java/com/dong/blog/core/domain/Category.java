@@ -10,7 +10,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.dayatang.domain.AbstractEntity;
+import com.dong.blog.core.AbstractEntity;
 
 @Entity
 @Table(name="t_category")
@@ -20,9 +20,9 @@ public class Category extends AbstractEntity {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@Column(nullable=false)
+	@Column(name = "cate_name", nullable=false)
 	private String categoryName;
-	@Column(length=80)
+	@Column(name = "type_ids", length=80)
 	private String typeIds;
 	@Column(nullable=false)
 	private Integer sort;

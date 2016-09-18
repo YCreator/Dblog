@@ -19,6 +19,16 @@ public class BlogTypeDTO implements Serializable{
 	private Integer blogCount; // 数量
 	private Integer orderNo; // 排序  从小到大排序显示
 	
+	public BlogTypeDTO() {
+		
+	}
+	
+	public BlogTypeDTO(Long id, String typeName, Integer orderNo) {
+		this.setId(id);
+		this.setTypeName(typeName);
+		this.setOrderNo(orderNo);
+	}
+	
 
 	public Long getId() {
 		return id;

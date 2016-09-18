@@ -16,5 +16,5 @@ public interface CommentApplication extends BaseApplication<CommentDTO, Long> {
 	Long getTotal(Map<String, Object> params);
 	
 	Page<CommentDTO> getPage(CommentDTO dto, int currentPage, int pageSize);
-
+	
 }

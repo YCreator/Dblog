@@ -7,13 +7,17 @@
     xmlns:jee="http://www.springframework.org/schema/jee"  
     xmlns:tx="http://www.springframework.org/schema/tx"  
     xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:security="http://www.springframework.org/schema/security"
     xsi:schemaLocation="    
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd  
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
         http://www.springframework.org/schema/mvc   http://www.springframework.org/schema/mvc/spring-mvc.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd  
         http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd  
-        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">    
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">    
 
 	<!-- 使用注解的包，包括子集 -->
 	<!-- <context:component-scan base-package="com.dong.controller" /> -->
@@ -24,27 +28,67 @@
 		<!-- <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" /> --> 
 	</context:component-scan> 
 	
+	<!-- 启动SpringMVC的注解功能，它会自动注册HandlerMapping、 HandlerAdapter、ExceptionResolver的相关实例 -->
 	<!-- 默认的注解映射的支持 --> 
-	<mvc:annotation-driven/>
+	<mvc:annotation-driven>
+		<!-- 消息转换器 -->
+	    <mvc:message-converters register-defaults="true">
+	      	<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+	        	<property name="supportedMediaTypes" value="text/html;charset=UTF-8"/>
+	      	</bean>
+	    </mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter" p:ignoreDefaultModelOnRedirect="true">
+		<property name="messageConverters">
+			<list>
+				<ref bean="mappingJacksonHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- JSON转换器 -->
+	<bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="objectMapper">
+			<!-- <bean class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean"
+       			p:autoDetectFields="false"
+       			p:autoDetectGettersSetters="false"/> -->
+			<bean class="com.fasterxml.jackson.databind.ObjectMapper">
+				<property name="dateFormat">
+	                  <bean class="java.text.SimpleDateFormat">
+	                       <constructor-arg type="java.lang.String" value="yyyy-MM-dd"/>
+	                  </bean>
+	            </property>
+	            <!-- <property name="serializationInclusion">
+                      	把枚举类型转为一个bean才能注入, 不序列化空值属性
+                      <util:constant static-field="com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL" />
+                </property> -->
+			</bean>
+		</property>
+		
+		<property name="supportedMediaTypes">
+			<list>
+				<value>text/html;charset=UTF-8</value>
+			</list>
+		</property>
+	</bean>
 	
 	<!-- 对静态资源文件的访问  -->    
 	<mvc:default-servlet-handler/> 
 	
 	<mvc:resources mapping="/static/**" location="/static/"/>
-
+	
 	<!-- 视图解析器 -->
-	<bean id="viewResolver"
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/" />
-		<property name="suffix" value=".jsp"></property>
+		<property name="suffix" value=".jsp" />
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 	</bean>
 	
 	<bean id="multipartResolver"
         class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		
 		<property name="defaultEncoding" value="UTF-8"/>  
 	    <property name="maxUploadSize" value="10000000"/>
-
 	</bean>
 	
 </beans>  
