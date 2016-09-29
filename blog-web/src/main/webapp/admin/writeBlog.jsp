@@ -161,10 +161,8 @@
 				});
 			}	
 		} else {
-			if (checkParams()) {
-				$("#picPath").val("/resources/images/no_picture.jpg");
-				submitData();
-			}
+			$("#picPath").val("/resources/images/no_picture.jpg");
+			submitData();
 		}
 		 
 	}

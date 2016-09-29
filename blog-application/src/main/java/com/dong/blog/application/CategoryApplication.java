@@ -13,5 +13,7 @@ public interface CategoryApplication extends BaseApplication<CategoryDTO, Long> 
 	Long getTotal();
 	
 	List<CategoryDTO> findAllBySort();
+	
+	String getCateNameById(Long id);
 
 }

@@ -124,4 +124,11 @@ public class CategoryApplicationImpl extends BaseApplicationImpl implements
 		return dtos;
 	}
 
+	public String getCateNameById(Long id) {
+		String jpql = "select c.categoryName from Category c where c.id=?";
+		String name = (String) this.getQueryChannelService().createJpqlQuery(jpql)
+				.setParameters(new Object[]{ id }).singleResult();
+		return name;
+	}
+
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.dong.blog.application.BlogApplication;
+import com.dong.blog.application.CategoryApplication;
 import com.dong.blog.application.dto.BlogDTO;
 import com.dong.blog.application.dto.BlogTypeDTO;
 import com.dong.blog.application.dto.CategoryDTO;
@@ -33,6 +34,9 @@ public class IndexController {
 
 	@Inject
 	private BlogApplication blogApplication;
+	
+	@Inject
+	private CategoryApplication categoryApplication;
 		
 	/**
 	 * 源码下载
@@ -97,6 +101,8 @@ public class IndexController {
 		List<BlogDTO> dateBlogs = blogApplication.pageQuery(params, 0, 6).getData(); //查询最新的六篇博客
 		mav.addObject("dateBlogs", dateBlogs);
 		
+		mav.addObject("categoryName", "");
+		
 		mav.addObject("pageTitle","Dong博客系统");
 		mav.addObject("mainPage", "foreground/myblog/home.jsp");
 		mav.addObject("listPage", "list.jsp");
@@ -136,6 +142,9 @@ public class IndexController {
 		params.put("orderType", "releaseDate");
 		List<BlogDTO> dateBlogs = blogApplication.pageQuery(params, 0, 6).getData(); //查询最新的六篇博客
 		mav.addObject("dateBlogs", dateBlogs);
+		
+		String name = categoryApplication.getCateNameById(id);
+		mav.addObject("categoryName", String.format("标签为“%s”的内容", name));
 		
 		mav.addObject("pageTitle","Dong博客系统");
 		mav.addObject("mainPage", "foreground/myblog/list.jsp");

@@ -3,7 +3,11 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <div class="banner">
       <div id="slide-holder">
-        <div id="slide-runner"> <a href="/" target="_blank"><img id="slide-img-1" src="${pageContext.request.contextPath}/static/mystyle/images/a1.jpg"  alt="" /></a> <a href="/" target="_blank"><img id="slide-img-2" src="${pageContext.request.contextPath}/static/mystyle/images/a2.jpg"  alt="" /></a> <a href="/" target="_blank"><img id="slide-img-3" src="${pageContext.request.contextPath}/static/mystyle/images/a3.jpg"  alt="" /></a> <a href="/" target="_blank"><img id="slide-img-4" src="${pageContext.request.contextPath}/static/mystyle/images/a4.jpg"  alt="" /></a>
+        <div id="slide-runner"> 
+        <a href="/" target="_blank"><img id="slide-img-1" src="${pageContext.request.contextPath}/static/mystyle/images/a1.jpg"  alt="" /></a> 
+        <a href="/" target="_blank"><img id="slide-img-2" src="${pageContext.request.contextPath}/static/mystyle/images/a2.jpg"  alt="" /></a> 
+        <a href="/" target="_blank"><img id="slide-img-3" src="${pageContext.request.contextPath}/static/mystyle/images/a3.jpg"  alt="" /></a> 
+        <a href="/" target="_blank"><img id="slide-img-4" src="${pageContext.request.contextPath}/static/mystyle/images/a4.jpg"  alt="" /></a>
           <div id="slide-controls">
             <p id="slide-client" class="text"><strong></strong><span></span></p>
             <p id="slide-desc" class="text"></p>
