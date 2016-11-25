@@ -69,6 +69,7 @@
 			},
 			success:function(result){
 				var result=eval('('+result+')');
+				alert(result.success);
 				if(result.success){
 					$.messager.alert("系统提示","保存成功！");
 					resetValue();

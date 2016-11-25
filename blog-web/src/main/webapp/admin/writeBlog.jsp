@@ -21,6 +21,9 @@
 #imageFile {
 	
 }
+.img-type-title {
+	margin:5px;
+}
 </style>
 <script src="http://www.codefans.net/ajaxjs/jquery-1.6.2.min.js"></script>
 <script type="text/javascript"
@@ -48,6 +51,7 @@
 			console.log("objUrl = "+objUrl) ;
 			if (objUrl) {
 				$("#myimg").attr("src", objUrl);
+				$("#netImage").val("");
 			}
 		}
 	}
@@ -106,6 +110,7 @@
 		$("#keyWord").val("");
 		$("#myimg").attr("src", "");
 		$("#imageFile").val("");
+		$("#netImage").val("");
 	}
 
 	function checkImage() {
@@ -143,8 +148,28 @@
 	
 	function uploadImg() {
 		var picPath = $("#imageFile").val();
-		if(picPath != null && picPath != '') {
-			if (checkParams()) {
+		var pic = $("#netImage").val();
+		if (pic != null && pic != '') {
+			requestUploadImage("${pageContext.request.contextPath}/admin/blog/uploadNetImg.do");
+			/* if (checkParams()) {
+				$("#fm").form("submit", {
+					url: "${pageContext.request.contextPath}/admin/blog/uploadNetImg.do",
+					success: function(result) {
+						var result = eval('(' + result + ')');
+						if (result.success) {
+							$("#picPath").val(result.imgPath);
+							submitData();
+						} else {
+							alert("图片上传失败， 已使用默认图片 ");
+							$("#picPath").val("/resources/images/no_picture.jpg");
+							submitData();	
+						}
+					}
+				});
+			} */
+		} else if(picPath != null && picPath != '') {
+			requestUploadImage("${pageContext.request.contextPath}/admin/blog/uploadImg.do");
+			/* if (checkParams()) {
 				$("#fm").form("submit", {
 					url: "${pageContext.request.contextPath}/admin/blog/uploadImg.do",
 					success: function(result) {
@@ -159,12 +184,31 @@
 						}
 					}
 				});
-			}	
+			}	 */
 		} else {
 			$("#picPath").val("/resources/images/no_picture.jpg");
 			submitData();
 		}
 		 
+	}
+	
+	function requestUploadImage(url) {
+		if (checkParams()) {
+			$("#fm").form("submit", {
+				url: url,
+				success: function(result) {
+					var result = eval('(' + result + ')');
+					if (result.success) {
+						$("#picPath").val(result.imgPath);
+						submitData();
+					} else {
+						alert("图片上传失败， 已使用默认图片 ");
+						$("#picPath").val("/resources/images/no_picture.jpg");
+						submitData();	
+					}
+				}
+			});
+		}
 	}
 	
 	function checkParams() {
@@ -182,9 +226,9 @@
 		} else if (content == null || content == '') {
 			alert("请输入内容！");
 			return false;
-		} else if(picPath == null || picPath == '') {
+		/* } else if(picPath == null || picPath == '') {
 			alert("请选择一张介绍图！");
-			return false;
+			return false; */
 		} else {
 			return true;
 		}
@@ -224,9 +268,13 @@
 			</tr>
 			<tr>
 				<td>图片介绍：</td>
-				<td><div class="uploadImg" ><img id="myimg" alt="" src=""> <input type="file"
+				<td><div class="img-type-title">本地图片</div><div class="uploadImg" ><img id="myimg" alt="" src=""> <input type="file"
 					id="imageFile" name="imageFile" style="width: 400px;"
 					multiple="multiple" onchange="previewImg(this);" /></div></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><div class="img-type-title">网络图片</div><input type="text" id="netImage" name="netImage" size="50" /></td>
 			</tr>
 			<tr>
 				<td></td>

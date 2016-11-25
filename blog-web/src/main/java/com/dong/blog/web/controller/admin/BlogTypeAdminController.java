@@ -11,6 +11,7 @@ import net.sf.json.JSONObject;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -70,7 +71,7 @@ public class BlogTypeAdminController {
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping("/save")
+	@RequestMapping(value="/save", method=RequestMethod.POST)
 	public Map<String, Object> save(BlogTypeDTO blogType) throws Exception{
 		
 		boolean isUpdateSuccess = false;

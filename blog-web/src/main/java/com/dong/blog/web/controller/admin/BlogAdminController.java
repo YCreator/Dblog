@@ -1,11 +1,19 @@
 package com.dong.blog.web.controller.admin;
 
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
@@ -173,6 +181,34 @@ public class BlogAdminController {
 			
 			result.put("success", false);
 		}
+		return result;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/uploadNetImg")
+	public Map<String, Object> uploadNetImg(@RequestParam(value="netImage")String netImage, HttpServletRequest request) throws Exception {
+		Map<String, Object> result = new HashMap<String, Object>();
+		URL url = new URL(netImage);
+		URLConnection conn = url.openConnection();
+		conn.setConnectTimeout(5*1000); 
+		InputStream input = conn.getInputStream();
+		BufferedImage prevImage = ImageIO.read(input); 
+	    int newWidth = 245;  
+	    int newHeight = 200;
+	    String path = String.format("/resources/images/%s.%s", System.currentTimeMillis(), "jpg");
+	    File targetFile = new File(request.getSession().getServletContext().getRealPath(path));
+	    File sourceFile = new File(String.format("D:/workplace/blog/blog-web/src/main/webapp%s",path));
+	    BufferedImage image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_BGR);
+	    OutputStream os = new FileOutputStream(targetFile);
+	    Graphics graphics = image.createGraphics();  
+	    graphics.drawImage(prevImage, 0, 0, newWidth, newHeight, null);  
+	    ImageIO.write(image, "jpg", os);  
+	    os.flush();
+	    Files.copy(targetFile, sourceFile);
+	    input.close();  
+	    os.close(); 
+	    result.put("success", true);
+		result.put("imgPath", path);
 		return result;
 	}
 	

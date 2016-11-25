@@ -6,8 +6,10 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -57,7 +59,7 @@ public class LinkAdminController {
 	 * @throws Exception
 	 */
 	@ResponseBody
-	@RequestMapping("/save")
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public Map<String, Object> save(LinkDTO link)throws Exception {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
@@ -70,6 +72,7 @@ public class LinkAdminController {
 		}
 		
 		result.put("success", link.getId() != null || isUpdateSuccess);
+		Logger.getLogger(LinkAdminController.class).debug("==============>"+link.getId());
 		return result;
 	}
 	

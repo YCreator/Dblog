@@ -53,6 +53,7 @@ public class LinkApplicationImpl extends BaseApplicationImpl implements LinkAppl
 		try {
 			Link link = linkMapper.transformEntityData(t);
 			link.save();
+			this.getLog().debug(link.getId()+"_");
 			t.setId(link.getId());
 		} catch(Exception e) {
 			e.printStackTrace();
