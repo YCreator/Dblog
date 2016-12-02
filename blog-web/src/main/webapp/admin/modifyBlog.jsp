@@ -130,9 +130,6 @@
 		} else if (content == null || content == '') {
 			alert("请输入内容！");
 			return false;
-		} else if (picPath == null || picPath == '') {
-			alert("请选择一张介绍图！");
-			return false;
 		} else {
 			return true;
 		}

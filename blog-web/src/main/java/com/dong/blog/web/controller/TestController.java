@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,16 +30,20 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.dong.blog.application.BlogApplication;
 import com.dong.blog.application.BloggerApplication;
 import com.dong.blog.application.dto.BlogDTO;
 import com.dong.blog.application.dto.BlogTypeDTO;
+import com.dong.blog.application.impl.BlogApplicationImpl;
 import com.dong.blog.lucene.BlogIndex;
 import com.dong.blog.web.util.ResponseUtil;
 import com.google.common.io.Files;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
 
@@ -47,6 +54,8 @@ public class TestController {
 	/*@Resource*/
 	@Inject
 	BloggerApplication bloggerApplication;
+	@Inject
+	BlogApplication blogApplication;
 	
 	private BlogIndex blogIndex = new BlogIndex();
 	
@@ -181,9 +190,97 @@ public class TestController {
 	    	//System.out.println(matcher.group());
 	    	s = s + matcher.group();
 	    }
-	    //ResponseUtil.write(response, s);
+	    ResponseUtil.write(response, s);
 		return s;
 	}
+	
+	@RequestMapping("collect")
+	public String collectBlog(@RequestParam(value="typeId",required=false)String typeId
+			, @RequestParam(value="type",required=false)String type
+			, @RequestParam(value="startPage",required=false)Integer startPage
+			, @RequestParam(value="endPage",required=false)Integer endPage
+			, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String path = request.getSession().getServletContext().getRealPath("");
+		ThreadPoolExecutor pool = new ThreadPoolExecutor(3, 3, 3000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1000));
+		do {
+			pool.execute(new MyTask(typeId, type, startPage++, path));
+		} while(startPage <= endPage);
+		
+		return "success";
+	}
+	
+	class MyTask implements Runnable {
+		
+		int page;
+		String type;
+		String path;
+		String typeId;
+		
+		public MyTask(String typeId, String type, int page, String path) {
+			this.typeId = typeId;
+			this.page = page;
+			this.type = type;
+			this.path = path;
+		}
+
+		public void run() {
+			try {
+				String val = String.format("http://www.codeceo.com/article/tag/%s/page/%s", type, page);
+				String urlStr = String.format("http://192.168.1.190:8845/?url=%s", new String(Base64.encodeBase64(val.getBytes("UTF-8")), "utf-8"));
+				URL url = new URL(urlStr);
+				HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+				httpConn.setReadTimeout(60000);
+				httpConn.setConnectTimeout(60000);
+				InputStreamReader input = new InputStreamReader(httpConn  
+			            .getInputStream(), "utf-8");  
+			    BufferedReader bufReader = new BufferedReader(input);  
+			    String line = "";  
+			    StringBuilder contentBuf = new StringBuilder();  
+			    while ((line = bufReader.readLine()) != null) {  
+			        contentBuf.append(line);  
+			    }
+			    List<BlogDTO> list = new Gson()
+			    .fromJson(contentBuf.toString(), new TypeToken<List<BlogDTO>>(){}.getType());
+			
+			    for (BlogDTO dto : list) {
+			    	dto.setSummary(dto.getContentNoTag().substring(0, 155));
+			    	dto.setKeyWord(dto.getTitle());
+			    	blogIndex.addIndex(dto);
+			    	BlogTypeDTO typeDTO = new BlogTypeDTO();
+			    	typeDTO.setId(Long.parseLong(typeId));
+			    	dto.setBlogTypeDTO(typeDTO);
+			    	
+			    	URL u = new URL(dto.getPicPath());
+					URLConnection conn = u.openConnection();
+					conn.setConnectTimeout(5*1000); 
+					InputStream in = conn.getInputStream();
+					BufferedImage prevImage = ImageIO.read(in); 
+				    int newWidth = 245;  
+				    int newHeight = 200;
+				    String name = String.format("/resources/images/%s.%s", System.currentTimeMillis(), "jpg");
+				    File targetFile = new File(path, name);
+				    File sourceFile = new File(String.format("D:/workplace/blog/blog-web/src/main/webapp%s",name));
+				    BufferedImage image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_BGR);
+				    OutputStream os = new FileOutputStream(targetFile);
+				    Graphics graphics = image.createGraphics();  
+				    graphics.drawImage(prevImage, 0, 0, newWidth, newHeight, null);  
+				    ImageIO.write(image, "jpg", os);  
+				    os.flush();
+				    Files.copy(targetFile, sourceFile);
+				    input.close();  
+				    os.close(); 
+			    	dto.setPicPath(name);
+			    	
+			    	blogApplication.save(dto);
+			    }
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+	}
+	
 	
 	@RequestMapping("/testdown")
 	public String downImage(@RequestParam(value="src",required=false)String src, HttpServletRequest request, HttpServletResponse response) throws Exception {
