@@ -11,12 +11,18 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -27,20 +33,28 @@ import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.WebSocketContainer;
 
 import net.sf.json.JSONArray;
 
 import org.apache.commons.codec.binary.Base64;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft_17;
+import org.java_websocket.handshake.ServerHandshake;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import antlr.collections.Stack;
 
 import com.dong.blog.application.BlogApplication;
 import com.dong.blog.application.BloggerApplication;
 import com.dong.blog.application.dto.BlogDTO;
 import com.dong.blog.application.dto.BlogTypeDTO;
-import com.dong.blog.application.impl.BlogApplicationImpl;
 import com.dong.blog.lucene.BlogIndex;
+import com.dong.blog.util.FileUtil;
+import com.dong.blog.web.service.ServerSocketClient;
+import com.dong.blog.web.util.Contance;
 import com.dong.blog.web.util.ResponseUtil;
 import com.google.common.io.Files;
 import com.google.common.reflect.TypeToken;
@@ -58,6 +72,10 @@ public class TestController {
 	BlogApplication blogApplication;
 	
 	private BlogIndex blogIndex = new BlogIndex();
+	
+	private List<BlogDTO> dtos = new ArrayList<BlogDTO>();
+	
+	private WebSocketClient client = null;
 	
 	@RequestMapping("/test")
 	public void test(HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -195,36 +213,77 @@ public class TestController {
 	}
 	
 	@RequestMapping("collect")
-	public String collectBlog(@RequestParam(value="typeId",required=false)String typeId
-			, @RequestParam(value="type",required=false)String type
-			, @RequestParam(value="startPage",required=false)Integer startPage
+	public String collectBlog(@RequestParam(value="startPage",required=false)Integer startPage
 			, @RequestParam(value="endPage",required=false)Integer endPage
 			, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String path = request.getSession().getServletContext().getRealPath("");
-		ThreadPoolExecutor pool = new ThreadPoolExecutor(3, 3, 3000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1000));
+		String url = "ws://localhost:8080/blog-web/websocket/server/client";
+		client = new ServerSocketClient(new URI(url), new Draft_17());
+		client.connect();
+		Integer[] types = {1,13,15,16,17,18};
+		String[] typeName = {"java", "android", "html5", "javascript", "php", "ios"};
+		Random random = new Random();
+		ThreadPoolExecutor pool = new ThreadPoolExecutor(1, 1, 3000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1000));
 		do {
-			pool.execute(new MyTask(typeId, type, startPage++, path));
+			int pos = random.nextInt(types.length);
+			String f = new String(Base64.encodeBase64(String.valueOf(startPage).getBytes()));
+			pool.execute(new MyTask(String.valueOf(types[pos]), typeName[pos], startPage, f));
+			startPage ++;
 		} while(startPage <= endPage);
-		
+		pool.shutdown();
+		while(true) {
+			if (pool.isTerminated()) {
+				sendMessage(client, "抓取完毕,关闭资源");
+				System.out.println("线程池执行完毕,总共抓取数据为："+dtos.size()+"条");
+				/*Collections.shuffle(dtos);
+				for (BlogDTO dto : dtos) {
+					dto = blogApplication.save(dto);
+			    	blogIndex.addIndex(dto);
+				}*/
+				client.close();
+				break;
+			}
+			Thread.sleep(500);
+		}
+		dtos.clear();
 		return "success";
+	}
+	
+	private synchronized void sendMessage(WebSocketClient client, String message) {
+		if (client != null) {
+			while(true) {
+				try {
+					client.send(message);
+					break;
+				} catch(Exception e) {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					continue;
+				}
+			}
+		}
 	}
 	
 	class MyTask implements Runnable {
 		
 		int page;
 		String type;
-		String path;
+		String tag;
 		String typeId;
 		
-		public MyTask(String typeId, String type, int page, String path) {
+		public MyTask(String typeId, String type, int page, String tag) {
 			this.typeId = typeId;
 			this.page = page;
 			this.type = type;
-			this.path = path;
+			this.tag = tag;
 		}
 
 		public void run() {
 			try {
+				sendMessage(client, "初始化数据源...");
 				String val = String.format("http://www.codeceo.com/article/tag/%s/page/%s", type, page);
 				String urlStr = String.format("http://192.168.1.190:8845/?url=%s", new String(Base64.encodeBase64(val.getBytes("UTF-8")), "utf-8"));
 				URL url = new URL(urlStr);
@@ -239,39 +298,70 @@ public class TestController {
 			    while ((line = bufReader.readLine()) != null) {  
 			        contentBuf.append(line);  
 			    }
+			    sendMessage(client, "数据装载...");
 			    List<BlogDTO> list = new Gson()
 			    .fromJson(contentBuf.toString(), new TypeToken<List<BlogDTO>>(){}.getType());
 			
 			    for (BlogDTO dto : list) {
 			    	dto.setSummary(dto.getContentNoTag().substring(0, 155));
 			    	dto.setKeyWord(dto.getTitle());
-			    	blogIndex.addIndex(dto);
 			    	BlogTypeDTO typeDTO = new BlogTypeDTO();
 			    	typeDTO.setId(Long.parseLong(typeId));
 			    	dto.setBlogTypeDTO(typeDTO);
 			    	
+			    	String content = dto.getContent();
+			    	Map<String, String> maps = new HashMap<String, String>();
+			    	Matcher m = Pattern.compile("src=\"?(.*?)(\"|>|\\s+)").matcher(content);
+			    	while(m.find()) {
+			    		if (!m.group(1).equals("")) {
+			    			String imgUrl = m.group(1);
+			    			System.out.println(imgUrl);
+			    			String fileName = null;
+			    			if(imgUrl.toLowerCase().contains(".jpg")) {
+			    				fileName = tag+System.currentTimeMillis() + ".jpg";
+			    			} else if (imgUrl.toLowerCase().contains(".png")) {
+			    				fileName = tag+System.currentTimeMillis() + ".png";
+			    			} else if (imgUrl.toLowerCase().contains(".gif")) {
+			    				fileName = tag+System.currentTimeMillis() + ".gif";
+			    			}
+			    			if (fileName == null) {
+			    				continue;
+			    			}
+			    			try {
+			    				FileUtil.download(imgUrl, Contance.LOCAL_BLOG_CONTENT_IMG_PATH, fileName);
+			    				maps.put(imgUrl, String.format("%s%s/%s", Contance.IMAGE_SERVICE_HOST, Contance._BLOG_CONTENT_IMG_PATH, fileName));
+			    			} catch(Exception e) {
+			    				e.printStackTrace();
+			    			}
+			    			
+			    		}
+			    	}
+			    	Set<String> keys = maps.keySet();
+			    	for (String key : keys) {
+			    		content = content.replace(key, maps.get(key));
+			    	}
+			    	dto.setContent(content);
+			    	
 			    	URL u = new URL(dto.getPicPath());
-					URLConnection conn = u.openConnection();
+					HttpURLConnection conn = (HttpURLConnection) u.openConnection();
 					conn.setConnectTimeout(5*1000); 
 					InputStream in = conn.getInputStream();
 					BufferedImage prevImage = ImageIO.read(in); 
 				    int newWidth = 245;  
 				    int newHeight = 200;
-				    String name = String.format("/resources/images/%s.%s", System.currentTimeMillis(), "jpg");
-				    File targetFile = new File(path, name);
-				    File sourceFile = new File(String.format("D:/workplace/blog/blog-web/src/main/webapp%s",name));
+				    String name = String.format("%s%s.%s", tag, System.currentTimeMillis(), "jpg");
+				    File imgFile = new File(Contance.LOCAL_BLOG_IMAGES_PATH, name);
 				    BufferedImage image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_BGR);
-				    OutputStream os = new FileOutputStream(targetFile);
+				    OutputStream os = new FileOutputStream(imgFile);
 				    Graphics graphics = image.createGraphics();  
 				    graphics.drawImage(prevImage, 0, 0, newWidth, newHeight, null);  
-				    ImageIO.write(image, "jpg", os);  
+				    ImageIO.write(image, "jpg", os);  	
 				    os.flush();
-				    Files.copy(targetFile, sourceFile);
 				    input.close();  
 				    os.close(); 
-			    	dto.setPicPath(name);
-			    	
-			    	blogApplication.save(dto);
+			    	dto.setPicPath(String.format("%s%s/%s", Contance.IMAGE_SERVICE_HOST, Contance._BLOG_IMAGES_PATH, name));
+			    	sendMessage(client, "成功抓取博客：\""+dto.getTitle()+"\"");
+			    	dtos.add(dto);
 			    }
 			} catch(Exception e) {
 				e.printStackTrace();
@@ -304,6 +394,36 @@ public class TestController {
 	    input.close();  
 	    os.close(); 
 	    return name;
+	}
+	
+	@RequestMapping("/socket")
+	public String socket() throws Exception{
+		String url = "ws://localhost:8080/blog-web/websocket/server/client";
+		WebSocketClient client = new ServerSocketClient(new URI(url), new Draft_17());
+		client.connect();
+		String message = "hello";
+		int i = 0;
+		while (true) {
+			/*if ("".equals(message)) {
+				Scanner scanner = new Scanner(System.in);
+				message = scanner.nextLine();
+				scanner.close();
+			}*/
+			System.out.println(message);
+			if (i > 50) {
+				client.close();
+			    break;
+			}
+			
+			try {
+				client.send(message);
+				i++;
+			} catch(Exception e) {
+				continue;
+			}
+			Thread.sleep(1000);
+		}
+		return "";
 	}
 
 }

@@ -190,7 +190,7 @@
 				<ul>
 					<c:forEach var="blog" items="${dateBlogs }">
 						<li><a href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">
-								<img src="${pageContext.request.contextPath}${blog.picPath}"><b>${blog.title }</b>
+								<img src="${blog.picPath}"><b>${blog.title }</b>
 							</a>
 							<p>
 								<span class="tulanmu"><a href="/">${blog.blogTypeDTO.typeName }</a></span>

@@ -5,7 +5,7 @@
       <h2><span>${categoryName } </span><b>博客</b>文章</h2>
       <c:forEach var = "blog" items = "${blogList }">
 	      <div class="blogs">
-	        <figure><img src="${pageContext.request.contextPath}${blog.picPath}"></figure>
+	        <figure><img src="${blog.picPath}"></figure>
 	        <ul>
 	          <h3><a href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">${blog.title }</a></h3>
 	          <p class="content">${blog.summary}......</p>

@@ -1,10 +1,10 @@
 <%-- <script type="text/javascript"
-	src="${pageContext.request.contextPath}/static/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
+	src="${pageContext.request.contextPath}/static/ueditor/third-party/SyntaxHighlighter/shCore.js"></script> --%>
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/static/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css">
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	SyntaxHighlighter.all();
-</script> --%>
+</script> -->
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -24,6 +24,13 @@ a:hover {
 .verCode img {
 	display: inline;
 	margin: 0 0 0 10px;
+}
+.blog_content ol {
+	margin-left:10px;
+	position:auto;
+}
+.blog_content img {
+	max-width: 628px;
 }
 </style>
 <script type="text/javascript">

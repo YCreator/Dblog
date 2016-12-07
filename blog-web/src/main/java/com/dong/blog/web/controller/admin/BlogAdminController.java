@@ -33,7 +33,7 @@ import com.dong.blog.application.dto.BlogDTO;
 import com.dong.blog.application.dto.PageBean;
 import com.dong.blog.lucene.BlogIndex;
 import com.dong.blog.util.StringUtil;
-import com.google.common.io.Files;
+import com.dong.blog.web.util.Contance;
 import com.google.gson.Gson;
 
 
@@ -169,14 +169,11 @@ public class BlogAdminController {
 			
 			String imageName = imageFile.getOriginalFilename();
 			String imgForm = imageName.substring(imageName.lastIndexOf(".") + 1, imageName.length());
-			String path = String.format("/resources/images/%s.%s", System.currentTimeMillis(), imgForm);
-			File targetFile = new File(request.getSession().getServletContext().getRealPath(path));
-			File sourceFile = new File(String.format("D:/workplace/blog/blog-web/src/main/webapp%s",path));
-			imageFile.transferTo(sourceFile);
-			Files.copy(sourceFile, targetFile);
-			
+			String name = String.format("%s.%s", System.currentTimeMillis(), imgForm);
+			File imgFile = new File(Contance.LOCAL_BLOG_IMAGES_PATH, name);
+			imageFile.transferTo(imgFile);
 			result.put("success", true);
-			result.put("imgPath", path);
+			result.put("imgPath", String.format("%s%s/%s", Contance.IMAGE_SERVICE_HOST, Contance._BLOG_IMAGES_PATH, name));
 		} else {
 			
 			result.put("success", false);
@@ -195,20 +192,18 @@ public class BlogAdminController {
 		BufferedImage prevImage = ImageIO.read(input); 
 	    int newWidth = 245;  
 	    int newHeight = 200;
-	    String path = String.format("/resources/images/%s.%s", System.currentTimeMillis(), "jpg");
-	    File targetFile = new File(request.getSession().getServletContext().getRealPath(path));
-	    File sourceFile = new File(String.format("D:/workplace/blog/blog-web/src/main/webapp%s",path));
+	    String name = String.format("%s.%s", System.currentTimeMillis(), "jpg");
+	    File imgFile = new File(Contance.LOCAL_BLOG_IMAGES_PATH, name);
 	    BufferedImage image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_BGR);
-	    OutputStream os = new FileOutputStream(targetFile);
+	    OutputStream os = new FileOutputStream(imgFile);
 	    Graphics graphics = image.createGraphics();  
 	    graphics.drawImage(prevImage, 0, 0, newWidth, newHeight, null);  
 	    ImageIO.write(image, "jpg", os);  
 	    os.flush();
-	    Files.copy(targetFile, sourceFile);
 	    input.close();  
 	    os.close(); 
 	    result.put("success", true);
-		result.put("imgPath", path);
+		result.put("imgPath", String.format("%s%s/%s", Contance.IMAGE_SERVICE_HOST, Contance._BLOG_IMAGES_PATH, name));
 		return result;
 	}
 	

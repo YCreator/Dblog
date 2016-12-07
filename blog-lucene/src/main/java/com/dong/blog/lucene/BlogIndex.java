@@ -34,6 +34,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 import com.dong.blog.application.dto.BlogDTO;
+import com.dong.blog.util.Contance;
 import com.dong.blog.util.DateUtil;
 import com.dong.blog.util.StringUtil;
 
@@ -53,7 +54,7 @@ public class BlogIndex {
 	 * @throws Exception
 	 */
 	private IndexWriter getWriter()throws Exception{
-		dir=FSDirectory.open(Paths.get("C://lucene"));
+		dir=FSDirectory.open(Paths.get(Contance.LUCENE_PATHT));
 		SmartChineseAnalyzer analyzer=new SmartChineseAnalyzer();
 		IndexWriterConfig iwc=new IndexWriterConfig(analyzer);
 		IndexWriter writer=new IndexWriter(dir, iwc);
