@@ -60,7 +60,13 @@ websocket.onopen = function(event){
 //接收到消息的回调方法
 websocket.onmessage = function(event){
 var date = new Date().Format("yyyy-MM-dd HH:mm:ss");
- setMessageInnerHTML(date+"  "+event.data);
+if (event.data.indexOf("count:")>=0) {
+	var div = document.getElementById('count');
+	div.innerHTML = event.data.split(":")[1];
+} else {
+	setMessageInnerHTML(date+"  "+event.data);
+}
+ 
 }
 
 //连接关闭的回调方法

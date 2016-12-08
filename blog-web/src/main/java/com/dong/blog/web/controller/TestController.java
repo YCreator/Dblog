@@ -232,13 +232,20 @@ public class TestController {
 		pool.shutdown();
 		while(true) {
 			if (pool.isTerminated()) {
-				sendMessage(client, "抓取完毕,关闭资源");
-				System.out.println("线程池执行完毕,总共抓取数据为："+dtos.size()+"条");
-				/*Collections.shuffle(dtos);
-				for (BlogDTO dto : dtos) {
+				int size = dtos.size();
+				sendMessage(client, "抓取完毕,关闭资源,总共抓取数据为："+size+"条");
+				sendMessage(client, "开始数据存储...");
+				sendMessage(client, "成功存储：（<span id=\"count\">0</span>/"+size+"）");
+				Collections.shuffle(dtos);
+				for (int i = 0; i < size; i++) {
+					Thread.sleep(500);
+					/*BlogDTO dto = dtos.get(i);
 					dto = blogApplication.save(dto);
-			    	blogIndex.addIndex(dto);
-				}*/
+			    	blogIndex.addIndex(dto);*/
+			    	sendMessage(client, "count:"+(i+1));
+				}
+				sendMessage(client, "存储完毕,释放所有资源...");
+				Thread.sleep(500);
 				client.close();
 				break;
 			}
