@@ -2,7 +2,7 @@ package com.dong.blog.web.util;
 
 public final class Contance {
 	
-	public static final String LOCAL_IMAGES_PATH = "F:/image_server";
+	public static final String LOCAL_IMAGES_PATH = "E:/image_server";
 	
 	public static final String _BLOG_IMAGES_PATH = "/blog/images";
 	

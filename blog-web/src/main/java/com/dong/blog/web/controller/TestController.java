@@ -239,9 +239,13 @@ public class TestController {
 				Collections.shuffle(dtos);
 				for (int i = 0; i < size; i++) {
 					Thread.sleep(500);
-					/*BlogDTO dto = dtos.get(i);
-					dto = blogApplication.save(dto);
-			    	blogIndex.addIndex(dto);*/
+					try {
+						BlogDTO dto = dtos.get(i);
+						dto = blogApplication.save(dto);
+				    	blogIndex.addIndex(dto);
+					} catch(Exception e) {
+						e.printStackTrace();
+					}	
 			    	sendMessage(client, "count:"+(i+1));
 				}
 				sendMessage(client, "存储完毕,释放所有资源...");
@@ -323,15 +327,10 @@ public class TestController {
 			    		if (!m.group(1).equals("")) {
 			    			String imgUrl = m.group(1);
 			    			System.out.println(imgUrl);
-			    			String fileName = null;
-			    			if(imgUrl.toLowerCase().contains(".jpg")) {
-			    				fileName = tag+System.currentTimeMillis() + ".jpg";
-			    			} else if (imgUrl.toLowerCase().contains(".png")) {
-			    				fileName = tag+System.currentTimeMillis() + ".png";
-			    			} else if (imgUrl.toLowerCase().contains(".gif")) {
-			    				fileName = tag+System.currentTimeMillis() + ".gif";
-			    			}
-			    			if (fileName == null) {
+			    			String fileName = imgUrl.replace("http://static.codeceo.com/images/", "").replaceAll("/", "-");
+			    			if(!imgUrl.toLowerCase().contains(".jpg")
+			    					&&!imgUrl.toLowerCase().contains(".png")
+			    					&&!imgUrl.toLowerCase().contains(".gif")) {
 			    				continue;
 			    			}
 			    			try {
@@ -356,7 +355,8 @@ public class TestController {
 					BufferedImage prevImage = ImageIO.read(in); 
 				    int newWidth = 245;  
 				    int newHeight = 200;
-				    String name = String.format("%s%s.%s", tag, System.currentTimeMillis(), "jpg");
+				    
+				    String name = dto.getPicPath().replace("http://static.codeceo.com/images/", "").replaceAll("/", "-");	
 				    File imgFile = new File(Contance.LOCAL_BLOG_IMAGES_PATH, name);
 				    BufferedImage image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_BGR);
 				    OutputStream os = new FileOutputStream(imgFile);
@@ -377,7 +377,6 @@ public class TestController {
 		}
 		
 	}
-	
 	
 	@RequestMapping("/testdown")
 	public String downImage(@RequestParam(value="src",required=false)String src, HttpServletRequest request, HttpServletResponse response) throws Exception {

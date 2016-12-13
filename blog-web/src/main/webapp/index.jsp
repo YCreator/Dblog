@@ -10,6 +10,9 @@
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <link
+	href="${pageContext.request.contextPath}/static/css/contance.css"
+	rel="stylesheet">
+<link
 	href="${pageContext.request.contextPath}/static/images/mini_logo.ico"
 	rel="SHORTCUT ICON">
 <link rel="stylesheet"

@@ -6,7 +6,7 @@
 }
 
 body {
-	font: 12px/1.5 'Microsoft Yahei', 'Simsun';
+	font: 14px/1.5 'Microsoft Yahei', 'Simsun';
 	color: #666666;
 	background: #fff
 }
@@ -63,11 +63,11 @@ header {
 }
 
 .l_box {
-	width: 670px;
+	width: var(--left-body-width);
 }
 
 .r_box {
-	width: 300px;
+	width: var(--right-body-width);
 }
 
 .topbg {
@@ -104,7 +104,7 @@ header {
 }
 
 .logo {
-	width: 1000px;
+	width: var(--main-body-width);
 	margin: 16px auto;
 	overflow: hidden;
 	clear: both
@@ -119,15 +119,16 @@ header {
 }
 
 #search {
-	width: 30%
+	width:300px;
 }
 
 #search form input {
-	width: 70%
+	width:250px;
 }
 
 #search form button {
-	margin-left: -3px
+	width:50px;
+	margin-left: -3px;
 }
 /* #0f8fb5 */
 #topnav {
@@ -141,8 +142,9 @@ header {
 }
 
 #topnav ul {
-	width: 1000px;
-	margin: auto
+	width: var(--main-body-width);
+	margin: 0 auto;
+	position: relative;
 }
 
 #topnav ul li {
@@ -170,7 +172,7 @@ header {
 }
 
 article {
-	width: 1000px;
+	width: var(--main-body-width);
 	margin: 20px auto;
 }
 /*footer*/

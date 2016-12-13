@@ -1,26 +1,27 @@
 @charset "gb2312";
 /* 幻灯片 */
 .banner {
-	height: 280px;
-	width: 670px;
+	height: 337px;
+	width: var(--left-body-width);
 	overflow: hidden;
 }
 
 #slide-runner {
-	height: 280px;
-	width: 670px;
+	height: 337px;
+	width: 100%;
 	overflow: hidden;
-	position: absolute;
+	position: relative;
 }
 
 #slide-holder img {
+	width:100%;
 	position: absolute;
 }
 
 #slide-controls {
-	left: 0;
+	left: 0px;
 	bottom: 0px;
-	width: 670px;
+	width: var(--left-body-width);
 	height: 34px;
 	display: none;
 	position: absolute;
@@ -333,13 +334,13 @@
 }
 /*首页右侧广告 300*/
 .ad {
-	width: 300px;
+	width: var(--right-body-width);
 	overflow: hidden;
 	margin: 30px 0
 }
 
 .ad img {
-	width: 300px;
+	width: var(--right-body-width);
 }
 /*友情链接*/
 .links {

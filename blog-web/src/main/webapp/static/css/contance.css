@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+/* css文件中定义的全局变量  */
+:root{
+	/* 网页整体宽度  */
+	--main-body-width:1186px;
+	/* 左容器宽度 */
+	--left-body-width:856px;
+	/* 右容器宽度 */
+	--right-body-width:310px;
+}

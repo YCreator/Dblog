@@ -30,7 +30,7 @@ a:hover {
 	position:auto;
 }
 .blog_content img {
-	max-width: 628px;
+	max-width: 834px;
 }
 </style>
 <script type="text/javascript">
