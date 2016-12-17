@@ -2,7 +2,7 @@
 /* 幻灯片 */
 .banner {
 	height: 337px;
-	width: var(--left-body-width);
+	width: 100%;
 	overflow: hidden;
 }
 
@@ -21,7 +21,7 @@
 #slide-controls {
 	left: 0px;
 	bottom: 0px;
-	width: var(--left-body-width);
+	width: 100%;
 	height: 34px;
 	display: none;
 	position: absolute;
@@ -159,7 +159,9 @@
 	margin: 10px 0 0 0;
 	display: inline-block;
 	color: #838383;
-	width: 100%;
+	width: 70.4%;
+	position: absolute;
+	bottom:12px;
 }
 
 .autor span {
@@ -334,13 +336,13 @@
 }
 /*首页右侧广告 300*/
 .ad {
-	width: var(--right-body-width);
+	width: 100%;
 	overflow: hidden;
 	margin: 30px 0
 }
 
 .ad img {
-	width: var(--right-body-width);
+	width: 100%;
 }
 /*友情链接*/
 .links {

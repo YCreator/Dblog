@@ -2,9 +2,11 @@
 /* css文件中定义的全局变量  */
 :root{
 	/* 网页整体宽度  */
-	--main-body-width:1186px;
+	--main-body-width:1216px;
 	/* 左容器宽度 */
-	--left-body-width:856px;
+	--left-body-width:70.4%;
 	/* 右容器宽度 */
-	--right-body-width:310px;
+	--right-body-width:28.6%;
+	/* 文章图片最大尺寸 */
+	--max-article-img-width:70%;
 }

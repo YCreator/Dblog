@@ -1,3 +1,5 @@
+var right_width = 856;
+
 $(function(){
  $('a').focus(function(){this.blur();});
  SI.Files.stylizeAll();
@@ -45,7 +47,7 @@ $(function(){
  $('div.sc-large div.img:has(div.tml)').each(function(){
   $('div.tml',this).hide();
   $(this).append('<a href="#" class="tml_open">&nbsp;</a>').find('a').css({
-   left:parseInt($(this).offset().left)+864,top:parseInt($(this).offset().top)+1
+   left:parseInt($(this).offset().left)+right_width,top:parseInt($(this).offset().top)+1
   }).click(function(){
    $(this).siblings('div.tml').slideToggle();
    return false;
@@ -67,7 +69,7 @@ var slider={
   slider.num=d.length;
   var pos=Math.floor(Math.random()*1);//slider.num);
   for(var i=0;i<slider.num;i++){
-   $('#'+d[i].id).css({left:((i-pos)*856)});
+   $('#'+d[i].id).css({left:((i-pos)*right_width)});
    $('#slide-nav').append('<a id="slide-link-'+i+'" href="#" onclick="slider.slide('+i+');return false;" onfocus="this.blur();">'+(i+1)+'</a>');
   }
 
@@ -94,7 +96,7 @@ var slider={
 
   var d=slider.data;
   for(var i=0;i<slider.num;i++) {
-	  $('#'+d[i].id).stop().animate({left:((i-pos)*856)},856,'swing');
+	  $('#'+d[i].id).stop().animate({left:((i-pos)*right_width)},right_width,'swing');
   }
   slider.on(pos);
   slider.text(d[pos]);

@@ -1,17 +1,14 @@
-<%-- <script type="text/javascript"
-	src="${pageContext.request.contextPath}/static/ueditor/third-party/SyntaxHighlighter/shCore.js"></script> --%>
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/static/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css">
-<!-- <script type="text/javascript">
-	SyntaxHighlighter.all();
-</script> -->
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/contance.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/static/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css">
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/static/bootstrap3/css/bootstrap.min.css">
+
 <style type="text/css">
 a:hover {
 	text-decoration: none
@@ -30,9 +27,14 @@ a:hover {
 	position:auto;
 }
 .blog_content img {
-	max-width: 834px;
+	max-width: var(--max-article-img-width);
 }
 </style>
+<%-- <script type="text/javascript"
+	src="${pageContext.request.contextPath}/static/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
+<script type="text/javascript">
+	SyntaxHighlighter.all();
+</script> --%>
 <script type="text/javascript">
 	function loadimage() {
 		document.getElementById("randImage").src = "${pageContext.request.contextPath}/image.jsp?"

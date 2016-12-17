@@ -6,6 +6,11 @@
 <html>
 <head>
 <meta charset="gb2312">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<!-- 启用360浏览器的极速模式(webkit) -->
+<meta name="renderer" content="webkit">
+<!-- 避免IE使用兼容模式 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <title>Dong个人博客</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
@@ -39,13 +44,7 @@
 	src="${pageContext.request.contextPath}/static/mystyle/js/jquery.cookie.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/static/mystyle/js/sliders.js"></script>
-<!--[if lt IE 9]>
-<script src="js/modernizr.js"></script>
-<![endif]-->
-<!-- 返回顶部调用 begin -->
-<script type="text/javascript" src="js/up/jquery.js"></script>
-<script type="text/javascript" src="js/up/js.js"></script>
-<!-- 返回顶部调用 end-->
+
 </head>
 <body>
 	<header>
@@ -107,7 +106,7 @@
 					<li><a href="${pageContext.request.contextPath}/index/${category.id }.html">${category.categoryName }</a></li>
 				</c:forEach>
 			</ul>
-			<script src="js/nav.js"></script>
+			<script src="${pageContext.request.contextPath}/static/mystyle/js/nav.js"></script>
 		</nav>
 	</header>
 	<article>
@@ -117,8 +116,7 @@
 		<div class="r_box f_r">
 
 			<div class="ad300x100">
-				<img
-					src="${pageContext.request.contextPath}/static/mystyle/images/ad300x100.jpg">
+				<img src="${pageContext.request.contextPath}/static/mystyle/images/ad300x100.jpg">
 			</div>
 			<div class="moreSelect" id="lp_right_select">
 				<script>
@@ -206,7 +204,7 @@
 			</div>
 			<div class="ad">
 				<img
-					src="${pageContext.request.contextPath}/resources/images/03.jpg">
+					src="http://192.168.1.190:8089/blog/images/03.jpg">
 			</div>
 
 			<div class="tit01">
