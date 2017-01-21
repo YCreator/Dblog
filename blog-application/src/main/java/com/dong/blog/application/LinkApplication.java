@@ -2,12 +2,12 @@ package com.dong.blog.application;
 
 import org.dayatang.utils.Page;
 
-import com.dong.blog.application.dto.LinkDTO;
+import com.dong.blog.core.domain.Link;
 
-public interface LinkApplication extends BaseApplication<LinkDTO, Long> {
+public interface LinkApplication extends BaseApplication<Link, Long> {
 	
-	Page<LinkDTO> getPage(int currentPage, int pageSize);
+	Page<Link> getPage(int currentPage, int pageSize);
 	
 	Long getTotal();
-
+	
 }

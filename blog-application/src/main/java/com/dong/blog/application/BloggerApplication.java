@@ -1,11 +1,9 @@
 package com.dong.blog.application;
 
-import com.dong.blog.application.dto.BloggerDTO;
+import com.dong.blog.core.domain.Blogger;
 
-public interface BloggerApplication extends BaseApplication<BloggerDTO, Long>{
+public interface BloggerApplication extends BaseApplication<Blogger, Long>{
 	
-	BloggerDTO findByUsername(String username);
-	
-	BloggerDTO getBlogger(); //获取管理员信息
+	Blogger findByUsername(String username);
 
 }

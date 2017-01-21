@@ -4,16 +4,16 @@ import java.util.List;
 
 import org.dayatang.utils.Page;
 
-import com.dong.blog.application.dto.CategoryDTO;
+import com.dong.blog.core.domain.Category;
 
-public interface CategoryApplication extends BaseApplication<CategoryDTO, Long> {
+public interface CategoryApplication extends BaseApplication<Category, Long> {
 	
-	Page<CategoryDTO> getPage(int currentPage, int pageSize);
+	Page<Category> getPage(int currentPage, int pageSize);
 	
 	Long getTotal();
 	
-	List<CategoryDTO> findAllBySort();
+	List<Category> findAllBySort();
 	
 	String getCateNameById(Long id);
-
+	
 }
