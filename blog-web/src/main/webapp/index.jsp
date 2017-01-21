@@ -6,7 +6,8 @@
 <html>
 <head>
 <meta charset="gb2312">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <!-- 启用360浏览器的极速模式(webkit) -->
 <meta name="renderer" content="webkit">
 <!-- 避免IE使用兼容模式 -->
@@ -14,8 +15,7 @@
 <title>Dong个人博客</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
-<link
-	href="${pageContext.request.contextPath}/static/css/contance.css"
+<link href="${pageContext.request.contextPath}/static/css/contance.css"
 	rel="stylesheet">
 <link
 	href="${pageContext.request.contextPath}/static/images/mini_logo.ico"
@@ -47,9 +47,19 @@
 
 </head>
 <body>
+	<!-- 一个很赞的网页背景效果 canvas-nest.js
+ ## 配置和配置项
+ - **`color`**: 线条颜色, 默认: `'0,0,0'` ；三个数字分别为(R,G,B)，注意用,分割
+ - **`opacity`**: 线条透明度（0~1）, 默认: `0.5`
+ - **`count`**: 线条的总数量, 默认: `150`
+ - **`zIndex`**: 背景的z-index属性，css属性用于控制所在层的位置, 默认: `-1`
+ -->
+	<script type="text/javascript" color="0,0,255" opacity='0.7'
+		zIndex="-2" count="99"
+		src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
 	<header>
 		<script type="text/javascript">
-			function checkData() {
+			var checkData = function() {
 				var q = document.getElementById("q").value.trim();
 				if (q == null || q == "") {
 					alert("请输入您要查询的关键字！");
@@ -58,12 +68,12 @@
 					return true;
 				}
 			}
-			function backToTop() {
+			var backToTop = function() {
 				$('body,html').animate({
 					scrollTop : 0
 				}, 500);
 			}
-			function clearCookie() {
+			var clearCookie = function() {
 				$.cookie('网站客服21224', null, {
 					path : '/'
 				});
@@ -71,13 +81,15 @@
 					path : '/'
 				});
 			}
-			
 		</script>
 		<div class="topbg">
 			<ul class="topnav">
-				<li class="tag"><a href="${pageContext.request.contextPath}/index.html">Home</a></li>
-				<li class="tag"><a href="http://weibo.com/jiyouh" target="_blank"><font color="red">热门文章</font></a></li>
-				<li class="tag"><a href="http://www.jiyouh.com/about.html " target="_blank">关于我们</a></li>
+				<li class="tag"><a
+					href="${pageContext.request.contextPath}/index.html">Home</a></li>
+				<li class="tag"><a href="http://weibo.com/jiyouh"
+					target="_blank"><font color="red">热门文章</font></a></li>
+				<li class="tag"><a href="http://www.jiyouh.com/about.html "
+					target="_blank">关于我们</a></li>
 			</ul>
 		</div>
 		<div class="topbgline"></div>
@@ -103,10 +115,12 @@
 			<ul>
 				<li><a href="${pageContext.request.contextPath}/index.html">文章首页</a></li>
 				<c:forEach var="category" items="${categorys }">
-					<li><a href="${pageContext.request.contextPath}/index/${category.id }.html">${category.categoryName }</a></li>
+					<li><a
+						href="${pageContext.request.contextPath}/index/${category.id }.html">${category.categoryName }</a></li>
 				</c:forEach>
 			</ul>
-			<script src="${pageContext.request.contextPath}/static/mystyle/js/nav.js"></script>
+			<script
+				src="${pageContext.request.contextPath}/static/mystyle/js/nav.js"></script>
 		</nav>
 	</header>
 	<article>
@@ -116,7 +130,8 @@
 		<div class="r_box f_r">
 
 			<div class="ad300x100">
-				<img src="${pageContext.request.contextPath}/static/mystyle/images/ad300x100.jpg">
+				<img
+					src="${pageContext.request.contextPath}/static/mystyle/images/ad300x100.jpg">
 			</div>
 			<div class="moreSelect" id="lp_right_select">
 				<script>
@@ -138,7 +153,6 @@
 							}
 						}
 					}
-					
 				</script>
 				<div class="ms-top">
 					<ul class="hd" id="tab">
@@ -190,21 +204,20 @@
 				<h3>图文推荐</h3>
 				<ul>
 					<c:forEach var="blog" items="${dateBlogs }">
-						<li><a href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">
+						<li><a
+							href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">
 								<img src="${blog.picPath}"><b>${blog.title }</b>
-							</a>
+						</a>
 							<p>
 								<span class="tulanmu"><a href="/">${blog.blogTypeDTO.typeName }</a></span>
 								<span class="tutime">${blog.releaseDate }</span>
-							</p>
-						</li>
+							</p></li>
 					</c:forEach>
 
 				</ul>
 			</div>
 			<div class="ad">
-				<img
-					src="http://192.168.1.190:8089/blog/images/03.jpg">
+				<img src="http://192.168.1.190:8089/blog/images/03.jpg">
 			</div>
 
 			<div class="tit01">

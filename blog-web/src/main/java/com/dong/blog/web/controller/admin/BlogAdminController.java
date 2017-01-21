@@ -27,11 +27,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dong.blog.application.BlogApplication;
-import com.dong.blog.application.BlogTypeApplication;
-import com.dong.blog.application.dto.BlogDTO;
-import com.dong.blog.application.dto.PageBean;
+import com.dong.blog.facade.BlogFacade;
+import com.dong.blog.facade.BlogTypeFacade;
+import com.dong.blog.facade.dto.BlogDTO;
+import com.dong.blog.facade.dto.PageBean;
 import com.dong.blog.lucene.BlogIndex;
+import com.dong.blog.util.HtmlUtil;
 import com.dong.blog.util.StringUtil;
 import com.dong.blog.web.util.Contance;
 import com.google.gson.Gson;
@@ -47,10 +48,10 @@ import com.google.gson.Gson;
 public class BlogAdminController {
 
 	@Inject
-	private BlogApplication blogApplication;
+	private BlogFacade blogFacade;
 	
 	@Inject
-	private BlogTypeApplication blogTypeApplication;
+	private BlogTypeFacade blogTypeFacade;
 	
 	// 博客索引
 	private BlogIndex blogIndex = new BlogIndex();
@@ -68,11 +69,11 @@ public class BlogAdminController {
 		boolean isUpdateSuccess = false;
 		
 		if (blog.getId()==null) {
-			blog = blogApplication.save(blog);
+			blog = blogFacade.save(blog);
 			blogIndex.addIndex(blog); // 添加博客索引
 		} else {
-			blog.setBlogTypeDTO(blogTypeApplication.get(blog.getBlogTypeDTO().getId()));
-			isUpdateSuccess = blogApplication.update(blog);
+			blog.setBlogTypeDTO(blogTypeFacade.get(blog.getBlogTypeDTO().getId()));
+			isUpdateSuccess = blogFacade.update(blog);
 			blogIndex.updateIndex(blog); // 更新博客索引
 		}
 		
@@ -101,8 +102,8 @@ public class BlogAdminController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		PageBean pageBean=new PageBean(Integer.parseInt(page),Integer.parseInt(rows));
 		map.put("title", StringUtil.formatLike(s_blog.getTitle()));
-		List<BlogDTO> blogList=blogApplication.pageQuery(map, pageBean.getPage(), pageBean.getPageSize()).getData();
-		Long total=blogApplication.getTotal(map).longValue();
+		List<BlogDTO> blogList=blogFacade.pageQuery(map, pageBean.getPage(), pageBean.getPageSize()).getData();
+		Long total=blogFacade.getTotal(map).longValue();
 		
 		JSONObject result=new JSONObject();
 		JsonConfig jsonConfig = new JsonConfig();
@@ -127,7 +128,7 @@ public class BlogAdminController {
 		String []idsStr=ids.split(",");
 		
 		for(int i=0;i<idsStr.length;i++){
-			blogApplication.remove(Long.valueOf(idsStr[i]));
+			blogFacade.remove(Long.valueOf(idsStr[i]));
 			blogIndex.deleteIndex(idsStr[i]); // 删除对应博客的索引
 		}
 		
@@ -146,7 +147,7 @@ public class BlogAdminController {
 	@ResponseBody
 	@RequestMapping("/findById")
 	public String findById(@RequestParam(value="id")String id)throws Exception{
-		BlogDTO blog = blogApplication.get(Long.valueOf(id));
+		BlogDTO blog = blogFacade.get(Long.valueOf(id));
 		return new Gson().toJson(blog);
 	}
 	
@@ -204,6 +205,20 @@ public class BlogAdminController {
 	    os.close(); 
 	    result.put("success", true);
 		result.put("imgPath", String.format("%s%s/%s", Contance.IMAGE_SERVICE_HOST, Contance._BLOG_IMAGES_PATH, name));
+		return result;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/rebuildIndex")
+	public Map<String, Object> rebuildIndex() throws Exception {
+		Map<String, Object> result = new HashMap<String, Object>();
+		blogIndex.clearIndex();
+		List<BlogDTO> list = blogFacade.findAll();
+		for (BlogDTO dto : list) {
+			dto.setContentNoTag(HtmlUtil.getTextFromHtml(dto.getContent()));
+			blogIndex.addIndex(dto);
+		}
+		result.put("success", true);
 		return result;
 	}
 	

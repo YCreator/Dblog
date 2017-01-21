@@ -11,25 +11,26 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
-import com.dong.blog.application.BloggerApplication;
-import com.dong.blog.application.dto.BloggerDTO;
-
+import com.dong.blog.facade.BloggerFacade;
+import com.dong.blog.facade.dto.BloggerDTO;
 
 /**
  * 自定义Realm
- * @author 
+ * 
+ * @author
  *
  */
-public class MyRealm extends AuthorizingRealm{
+public class MyRealm extends AuthorizingRealm {
 
 	@Inject
-	private BloggerApplication bloggerApplication;
-	
+	private BloggerFacade bloggerApplication;
+
 	/**
 	 * 为当限前登录的用户授予角色和权
 	 */
 	@Override
-	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+	protected AuthorizationInfo doGetAuthorizationInfo(
+			PrincipalCollection principals) {
 		return null;
 	}
 
@@ -37,12 +38,15 @@ public class MyRealm extends AuthorizingRealm{
 	 * 验证当前登录的用户
 	 */
 	@Override
-	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-		String userName=(String)token.getPrincipal();
+	protected AuthenticationInfo doGetAuthenticationInfo(
+			AuthenticationToken token) throws AuthenticationException {
+		String userName = (String) token.getPrincipal();
 		BloggerDTO bloggerDTO = bloggerApplication.findByUsername(userName);
 		if (bloggerDTO != null) {
-			SecurityUtils.getSubject().getSession().setAttribute("currentUser", bloggerDTO); // 当前用户信息存到session中
-			AuthenticationInfo authcInfo=new SimpleAuthenticationInfo(bloggerDTO.getUsername(),bloggerDTO.getPassword(),"xx");
+			SecurityUtils.getSubject().getSession()
+					.setAttribute("currentUser", bloggerDTO); // 当前用户信息存到session中
+			AuthenticationInfo authcInfo = new SimpleAuthenticationInfo(
+					bloggerDTO.getUsername(), bloggerDTO.getPassword(), "xx");
 			return authcInfo;
 		} else {
 			return null;

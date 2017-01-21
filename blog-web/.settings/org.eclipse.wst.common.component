@@ -5,13 +5,19 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
-        <dependent-module archiveName="blog-applicationImpl-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/blog-applicationImpl/blog-applicationImpl">
+        <dependent-module archiveName="blog-facade-impl-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/blog-facade-impl/blog-facade-impl">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="blog-facade-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/blog-facade/blog-facade">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="blog-application-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/blog-application/blog-application">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="blog-core-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/blog-core/blog-core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="blog-application-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/blog-application/blog-application">
+        <dependent-module archiveName="blog-infra-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/blog-infra/blog-infra">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="blog-conf-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/blog-conf/blog-conf">

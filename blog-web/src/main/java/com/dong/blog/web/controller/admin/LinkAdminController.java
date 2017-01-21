@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.dong.blog.application.LinkApplication;
-import com.dong.blog.application.dto.LinkDTO;
-import com.dong.blog.application.dto.PageBean;
+import com.dong.blog.facade.LinkFacade;
+import com.dong.blog.facade.dto.LinkDTO;
+import com.dong.blog.facade.dto.PageBean;
 
 /**
  * 友情链接Controller层
@@ -27,7 +27,7 @@ import com.dong.blog.application.dto.PageBean;
 public class LinkAdminController {
 	
 	@Inject
-	private LinkApplication linkApplication;
+	private LinkFacade linkFacade;
 	
 	/**
 	 * 分页查询友情链接信息
@@ -45,8 +45,8 @@ public class LinkAdminController {
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		PageBean pageBean=new PageBean(Integer.parseInt(page),Integer.parseInt(rows));
-		List<LinkDTO> linkList = linkApplication.getPage(pageBean.getPage(), pageBean.getPageSize()).getData();
-		Long total=linkApplication.getTotal().longValue();
+		List<LinkDTO> linkList = linkFacade.getPage(pageBean.getPage(), pageBean.getPageSize()).getData();
+		Long total=linkFacade.getTotal().longValue();
 		result.put("rows", linkList);
 		result.put("total", total);
 		return result;
@@ -66,9 +66,9 @@ public class LinkAdminController {
 		boolean isUpdateSuccess = false; // 操作的记录条数
 		
 		if(link.getId() == null) {
-			link = linkApplication.save(link);
+			link = linkFacade.save(link);
 		} else {
-			isUpdateSuccess = linkApplication.update(link);
+			isUpdateSuccess = linkFacade.update(link);
 		}
 		
 		result.put("success", link.getId() != null || isUpdateSuccess);
@@ -89,7 +89,7 @@ public class LinkAdminController {
 		String[] idsStr = ids.split(",");
 		
 		for(int i = 0; i < idsStr.length; i++){
-			linkApplication.remove(Long.parseLong(idsStr[i]));
+			linkFacade.remove(Long.parseLong(idsStr[i]));
 		}
 		
 		Map<String, Object> result = new HashMap<String, Object>();

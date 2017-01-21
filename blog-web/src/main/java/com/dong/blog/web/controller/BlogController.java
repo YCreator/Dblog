@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.dong.blog.application.BlogApplication;
-import com.dong.blog.application.CommentApplication;
-import com.dong.blog.application.dto.BlogDTO;
-import com.dong.blog.application.dto.CommentDTO;
+import com.dong.blog.facade.BlogFacade;
+import com.dong.blog.facade.CommentFacade;
+import com.dong.blog.facade.dto.BlogDTO;
+import com.dong.blog.facade.dto.CommentDTO;
 import com.dong.blog.lucene.BlogIndex;
 import com.dong.blog.util.StringUtil;
 
@@ -30,10 +30,10 @@ import com.dong.blog.util.StringUtil;
 public class BlogController {
 
 	@Inject
-	private BlogApplication blogApplication;
+	private BlogFacade blogFacade;
 	
 	@Inject
-	private CommentApplication commentApplication;
+	private CommentFacade commentFacade;
 		
 	// 博客索引
 	private BlogIndex blogIndex=new BlogIndex();
@@ -46,7 +46,7 @@ public class BlogController {
 	@RequestMapping("/articles/{id}")
 	public ModelAndView details(@PathVariable("id") Long id,HttpServletRequest request)throws Exception{
 		ModelAndView mav=new ModelAndView();
-		BlogDTO blogDTO = blogApplication.get(id);
+		BlogDTO blogDTO = blogFacade.get(id);
 		String keyWords=blogDTO.getKeyWord();
 		if(StringUtil.isNotEmpty(keyWords)){
 			String arr[]=keyWords.split(" ");
@@ -56,14 +56,14 @@ public class BlogController {
 		}
 		mav.addObject("blog", blogDTO);
 		blogDTO.setClickHit(blogDTO.getClickHit() + 1);
-		blogApplication.updateClickHit(blogDTO.getId(), blogDTO.getClickHit()); // 博客点击次数加1
+		blogFacade.updateClickHit(blogDTO.getId(), blogDTO.getClickHit()); // 博客点击次数加1
 		
 		CommentDTO commentDTO = new CommentDTO();
 		commentDTO.setBlogDTO(blogDTO);
 		commentDTO.setState(1); // 查询审核通过的评论
 		
-		mav.addObject("commentList", commentApplication.getPage(commentDTO, 0, 100).getData()); 
-		mav.addObject("pageCode", this.genUpAndDownPageCode(blogApplication.getLastBlog(id),blogApplication.getNextBlog(id),request.getServletContext().getContextPath()));
+		mav.addObject("commentList", commentFacade.getPage(commentDTO, 0, 100).getData()); 
+		mav.addObject("pageCode", this.genUpAndDownPageCode(blogFacade.getLastBlog(id),blogFacade.getNextBlog(id),request.getServletContext().getContextPath()));
 		mav.addObject("mainPage", "foreground/blog/view.jsp");
 		mav.addObject("pageTitle",blogDTO.getTitle()+"_Dong博客系统");
 		mav.setViewName("index");

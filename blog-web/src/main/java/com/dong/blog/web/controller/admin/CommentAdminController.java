@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.dong.blog.application.BlogApplication;
-import com.dong.blog.application.CommentApplication;
-import com.dong.blog.application.dto.BlogDTO;
-import com.dong.blog.application.dto.CommentDTO;
-import com.dong.blog.application.dto.PageBean;
+import com.dong.blog.facade.BlogFacade;
+import com.dong.blog.facade.CommentFacade;
+import com.dong.blog.facade.dto.BlogDTO;
+import com.dong.blog.facade.dto.CommentDTO;
+import com.dong.blog.facade.dto.PageBean;
 
 /**
  * 管理员评论Controller层
@@ -31,10 +31,10 @@ import com.dong.blog.application.dto.PageBean;
 public class CommentAdminController {
 
 	@Inject
-	private CommentApplication commentApplication;
+	private CommentFacade commentFacade;
 	
 	@Inject
-	private BlogApplication blogApplication;
+	private BlogFacade blogFacade;
 	
 	/**
 	 * 分页查询评论信息
@@ -56,10 +56,10 @@ public class CommentAdminController {
 			state = "1";
 		}
 		dto.setState(Integer.parseInt(state));
-		List<CommentDTO> commentList = commentApplication.getPage(dto, pageBean.getPage(), pageBean.getPageSize()).getData();
+		List<CommentDTO> commentList = commentFacade.getPage(dto, pageBean.getPage(), pageBean.getPageSize()).getData();
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("state", state); // 评论状态
-		Long total=commentApplication.getTotal(map);
+		Long total=commentFacade.getTotal(map);
 		
 		JSONObject result=new JSONObject();
 		JsonConfig jsonConfig=new JsonConfig();
@@ -83,7 +83,7 @@ public class CommentAdminController {
 		
 		String []idsStr=ids.split(",");
 		for(int i=0;i<idsStr.length;i++){
-			commentApplication.remove(Long.parseLong(idsStr[i]));
+			commentFacade.remove(Long.parseLong(idsStr[i]));
 		}
 		Map<String, Object> result=new HashMap<String, Object>();
 		result.put("success", true);
@@ -108,12 +108,12 @@ public class CommentAdminController {
 			CommentDTO comment=new CommentDTO();
 			comment.setState(state);
 			comment.setId(Long.parseLong(idsStr[i]));
-			commentApplication.update(comment);
+			commentFacade.update(comment);
 			if (state == 1) {
 				// 该博客的回复次数加1
-				comment = commentApplication.get(Long.parseLong(idsStr[i]));
+				comment = commentFacade.get(Long.parseLong(idsStr[i]));
 				BlogDTO blogDTO = comment.getBlogDTO();
-				blogApplication.updateReplyHit(blogDTO.getId(), blogDTO.getReplyHit() + 1);
+				blogFacade.updateReplyHit(blogDTO.getId(), blogDTO.getReplyHit() + 1);
 			}
 		}
 		Map<String, Object> result=new HashMap<String, Object>();

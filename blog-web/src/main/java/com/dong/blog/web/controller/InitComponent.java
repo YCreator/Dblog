@@ -12,14 +12,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import com.dong.blog.application.BlogTypeApplication;
-import com.dong.blog.application.BloggerApplication;
-import com.dong.blog.application.CategoryApplication;
-import com.dong.blog.application.LinkApplication;
-import com.dong.blog.application.dto.BlogTypeDTO;
-import com.dong.blog.application.dto.BloggerDTO;
-import com.dong.blog.application.dto.CategoryDTO;
-import com.dong.blog.application.dto.LinkDTO;
+import com.dong.blog.facade.BlogTypeFacade;
+import com.dong.blog.facade.BloggerFacade;
+import com.dong.blog.facade.CategoryFacade;
+import com.dong.blog.facade.LinkFacade;
+import com.dong.blog.facade.dto.BlogTypeDTO;
+import com.dong.blog.facade.dto.BloggerDTO;
+import com.dong.blog.facade.dto.CategoryDTO;
+import com.dong.blog.facade.dto.LinkDTO;
 
 /**
  * 初始化组件 把博主信息 根据博客类别分类信息 根据日期归档分类信息 存放到application中，用以提供页面请求性能
@@ -31,58 +31,57 @@ import com.dong.blog.application.dto.LinkDTO;
 public class InitComponent implements ServletContextListener,
 		ApplicationContextAware {
 
-	private LinkApplication linkApplication;
-	private BlogTypeApplication blogTypeApplication;
-	private BloggerApplication bloggerApplication;
-	private CategoryApplication categoryApplication;
+	private LinkFacade linkFacade;
+	private BlogTypeFacade blogTypeFacade;
+	private BloggerFacade bloggerFacade;
+	private CategoryFacade categoryFacade;
 
-	private LinkApplication getLinkApplication() {
-		if (linkApplication == null) {
-			linkApplication = InstanceFactory
-					.getInstance(LinkApplication.class);
+	private LinkFacade getLinkFacade() {
+		if (linkFacade == null) {
+			linkFacade = InstanceFactory
+					.getInstance(LinkFacade.class);
 		}
-		return linkApplication;
+		return linkFacade;
 	}
 
-	private BlogTypeApplication getBlogTypeApplication() {
-		if (blogTypeApplication == null) {
-			blogTypeApplication = InstanceFactory
-					.getInstance(BlogTypeApplication.class);
+	private BlogTypeFacade getBlogTypeFacade() {
+		if (blogTypeFacade == null) {
+			blogTypeFacade = InstanceFactory
+					.getInstance(BlogTypeFacade.class);
 		}
-		return blogTypeApplication;
+		return blogTypeFacade;
 	}
 
-	private BloggerApplication getBloggerApplication() {
-		if (bloggerApplication == null) {
-			bloggerApplication = InstanceFactory
-					.getInstance(BloggerApplication.class);
+	private BloggerFacade getBloggerFacade() {
+		if (bloggerFacade == null) {
+			bloggerFacade = InstanceFactory
+					.getInstance(BloggerFacade.class);
 		}
-		return bloggerApplication;
+		return bloggerFacade;
 	}
 
-	private CategoryApplication getCategoryApplication() {
-		if (categoryApplication == null) {
-			categoryApplication = InstanceFactory
-					.getInstance(CategoryApplication.class);
+	private CategoryFacade getCategoryFacade() {
+		if (categoryFacade == null) {
+			categoryFacade = InstanceFactory
+					.getInstance(CategoryFacade.class);
 		}
-		return categoryApplication;
+		return categoryFacade;
 	}
 
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
 		ServletContext application = servletContextEvent.getServletContext();
 
-		List<LinkDTO> linkList = getLinkApplication().findAll(); // 查询所有的友情链接信息
+		List<LinkDTO> linkList = getLinkFacade().findAll(); // 查询所有的友情链接信息
 		application.setAttribute("linkList", linkList);
 
-		List<BlogTypeDTO> typeList = getBlogTypeApplication().findAll(); // 查询博客类别以及博客的数量
+		List<BlogTypeDTO> typeList = getBlogTypeFacade().findAll(); // 查询博客类别以及博客的数量
 		application.setAttribute("blogTypeCountList", typeList);
 
-		BloggerDTO blogger = getBloggerApplication().getBlogger();
+		BloggerDTO blogger = getBloggerFacade().getBlogger();
 		blogger.setPassword(null);
 		application.setAttribute("blogger", blogger);
 
-		List<CategoryDTO> categoryDTOs = getCategoryApplication()
-				.findAllBySort(); // 获取主分类
+		List<CategoryDTO> categoryDTOs = getCategoryFacade().findAllBySort(); // 获取主分类
 		application.setAttribute("categorys", categoryDTOs);
 	}
 

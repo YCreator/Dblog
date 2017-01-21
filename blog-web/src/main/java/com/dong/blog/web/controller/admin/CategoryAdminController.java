@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.dong.blog.application.CategoryApplication;
-import com.dong.blog.application.dto.BlogTypeDTO;
-import com.dong.blog.application.dto.CategoryDTO;
-import com.dong.blog.application.dto.PageBean;
+import com.dong.blog.facade.CategoryFacade;
+import com.dong.blog.facade.dto.BlogTypeDTO;
+import com.dong.blog.facade.dto.CategoryDTO;
+import com.dong.blog.facade.dto.PageBean;
 import com.dong.blog.util.StringUtil;
 import com.google.gson.Gson;
 
@@ -23,7 +23,7 @@ import com.google.gson.Gson;
 public class CategoryAdminController {
 
 	@Inject
-	private CategoryApplication categoryApplication;
+	private CategoryFacade categoryFacade;
 
 	/**
 	 * 分页查询分类信息
@@ -42,7 +42,7 @@ public class CategoryAdminController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("start", pageBean.getStart());
 		map.put("size", pageBean.getPageSize());
-		List<CategoryDTO> categoryList = categoryApplication.getPage(pageBean.getPage(), pageBean.getPageSize()).getData();
+		List<CategoryDTO> categoryList = categoryFacade.getPage(pageBean.getPage(), pageBean.getPageSize()).getData();
 		if (categoryList != null) {
 			for (CategoryDTO dto : categoryList) {
 				StringBuilder builder = new StringBuilder();
@@ -55,7 +55,7 @@ public class CategoryAdminController {
 				dto.setIds(builder.toString());
 			}
 		}
-		Long total = categoryApplication.getTotal();
+		Long total = categoryFacade.getTotal();
 		map.clear();
 		map.put("rows", categoryList);
 		map.put("total", total);
@@ -80,9 +80,9 @@ public class CategoryAdminController {
 		}
 		boolean isUpdateSuccess = false;
 		if (dto.getId() == null) {
-			dto = categoryApplication.save(dto);
+			dto = categoryFacade.save(dto);
 		} else {
-			isUpdateSuccess = categoryApplication.update(dto);
+			isUpdateSuccess = categoryFacade.update(dto);
 		}
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("success", dto.getId() != null || isUpdateSuccess);
@@ -101,7 +101,7 @@ public class CategoryAdminController {
 		
 		String[] idsStr = ids.split(",");
 		for (int i = 0; i < idsStr.length; i++) {
-			categoryApplication.remove(Long.parseLong(idsStr[i]));
+			categoryFacade.remove(Long.parseLong(idsStr[i]));
 		}
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("success", true);

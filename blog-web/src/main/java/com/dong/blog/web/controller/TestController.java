@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -33,24 +32,20 @@ import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.websocket.WebSocketContainer;
 
 import net.sf.json.JSONArray;
 
 import org.apache.commons.codec.binary.Base64;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_17;
-import org.java_websocket.handshake.ServerHandshake;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import antlr.collections.Stack;
-
-import com.dong.blog.application.BlogApplication;
-import com.dong.blog.application.BloggerApplication;
-import com.dong.blog.application.dto.BlogDTO;
-import com.dong.blog.application.dto.BlogTypeDTO;
+import com.dong.blog.facade.BlogFacade;
+import com.dong.blog.facade.BloggerFacade;
+import com.dong.blog.facade.dto.BlogDTO;
+import com.dong.blog.facade.dto.BlogTypeDTO;
 import com.dong.blog.lucene.BlogIndex;
 import com.dong.blog.util.FileUtil;
 import com.dong.blog.web.service.ServerSocketClient;
@@ -67,9 +62,9 @@ public class TestController {
 	
 	/*@Resource*/
 	@Inject
-	BloggerApplication bloggerApplication;
+	BloggerFacade bloggerFacade;
 	@Inject
-	BlogApplication blogApplication;
+	BlogFacade blogFacade;
 	
 	private BlogIndex blogIndex = new BlogIndex();
 	
@@ -79,7 +74,31 @@ public class TestController {
 	
 	@RequestMapping("/test")
 	public void test(HttpServletRequest request,HttpServletResponse response) throws Exception {
-		ResponseUtil.write(response, new Gson().toJson(bloggerApplication.getBlogger()));
+		ResponseUtil.write(response, new Gson().toJson(bloggerFacade.getBlogger()));
+	}
+	
+	@RequestMapping("/dealTaobaoUrl")
+	public void dealTaobaoUrl(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		File file = new File("D:/goods.txt");
+		if (file.exists()) {
+			InputStream input = new FileInputStream(file);
+			@SuppressWarnings("resource")
+			BufferedReader reader = new BufferedReader(new InputStreamReader(input, "gbk"));
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			int i = 1;
+			PrintStream ps = new PrintStream(new FileOutputStream(new File("D:/goods_2.txt")));
+			while ((line = reader.readLine()) != null) {
+				if (line.contains("detail.tmall.com")) {
+					continue;
+				}
+				ps.println(line);
+				sb.append(line).append("\n\t");
+				i++;
+			}
+			sb.append("size=").append(i).append("\n\t");
+			ResponseUtil.write(response, sb);
+		}
 	}
 	
 	@RequestMapping("/text")
@@ -241,7 +260,7 @@ public class TestController {
 					Thread.sleep(500);
 					try {
 						BlogDTO dto = dtos.get(i);
-						dto = blogApplication.save(dto);
+						dto = blogFacade.save(dto);
 				    	blogIndex.addIndex(dto);
 					} catch(Exception e) {
 						e.printStackTrace();

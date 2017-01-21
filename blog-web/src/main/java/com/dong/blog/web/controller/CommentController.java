@@ -13,23 +13,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.dong.blog.application.CommentApplication;
-import com.dong.blog.application.dto.CommentDTO;
+import com.dong.blog.facade.CommentFacade;
+import com.dong.blog.facade.dto.CommentDTO;
 
 /**
  * 评论Controller层
+ * 
  * @author Administrator
  *
  */
 @Controller
 @RequestMapping("/comment")
 public class CommentController {
-	
+
 	@Inject
-	private CommentApplication commentApplication;
-	
+	private CommentFacade commentFacade;
+
 	/**
 	 * 添加或者修改评论
+	 * 
 	 * @param comment
 	 * @param response
 	 * @return
@@ -37,12 +39,10 @@ public class CommentController {
 	 */
 	@ResponseBody
 	@RequestMapping("/save")
-	public Map<String, Object> save (
-			CommentDTO comment,
+	public Map<String, Object> save(CommentDTO comment,
 			@RequestParam("imageCode") String imageCode,
-			HttpServletRequest request,
-			HttpSession session) throws Exception{
-		
+			HttpServletRequest request, HttpSession session) throws Exception {
+
 		String sRand = (String) session.getAttribute("sRand"); // 获取系统生成的验证码
 		Map<String, Object> result = new HashMap<String, Object>();
 		if (!imageCode.equals(sRand)) {
@@ -54,8 +54,8 @@ public class CommentController {
 			if (comment.getId() == null) {
 				comment.setCommentDate(new Date());
 				comment.setState(0);
-				comment = commentApplication.save(comment);
-			}	
+				comment = commentFacade.save(comment);
+			}
 			result.put("success", comment.getId() != null);
 		}
 		return result;

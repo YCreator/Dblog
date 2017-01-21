@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import com.dong.blog.application.BlogTypeApplication;
-import com.dong.blog.application.BloggerApplication;
-import com.dong.blog.application.CategoryApplication;
-import com.dong.blog.application.LinkApplication;
-import com.dong.blog.application.dto.BlogTypeDTO;
-import com.dong.blog.application.dto.BloggerDTO;
-import com.dong.blog.application.dto.CategoryDTO;
-import com.dong.blog.application.dto.LinkDTO;
+import com.dong.blog.facade.BlogTypeFacade;
+import com.dong.blog.facade.BloggerFacade;
+import com.dong.blog.facade.CategoryFacade;
+import com.dong.blog.facade.LinkFacade;
+import com.dong.blog.facade.dto.BlogTypeDTO;
+import com.dong.blog.facade.dto.BloggerDTO;
+import com.dong.blog.facade.dto.CategoryDTO;
+import com.dong.blog.facade.dto.LinkDTO;
 
 /**
  * 管理员系统Controller层
@@ -32,13 +32,13 @@ import com.dong.blog.application.dto.LinkDTO;
 public class SystemAdminController {
 
 	@Inject
-	private BloggerApplication bloggerApplication;
+	private BloggerFacade bloggerFacade;
 	@Inject
-	private BlogTypeApplication blogTypeApplication;
+	private BlogTypeFacade blogTypeFacade;
 	@Inject
-	private LinkApplication linkApplication;
+	private LinkFacade linkFacade;
 	@Inject
-	private CategoryApplication categoryApplication;
+	private CategoryFacade categoryFacade;
 	
 	/**
 	 * 刷新系统缓存
@@ -50,19 +50,19 @@ public class SystemAdminController {
 	@RequestMapping("/refreshSystem")
 	public Map<String, Object> refreshSystem(HttpServletRequest request) throws Exception {
 		
-		ServletContext application=RequestContextUtils.findWebApplicationContext(request).getServletContext();
-		BloggerDTO blogger = bloggerApplication.getBlogger(); // 查询博主信息
+		ServletContext Facade=RequestContextUtils.findWebApplicationContext(request).getServletContext();
+		BloggerDTO blogger = bloggerFacade.getBlogger(); // 查询博主信息
 		blogger.setPassword(null);
-		application.setAttribute("blogger", blogger);
+		Facade.setAttribute("blogger", blogger);
 
-		List<BlogTypeDTO> blogTypeCountList=blogTypeApplication.findAll(); // 查询博客类别以及博客的数量
-		application.setAttribute("blogTypeCountList", blogTypeCountList);
+		List<BlogTypeDTO> blogTypeCountList=blogTypeFacade.findAll(); // 查询博客类别以及博客的数量
+		Facade.setAttribute("blogTypeCountList", blogTypeCountList);
 		
-		List<CategoryDTO> categorys = categoryApplication.findAllBySort();	//获取主分类
-		application.setAttribute("categorys", categorys);
+		List<CategoryDTO> categorys = categoryFacade.findAllBySort();	//获取主分类
+		Facade.setAttribute("categorys", categorys);
 		
-		List<LinkDTO> linkList=linkApplication.findAll(); // 获取所有友情链接
-		application.setAttribute("linkList", linkList);
+		List<LinkDTO> linkList=linkFacade.findAll(); // 获取所有友情链接
+		Facade.setAttribute("linkList", linkList);
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("success", true);

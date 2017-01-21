@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.dong.blog.application.BlogApplication;
-import com.dong.blog.application.BlogTypeApplication;
-import com.dong.blog.application.dto.BlogDTO;
-import com.dong.blog.application.dto.BlogTypeDTO;
-import com.dong.blog.application.dto.PageBean;
+import com.dong.blog.facade.BlogFacade;
+import com.dong.blog.facade.BlogTypeFacade;
+import com.dong.blog.facade.dto.BlogDTO;
+import com.dong.blog.facade.dto.BlogTypeDTO;
+import com.dong.blog.facade.dto.PageBean;
 
 /**
  * 管理员博客类别Controller层
@@ -31,10 +31,10 @@ import com.dong.blog.application.dto.PageBean;
 public class BlogTypeAdminController {
 
 	@Inject
-	private BlogTypeApplication blogTypeApplication;
+	private BlogTypeFacade blogTypeFacade;
 	
 	@Inject
-	private BlogApplication blogApplication;
+	private BlogFacade blogFacade;
 	
 	/**
 	 * 分页查询博客类别信息
@@ -54,8 +54,8 @@ public class BlogTypeAdminController {
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("start", pageBean.getStart());
 		map.put("size", pageBean.getPageSize());
-		List<BlogTypeDTO> blogTypeList = blogTypeApplication.getPage(null, pageBean.getPage(), pageBean.getPageSize()).getData();
-		Long total = blogTypeApplication.getTotal();
+		List<BlogTypeDTO> blogTypeList = blogTypeFacade.getPage(null, pageBean.getPage(), pageBean.getPageSize()).getData();
+		Long total = blogTypeFacade.getTotal();
 		JSONObject result = new JSONObject();
 		JSONArray jsonArray  = JSONArray.fromObject(blogTypeList);
 		result.put("rows", jsonArray);
@@ -76,9 +76,9 @@ public class BlogTypeAdminController {
 		
 		boolean isUpdateSuccess = false;
 		if(blogType.getId() == null){
-			blogType = blogTypeApplication.save(blogType);
+			blogType = blogTypeFacade.save(blogType);
 		}else{
-			isUpdateSuccess = blogTypeApplication.update(blogType);
+			isUpdateSuccess = blogTypeFacade.update(blogType);
 		}
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("success", blogType.getId() != null || isUpdateSuccess);
@@ -99,13 +99,13 @@ public class BlogTypeAdminController {
 		String []idsStr=ids.split(",");
 		Map<String, Object> result=new HashMap<String, Object>();
 		for(int i = 0; i < idsStr.length; i++){
-			BlogTypeDTO blogTypeDTO = blogTypeApplication.get(Long.valueOf(idsStr[i]));
-			List<BlogDTO> dto = blogApplication.getBlogsByProperty("blogType", blogTypeDTO);
+			BlogTypeDTO blogTypeDTO = blogTypeFacade.get(Long.valueOf(idsStr[i]));
+			List<BlogDTO> dto = blogFacade.getBlogsByProperty("blogType", blogTypeDTO);
 			if(dto.size() > 0){
 				result.put("exist", "博客类别下有博客，不能删除！");
 				result.put("success", false);
 			}else{
-				blogTypeApplication.remove(Long.valueOf(idsStr[i]));	
+				blogTypeFacade.remove(Long.valueOf(idsStr[i]));	
 				result.put("success", true);
 			}
 		}	

@@ -10,12 +10,12 @@
 	<artifactId>blog-web</artifactId>
 	<packaging>war</packaging>
 	<name>blog-web Maven Webapp</name>
-	<url>http://maven.apache.org</url>
+	<url>http://maven.apache.org</url> 
 	
 	<dependencies>
-		<dependency>
+		<dependency> 
 			<groupId>com.dong.blog</groupId>
-			<artifactId>blog-applicationImpl</artifactId>
+			<artifactId>blog-facade-impl</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
@@ -30,7 +30,7 @@
 			<version>${project.parent.version}</version>
 			<exclusions>
 				<exclusion>
-					<artifactId>blog-application</artifactId>
+					<artifactId>blog-facade</artifactId>
 					<groupId>com.dong.blog</groupId>
 				</exclusion>
 				<exclusion>
