@@ -33,132 +33,163 @@ import org.apache.lucene.search.highlight.SimpleSpanFragmenter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
-import com.dong.blog.application.dto.BlogDTO;
+import com.dong.blog.facade.dto.BlogDTO;
 import com.dong.blog.util.Contance;
 import com.dong.blog.util.DateUtil;
 import com.dong.blog.util.StringUtil;
 
 /**
  * 博客索引类
+ * 
  * @author Administrator
  *
  */
 public class BlogIndex {
 
-	private Directory dir=null;
-	
+	private Directory dir = null;
 
 	/**
 	 * 获取IndexWriter实例
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	private IndexWriter getWriter()throws Exception{
-		dir=FSDirectory.open(Paths.get(Contance.LUCENE_PATHT));
-		SmartChineseAnalyzer analyzer=new SmartChineseAnalyzer();
-		IndexWriterConfig iwc=new IndexWriterConfig(analyzer);
-		IndexWriter writer=new IndexWriter(dir, iwc);
+	private IndexWriter getWriter() throws Exception {
+		dir = FSDirectory.open(Paths.get(Contance.LUCENE_PATHT));
+		SmartChineseAnalyzer analyzer = new SmartChineseAnalyzer();
+		IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
+		IndexWriter writer = new IndexWriter(dir, iwc);
 		return writer;
 	}
-	
+
 	/**
 	 * 添加博客索引
+	 * 
 	 * @param blog
 	 */
-	public void addIndex(BlogDTO blog)throws Exception{
-		IndexWriter writer=getWriter();
-		Document doc=new Document();
-		doc.add(new StringField("id",String.valueOf(blog.getId()),Field.Store.YES));
-		doc.add(new TextField("title",blog.getTitle(),Field.Store.YES));
-		doc.add(new StringField("releaseDate",DateUtil.formatDate(new Date(), "yyyy-MM-dd"),Field.Store.YES));
-		doc.add(new TextField("content",blog.getContentNoTag(),Field.Store.YES));
+	public void addIndex(BlogDTO blog) throws Exception {
+		IndexWriter writer = getWriter();
+		Document doc = new Document();
+		doc.add(new StringField("id", String.valueOf(blog.getId()),
+				Field.Store.YES));
+		doc.add(new TextField("title", blog.getTitle(), Field.Store.YES));
+		doc.add(new StringField("picUrl", blog.getPicPath(), Field.Store.YES));
+		doc.add(new StringField("releaseDate", DateUtil.formatDate(new Date(),
+				"yyyy-MM-dd"), Field.Store.YES));
+		doc.add(new TextField("content", blog.getContentNoTag(),
+				Field.Store.YES));
 		writer.addDocument(doc);
 		writer.close();
 	}
-	
+
 	/**
 	 * 更新博客索引
+	 * 
 	 * @param blog
 	 * @throws Exception
 	 */
-	public void updateIndex(BlogDTO blog)throws Exception{
-		IndexWriter writer=getWriter();
-		Document doc=new Document();
-		doc.add(new StringField("id",String.valueOf(blog.getId()),Field.Store.YES));
-		doc.add(new TextField("title",blog.getTitle(),Field.Store.YES));
-		doc.add(new StringField("releaseDate",DateUtil.formatDate(new Date(), "yyyy-MM-dd"),Field.Store.YES));
-		doc.add(new TextField("content",blog.getContentNoTag(),Field.Store.YES));
+	public void updateIndex(BlogDTO blog) throws Exception {
+		IndexWriter writer = getWriter();
+		Document doc = new Document();
+		doc.add(new StringField("id", String.valueOf(blog.getId()),
+				Field.Store.YES));
+		doc.add(new TextField("title", blog.getTitle(), Field.Store.YES));
+		doc.add(new StringField("picUrl", blog.getPicPath(), Field.Store.YES));
+		doc.add(new StringField("releaseDate", DateUtil.formatDate(new Date(),
+				"yyyy-MM-dd"), Field.Store.YES));
+		doc.add(new TextField("content", blog.getContentNoTag(),
+				Field.Store.YES));
 		writer.updateDocument(new Term("id", String.valueOf(blog.getId())), doc);
 		writer.close();
 	}
-	
+
 	/**
 	 * 删除指定博客的索引
+	 * 
 	 * @param blogId
 	 * @throws Exception
 	 */
-	public void deleteIndex(String blogId)throws Exception{
-		IndexWriter writer=getWriter();
-		writer.deleteDocuments(new Term("id",blogId));
+	public void deleteIndex(String blogId) throws Exception {
+		IndexWriter writer = getWriter();
+		writer.deleteDocuments(new Term("id", blogId));
 		writer.forceMergeDeletes(); // 强制删除
 		writer.commit();
 		writer.close();
 	}
 	
 	/**
+	 * 清除所有博客索引
+	 * @throws Exception
+	 */
+	public void clearIndex() throws Exception {
+		IndexWriter writer = getWriter();
+		writer.deleteAll();
+		writer.forceMergeDeletes(); // 强制删除
+		writer.commit();
+		writer.close();
+	}
+
+	/**
 	 * 查询博客信息
-	 * @param q 查询关键字
+	 * 
+	 * @param q
+	 *            查询关键字
 	 * @return
 	 * @throws Exception
 	 */
-	public List<BlogDTO> searchBlog(String q)throws Exception{
-		dir=FSDirectory.open(Paths.get("C://lucene"));
+	public List<BlogDTO> searchBlog(String q) throws Exception {
+		dir = FSDirectory.open(Paths.get("C://lucene"));
 		IndexReader reader = DirectoryReader.open(dir);
-		IndexSearcher is=new IndexSearcher(reader);
+		IndexSearcher is = new IndexSearcher(reader);
 		BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
-		SmartChineseAnalyzer analyzer=new SmartChineseAnalyzer();
-		QueryParser parser=new QueryParser("title",analyzer);
-		Query query=parser.parse(q);
-		QueryParser parser2=new QueryParser("content",analyzer);
-		Query query2=parser2.parse(q);
-		booleanQuery.add(query,BooleanClause.Occur.SHOULD);
-		booleanQuery.add(query2,BooleanClause.Occur.SHOULD);
-		TopDocs hits=is.search(booleanQuery.build(), 100);
-		QueryScorer scorer=new QueryScorer(query);  
-		Fragmenter fragmenter = new SimpleSpanFragmenter(scorer);  
-		SimpleHTMLFormatter simpleHTMLFormatter=new SimpleHTMLFormatter("<b><font color='red'>","</font></b>");
-		Highlighter highlighter=new Highlighter(simpleHTMLFormatter, scorer);
-		highlighter.setTextFragmenter(fragmenter);  
-		List<BlogDTO> blogList=new LinkedList<BlogDTO>();
-		for(ScoreDoc scoreDoc:hits.scoreDocs){
-			Document doc=is.doc(scoreDoc.doc);
-			BlogDTO blog=new BlogDTO();
+		SmartChineseAnalyzer analyzer = new SmartChineseAnalyzer();
+		QueryParser parser = new QueryParser("title", analyzer);
+		Query query = parser.parse(q);
+		QueryParser parser2 = new QueryParser("content", analyzer);
+		Query query2 = parser2.parse(q);
+		booleanQuery.add(query, BooleanClause.Occur.SHOULD);
+		booleanQuery.add(query2, BooleanClause.Occur.SHOULD);
+		TopDocs hits = is.search(booleanQuery.build(), 100);
+		QueryScorer scorer = new QueryScorer(query);
+		Fragmenter fragmenter = new SimpleSpanFragmenter(scorer);
+		SimpleHTMLFormatter simpleHTMLFormatter = new SimpleHTMLFormatter(
+				"<b><font color='red'>", "</font></b>");
+		Highlighter highlighter = new Highlighter(simpleHTMLFormatter, scorer);
+		highlighter.setTextFragmenter(fragmenter);
+		List<BlogDTO> blogList = new LinkedList<BlogDTO>();
+		for (ScoreDoc scoreDoc : hits.scoreDocs) {
+			Document doc = is.doc(scoreDoc.doc);
+			BlogDTO blog = new BlogDTO();
 			blog.setId(Long.valueOf((doc.get(("id")))));
 			blog.setReleaseDateStr(doc.get(("releaseDate")));
-			String title=doc.get("title");
-			String content=StringEscapeUtils.escapeHtml(doc.get("content"));
-			if(title!=null){
-				TokenStream tokenStream = analyzer.tokenStream("title", new StringReader(title));
-				String hTitle=highlighter.getBestFragment(tokenStream, title);
-				if(StringUtil.isEmpty(hTitle)){
+			blog.setPicPath(doc.get("picUrl"));
+			String title = doc.get("title");
+			String content = StringEscapeUtils.escapeHtml(doc.get("content"));
+			if (title != null) {
+				TokenStream tokenStream = analyzer.tokenStream("title",
+						new StringReader(title));
+				String hTitle = highlighter.getBestFragment(tokenStream, title);
+				if (StringUtil.isEmpty(hTitle)) {
 					blog.setTitle(title);
-				}else{
-					blog.setTitle(hTitle);					
+				} else {
+					blog.setTitle(hTitle);
 				}
 			}
-			if(content!=null){
-				TokenStream tokenStream = analyzer.tokenStream("content", new StringReader(content)); 
-				String hContent=highlighter.getBestFragment(tokenStream, content);
-				if(StringUtil.isEmpty(hContent)){
+			if (content != null) {
+				TokenStream tokenStream = analyzer.tokenStream("content",
+						new StringReader(content));
+				String hContent = highlighter.getBestFragment(tokenStream,
+						content);
+				if (StringUtil.isEmpty(hContent)) {
 					blog.setContent(content);
-					if(content.length()<=200){
+					if (content.length() <= 200) {
 						blog.setContent(content);
-					}else{
-						blog.setContent(content.substring(0, 200));						
+					} else {
+						blog.setContent(content.substring(0, 200));
 					}
-				}else{
+				} else {
 					System.out.print(hContent);
-					blog.setContent(hContent);					
+					blog.setContent(hContent);
 				}
 			}
 			blogList.add(blog);

@@ -17,7 +17,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.dong.blog</groupId>
-			<artifactId>blog-application</artifactId>
+			<artifactId>blog-facade</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
