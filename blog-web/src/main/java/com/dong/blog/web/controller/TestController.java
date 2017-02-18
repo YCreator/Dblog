@@ -41,6 +41,7 @@ import org.java_websocket.drafts.Draft_17;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.dong.blog.facade.BlogFacade;
 import com.dong.blog.facade.BloggerFacade;
@@ -71,6 +72,22 @@ public class TestController {
 	private List<BlogDTO> dtos = new ArrayList<BlogDTO>();
 	
 	private WebSocketClient client = null;
+	
+	@RequestMapping("/t")
+	public ModelAndView test() {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("param", "你好");
+		mv.setViewName("hello");
+		return mv;
+	}
+	
+	@RequestMapping("/tt")
+	public ModelAndView t() {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("param", "How are you!");
+		mv.setViewName("hi");
+		return mv;
+	}
 	
 	@RequestMapping("/test")
 	public void test(HttpServletRequest request,HttpServletResponse response) throws Exception {

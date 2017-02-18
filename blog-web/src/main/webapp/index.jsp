@@ -48,15 +48,16 @@
 </head>
 <body>
 	<!-- 一个很赞的网页背景效果 canvas-nest.js
- ## 配置和配置项
- - **`color`**: 线条颜色, 默认: `'0,0,0'` ；三个数字分别为(R,G,B)，注意用,分割
- - **`opacity`**: 线条透明度（0~1）, 默认: `0.5`
- - **`count`**: 线条的总数量, 默认: `150`
- - **`zIndex`**: 背景的z-index属性，css属性用于控制所在层的位置, 默认: `-1`
- -->
+	 ## 配置和配置项
+	 - **`color`**: 线条颜色, 默认: `'0,0,0'` ；三个数字分别为(R,G,B)，注意用,分割
+	 - **`opacity`**: 线条透明度（0~1）, 默认: `0.5`
+	 - **`count`**: 线条的总数量, 默认: `150`
+	 - **`zIndex`**: 背景的z-index属性，css属性用于控制所在层的位置, 默认: `-1`
+	 -->
 	<script type="text/javascript" color="0,0,255" opacity='0.7'
 		zIndex="-2" count="99"
 		src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+		
 	<header>
 		<script type="text/javascript">
 			var checkData = function() {
@@ -82,6 +83,7 @@
 				});
 			}
 		</script>
+		
 		<div class="topbg">
 			<ul class="topnav">
 				<li class="tag"><a
@@ -92,7 +94,9 @@
 					target="_blank">关于我们</a></li>
 			</ul>
 		</div>
+
 		<div class="topbgline"></div>
+
 		<div class="logo">
 			<div class="logo_l f_l">
 				<a href="${pageContext.request.contextPath}/index.html"><img
@@ -111,6 +115,7 @@
 				</form>
 			</div>
 		</div>
+		
 		<nav id="topnav" class="f_r">
 			<ul>
 				<li><a href="${pageContext.request.contextPath}/index.html">文章首页</a></li>
@@ -123,12 +128,13 @@
 				src="${pageContext.request.contextPath}/static/mystyle/js/nav.js"></script>
 		</nav>
 	</header>
+	
 	<article>
 		<div class="l_box f_l">
 			<jsp:include page="${mainPage }"></jsp:include>
 		</div>
+		
 		<div class="r_box f_r">
-
 			<div class="ad300x100">
 				<img
 					src="${pageContext.request.contextPath}/static/mystyle/images/ad300x100.jpg">
@@ -247,6 +253,7 @@
 		</div>
 		<!--r_box end -->
 	</article>
+	
 	<footer>
 		<p class="ft-copyright">Dong博客 Design by DanceSmile
 			蜀ICP备11002373号-1</p>
@@ -256,6 +263,7 @@
 			<a id="gotop" href="javascript:backToTop()"></a>
 		</div>
 	</footer>
+	
 	<script type="text/javascript">
 		window.easemobim = window.easemobim || {};
 		easemobim.config = {
