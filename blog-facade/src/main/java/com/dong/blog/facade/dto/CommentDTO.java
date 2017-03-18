@@ -71,6 +71,14 @@ public class CommentDTO implements Serializable {
 	public void setState(Integer state) {
 		this.state = state;
 	}
+
+	@Override
+	public String toString() {
+		return "CommentDTO [id=" + id + ", userIp=" + userIp + ", content="
+				+ content + ", blogDTO=" + blogDTO + ", commentDate="
+				+ commentDate + ", state=" + state + "]";
+	}
+	
 	
 	
 }

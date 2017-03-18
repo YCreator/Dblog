@@ -9,12 +9,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>${pageTitle }-Powered by java1234</title>
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/static/bootstrap3/css/bootstrap.min.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/static/bootstrap3/css/bootstrap-theme.min.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/blog.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/lib/bootstrap3/css/bootstrap.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/lib/bootstrap3/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/blog.css">
 <link href="http://blog.java1234.com/favicon.ico" rel="SHORTCUT ICON">
-<script src="${pageContext.request.contextPath}/static/bootstrap3/js/jquery-1.11.2.min.js"></script>
-<script src="${pageContext.request.contextPath}/static/bootstrap3/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/lib/bootstrap3/js/jquery-1.11.2.min.js"></script>
+<script src="${pageContext.request.contextPath}/lib/bootstrap3/js/bootstrap.min.js"></script>
 
 <script>
 	var _hmt = _hmt || [];
@@ -35,9 +35,9 @@
 </head>
 <body>
 <div class="container">
-	<jsp:include page="/foreground/common/head.jsp"/>
+	<jsp:include page="pages/foreground/common/head.jsp"/>
 	
-	<jsp:include page="/foreground/common/menu.jsp"/>
+	<jsp:include page="pages/foreground/common/menu.jsp"/>
 	
 	<div class="row">
 		<div class="col-md-9">
@@ -47,11 +47,11 @@
 		<div class="col-md-3">
 			<div class="data_list">
 				<div class="data_list_title">
-					<img src="${pageContext.request.contextPath}/static/images/user_icon.png"/>
+					<img src="${pageContext.request.contextPath}/images/user_icon.png"/>
 					博主信息
 				</div>
 				<div class="user_image">
-					<img src="${pageContext.request.contextPath}/static/userImages/${blogger.imageName }"/>
+					<img src="${pageContext.request.contextPath}/images/${blogger.imageName }"/>
 				</div>
 				<div class="nickName">${blogger.nickName }</div>
 				<div class="userSign">(${blogger.sign })</div>
@@ -59,7 +59,7 @@
 			
 			<div class="data_list">
 				<div class="data_list_title">
-					<img src="${pageContext.request.contextPath}/static/images/byType_icon.png"/>
+					<img src="${pageContext.request.contextPath}/images/byType_icon.png"/>
 					按日志类别
 				</div>
 				<div class="datas">
@@ -73,7 +73,7 @@
 			
 			<div class="data_list">
 				<div class="data_list_title">
-					<img src="${pageContext.request.contextPath}/static/images/byDate_icon.png"/>
+					<img src="${pageContext.request.contextPath}/images/byDate_icon.png"/>
 					按日志日期
 				</div>
 				<div class="datas">
@@ -87,7 +87,7 @@
 			
 			<div class="data_list">
 				<div class="data_list_title">
-					<img src="${pageContext.request.contextPath}/static/images/link_icon.png"/>
+					<img src="${pageContext.request.contextPath}/images/link_icon.png"/>
 					友情链接
 				</div>
 				<div class="datas">
@@ -104,7 +104,7 @@
 		
 	</div>
 	
-	<jsp:include page="/foreground/common/foot.jsp"/>
+	<jsp:include page="pages/foreground/common/foot.jsp"/>
 </div>
 </body>
 </html>

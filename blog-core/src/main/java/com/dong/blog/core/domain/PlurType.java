@@ -7,14 +7,14 @@ import javax.persistence.Table;
 import com.dong.blog.core.AbstractEntity;
 
 @Entity
-@Table(name="t_plur_type")
+@Table(name = "t_plur_type")
 public class PlurType extends AbstractEntity {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@Column(length=20, nullable=false)
+	@Column(length = 20, nullable = false)
 	private String name;
 
 	public String getName() {
@@ -24,6 +24,5 @@ public class PlurType extends AbstractEntity {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
+
 }

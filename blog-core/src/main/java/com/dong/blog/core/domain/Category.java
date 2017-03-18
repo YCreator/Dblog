@@ -58,13 +58,7 @@ public class Category extends AbstractEntity {
 	public void setBlogTypes(Set<BlogType> blogTypes) {
 		this.blogTypes = blogTypes;
 	}
-
-	@Override
-	public String toString() {
-		return "Category [categoryName=" + categoryName + ", sort=" + sort
-				+ ", blogTypes=" + blogTypes + "]";
-	}
-
+	
 	public static Long getTotal() {
 		return getRepository().createNamedQuery("Category.getTotal")
 				.singleResult();
@@ -73,6 +67,12 @@ public class Category extends AbstractEntity {
 	public static List<Category> findAllBySort() {
 		return getRepository().createNamedQuery("Category.findAllBySort")
 				.list();
+	}
+
+	@Override
+	public String toString() {
+		return "Category [categoryName=" + categoryName + ", sort=" + sort
+				+ ", blogTypes=" + blogTypes + "]";
 	}
 
 }

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -38,6 +39,7 @@ import net.sf.json.JSONArray;
 import org.apache.commons.codec.binary.Base64;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_17;
+import org.jboss.logging.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -92,6 +94,62 @@ public class TestController {
 	@RequestMapping("/test")
 	public void test(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		ResponseUtil.write(response, new Gson().toJson(bloggerFacade.getBlogger()));
+	}
+	
+	@RequestMapping("/writeCss")
+	public void writeCss(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		File file = new File("D:/ExtJSIcons");
+		Set<IconJson> list = new HashSet<IconJson>();
+		if (file.exists() && file.isDirectory()) {
+			File cssFile = new File("D:/icons.json");
+			PrintStream ps = new PrintStream(new FileOutputStream(cssFile));
+			if (!cssFile.exists()) {
+				cssFile.createNewFile();
+			}
+			File[] fs = file.listFiles();
+			for (File f : fs) {
+				if (f.isDirectory()) {
+					File[] icons = f.listFiles();
+					for (File icon : icons) {
+						if (icon.getName().equals("Thumbs.db")) {
+							continue;
+						}
+						String name = icon.getName();
+						IconJson json = new IconJson();
+						json.setIcon(String.format("icon-%s", name.substring(0, name.lastIndexOf("."))));
+						json.setIconUrl(String.format("ExtJSIcons/%s/%s", f.getName(), name));
+						list.add(json);
+						StringBuilder sb = new StringBuilder();
+						/*sb.append(".icon-")
+						.append(name.substring(0, name.lastIndexOf(".")))
+						.append("{background:url('ExtJSIcons/")
+						.append(f.getName()).append("/")
+						.append(name).append("') no-repeat center cneter;}");*/
+						//list.add(sb.toString());
+						//ps.println(sb);
+					}
+				} else {
+					if (f.getName().equals("Thumbs.db")) {
+						continue;
+					}
+					String name = f.getName();
+					IconJson json = new IconJson();
+					json.setIcon(String.format("icon-%s", name.substring(0, name.lastIndexOf("."))));
+					json.setIconUrl(String.format("ExtJSIcons/%s", name));
+					list.add(json);
+					/*StringBuilder sb = new StringBuilder();
+					sb.append(".icon-")
+					.append(name.substring(0, name.lastIndexOf(".")))
+					.append("{background:url('ExtJSIcons/")
+					.append(name).append("') no-repeat center cneter;}");*/
+					//ps.println(sb);
+					//list.add(sb.toString());
+				}
+			}
+			ps.println(new Gson().toJson(list));
+		}
+		//Logger.getLogger(this.getClass().getName()).debug(list.size());
+		ResponseUtil.write(response, new Gson().toJson(list));
 	}
 	
 	@RequestMapping("/dealTaobaoUrl")

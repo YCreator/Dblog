@@ -67,7 +67,7 @@ public class CommentApplicationImpl extends BaseApplicationImpl implements Comme
 			jpql.append(" and _comment.state=").append(dto.getState());
 		}
 		jpql.append(" order by _comment.commentDate desc");
-		getLog().debug(jpql.toString());
+		getLog().debug(jpql.toString()+"_"+currentPage+"_"+pageSize);
 		return this.getQueryChannelService().createJpqlQuery(jpql.toString()).setPage(currentPage, pageSize).pagedList();
 	}
 

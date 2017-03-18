@@ -52,7 +52,7 @@ public class BloggerAdminController {
 			String filePath = request.getServletContext().getRealPath("/");
 			String imageName = DateUtil.getCurrentDateStr() + "."
 					+ imageFile.getOriginalFilename().split("\\.")[1];
-			imageFile.transferTo(new File(filePath + "static/userImages/"
+			imageFile.transferTo(new File(filePath + "images/"
 					+ imageName));
 			blogger.setImageName(imageName);
 		}

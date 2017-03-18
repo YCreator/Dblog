@@ -1,0 +1,32 @@
+[
+    {
+    	"id": "1",
+        "name": "博主信息",
+        "cacheMethod": "servletContext",
+        "keyName": "blogger"
+    },
+    {
+    	"id": "2",
+        "name": "博客类别",
+        "cacheMethod": "servletContext",
+        "keyName": "blogTypeCountList"
+    },
+    {
+    	"id": "3",
+        "name": "博客大分类",
+        "cacheMethod": "servletContext",
+        "keyName": "categorys"
+    },
+    {
+    	"id": "4",
+        "name": "友情链接",
+        "cacheMethod": "servletContext",
+        "keyName": "linkList"
+    },
+    {
+    	"id": "5",
+        "name": "系统菜单",
+        "cacheMethod": "redis",
+        "keyName": "menuTree"
+    }
+]

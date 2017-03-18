@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.dayatang.utils.Page;
+import org.jboss.logging.Logger;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -95,6 +96,7 @@ public class CommentFacadeImpl implements CommentFacade {
 			int pageSize) {
 		List<CommentDTO> list = new ArrayList<CommentDTO>();
 		Page<Comment> pages = null;
+		
 		try {
 			CommentMapper mapper = new CommentMapper();
 			Comment comment = mapper.transformEntityData(dto);
@@ -103,7 +105,9 @@ public class CommentFacadeImpl implements CommentFacade {
 				Blog blog = new BlogMapper().transformEntityData(blogDTO);
 				comment.setBlog(blog);
 			}
+			
 			pages = application.getPage(comment, currentPage, pageSize);
+			Logger.getLogger(this.getClass()).debug("=================>"+pages.getData().size());
 			list = (List<CommentDTO>) mapper.transformBeanDatas(pages.getData());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

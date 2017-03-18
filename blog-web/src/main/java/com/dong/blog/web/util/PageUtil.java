@@ -48,6 +48,8 @@ public class PageUtil {
 	}
 	
 
-	
+	public static String getIconDivClass(String icon) {
+		return "<div style='width:16px; height:16px; margin:0 auto;' class=\"" + icon + "\"></div>";
+	}
 	
 }

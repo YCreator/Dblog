@@ -10,6 +10,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,6 +58,7 @@ public class CommentAdminController {
 		}
 		dto.setState(Integer.parseInt(state));
 		List<CommentDTO> commentList = commentFacade.getPage(dto, pageBean.getPage(), pageBean.getPageSize()).getData();
+		Logger.getLogger(this.getClass()).debug("==============>"+commentList.size());
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("state", state); // 评论状态
 		Long total=commentFacade.getTotal(map);

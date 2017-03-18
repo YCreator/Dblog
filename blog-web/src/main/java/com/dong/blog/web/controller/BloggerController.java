@@ -42,7 +42,7 @@ public class BloggerController {
 						blogger.getPassword(), "java1234"));
 		try {
 			subject.login(token); // 登录验证
-			return "redirect:/admin/main.jsp";
+			return "redirect:/pages/admin/main.jsp";
 		} catch (Exception e) {
 			e.printStackTrace();
 			request.setAttribute("blogger", blogger);

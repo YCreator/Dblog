@@ -4,8 +4,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Java开源博客系统后台登录页面-Powered by java1234</title>
-<script src="${pageContext.request.contextPath}/static/bootstrap3/js/jquery-1.11.2.min.js"></script>
+<title>Java开源博客系统后台登录页面</title>
+<script src="${pageContext.request.contextPath}/lib/bootstrap3/js/jquery-1.11.2.min.js"></script>
 <STYLE>
 body{
 	background: #ebebeb;
@@ -38,7 +38,7 @@ body{
 	box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
 }
 .u_logo{
-	background: url("${pageContext.request.contextPath}/static/images/username.png") no-repeat;
+	background: url("${pageContext.request.contextPath}/images/username.png") no-repeat;
 	padding: 10px 10px;
 	position: absolute;
 	top: 43px;
@@ -46,7 +46,7 @@ body{
 
 }
 .p_logo{
-	background: url("${pageContext.request.contextPath}/static/images/password.png") no-repeat;
+	background: url("${pageContext.request.contextPath}/images/password.png") no-repeat;
 	padding: 10px 10px;
 	position: absolute;
 	top: 12px;
@@ -56,7 +56,7 @@ a{
 	text-decoration: none;
 }
 .tou{
-	background: url("${pageContext.request.contextPath}/static/images/tou.png") no-repeat;
+	background: url("${pageContext.request.contextPath}/images/tou.png") no-repeat;
 	width: 97px;
 	height: 92px;
 	position: absolute;
@@ -64,7 +64,7 @@ a{
 	left: 140px;
 }
 .left_hand{
-	background: url("${pageContext.request.contextPath}/static/images/left_hand.png") no-repeat;
+	background: url("${pageContext.request.contextPath}/images/left_hand.png") no-repeat;
 	width: 32px;
 	height: 37px;
 	position: absolute;
@@ -72,7 +72,7 @@ a{
 	left: 150px;
 }
 .right_hand{
-	background: url("${pageContext.request.contextPath}/static/images/right_hand.png") no-repeat;
+	background: url("${pageContext.request.contextPath}/images/right_hand.png") no-repeat;
 	width: 32px;
 	height: 37px;
 	position: absolute;
@@ -80,7 +80,7 @@ a{
 	right: -64px;
 }
 .initial_left_hand{
-	background: url("${pageContext.request.contextPath}/static/images/hand.png") no-repeat;
+	background: url("${pageContext.request.contextPath}/images/hand.png") no-repeat;
 	width: 30px;
 	height: 20px;
 	position: absolute;
@@ -88,7 +88,7 @@ a{
 	left: 100px;
 }
 .initial_right_hand{
-	background: url("${pageContext.request.contextPath}/static/images/hand.png") no-repeat;
+	background: url("${pageContext.request.contextPath}/images/hand.png") no-repeat;
 	width: 30px;
 	height: 20px;
 	position: absolute;
@@ -96,7 +96,7 @@ a{
 	right: -112px;
 }
 .left_handing{
-	background: url("${pageContext.request.contextPath}/static/images/left-handing.png") no-repeat;
+	background: url("${pageContext.request.contextPath}/images/left-handing.png") no-repeat;
 	width: 30px;
 	height: 20px;
 	position: absolute;
@@ -104,7 +104,7 @@ a{
 	left: 139px;
 }
 .right_handinging{
-	background: url("${pageContext.request.contextPath}/static/images/right_handing.png") no-repeat;
+	background: url("${pageContext.request.contextPath}/images/right_handing.png") no-repeat;
 	width: 30px;
 	height: 20px;
 	position: absolute;
