@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import org.dayatang.cache.memcached.MemcachedBasedCache;
 import org.dayatang.utils.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,9 @@ public class IndexController {
 
 	@Inject
 	private CategoryFacade categoryFacade;
+	
+	@Inject
+	private MemcachedBasedCache memcachedBasedCache;
 
 	/**
 	 * 源码下载
@@ -92,13 +96,35 @@ public class IndexController {
 				request.getContextPath() + "/index.html",
 				blogFacade.getTotal(params).longValue(),
 				intPage, 10, param.toString()));
+		
 		params.clear();
-		params.put("orderType", "clickHit");
-		List<BlogDTO> clickBlogs = blogFacade.pageQuery(params, 0, 6).getData(); // 查询点击量最高的前六篇博客
+		
+		@SuppressWarnings("unchecked")
+		List<BlogDTO> clickBlogs = (List<BlogDTO>) memcachedBasedCache.get("clickBlogs");
+		if (clickBlogs == null) {
+			params.put("orderType", "clickHit");
+			clickBlogs = blogFacade.pageQuery(params, 0, 6).getData(); // 查询点击量最高的前六篇博客
+			memcachedBasedCache.put("clickBlogs", clickBlogs, 60 * 1000);
+		}
 		mav.addObject("clickBlogs", clickBlogs);
-		params.put("orderType", "releaseDate");
-		List<BlogDTO> dateBlogs = blogFacade.pageQuery(params, 0, 6).getData(); // 查询最新的六篇博客
+		
+		@SuppressWarnings("unchecked")
+		List<BlogDTO> dateBlogs = (List<BlogDTO>) memcachedBasedCache.get("dateBlogs");
+		if (dateBlogs == null) {
+			params.put("orderType", "releaseDate");
+			dateBlogs = blogFacade.pageQuery(params, 0, 6).getData(); // 查询最新的六篇博客
+			memcachedBasedCache.put("dateBlogs", dateBlogs, 60 * 1000);
+		}
 		mav.addObject("dateBlogs", dateBlogs);
+		
+		@SuppressWarnings("unchecked")
+		List<BlogDTO> replyBlogs = (List<BlogDTO>) memcachedBasedCache.get("replyBlogs");
+		if (replyBlogs == null) {
+			params.put("orderType", "replyHit");
+			replyBlogs = blogFacade.pageQuery(params, 0, 6).getData(); //查询评论最多的六篇博客
+			memcachedBasedCache.put("replyBlogs", dateBlogs, 3600 * 1000);
+		}
+		mav.addObject("replyBlogs", replyBlogs);
 
 		mav.addObject("categoryName", "");
 

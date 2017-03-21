@@ -98,10 +98,12 @@ a:hover {
 		</div>
 		<div class="blog_info">
 			发布时间：『
-			<fmt:formatDate value="${blog.releaseDate }" type="date"
-				pattern="yyyy-MM-dd HH:mm" />
-			』&nbsp;&nbsp;博客类别：${blog.blogTypeDTO.typeName}&nbsp;&nbsp;阅读(${blog.clickHit})
+			<fmt:formatDate value="${blog.releaseDate }" type="date" pattern="yyyy-MM-dd HH:mm" />
+			』&nbsp;&nbsp;&nbsp;&nbsp;
+			博客类别：${blog.blogTypeDTO.typeName}&nbsp;&nbsp;&nbsp;&nbsp;
+			阅读(${blog.clickHit})
 			评论(${blog.replyHit})
+			点赞(${blog.likeHit})
 		</div>
 		<div class="blog_content">${blog.content }</div>
 		<div class="blog_keyWord">

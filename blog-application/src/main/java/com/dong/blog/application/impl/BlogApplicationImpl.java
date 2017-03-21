@@ -37,6 +37,7 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 		t.setReleaseDate(new Date());
 		t.setClickHit(0);
 		t.setReplyHit(0);
+		t.setLikeHit(0);
 		t.save();
 		return t;
 	}
@@ -65,6 +66,8 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 				jpql.append(" order by _blog.clickHit desc");
 			} else if ("releaseDate".equals(map.get("orderType"))) {
 				jpql.append(" order by _blog.releaseDate desc");
+			} else if ("replyHit".equals(map.get("orderType"))) {
+				jpql.append(" order by _blog.replyHit desc");
 			}
 		}
 		return this.getQueryChannelService().createJpqlQuery(jpql.toString()).setParameters(conditionVals).setPage(currentPage, pageSize).pagedList();
@@ -131,7 +134,7 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 		t.setReleaseDate(new Date());
 		t.setClickHit(0);
 		t.setReplyHit(0);
-		this.getLog().debug(t.toString());
+		t.setLikeHit(0);
 		t.save();
 		return t;
 	}

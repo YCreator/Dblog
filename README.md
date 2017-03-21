@@ -17,3 +17,4 @@
 
 ###	缓存服务器
 * 使用Redis的Key-Value数据库做缓存
+* 添加使用Memcached做二级缓存

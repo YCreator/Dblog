@@ -79,7 +79,6 @@
 		}
 	}
 	
-	
 	var openPasswordModifyDialog = function(){
 		$("#dlg").dialog("open").dialog("setTitle","修改密码");
 		url="${pageContext.request.contextPath}/admin/blogger/modifyPassword.do?id=${currentUser.id}";

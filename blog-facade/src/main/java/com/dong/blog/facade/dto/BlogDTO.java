@@ -24,6 +24,7 @@ public class BlogDTO implements Serializable {
 	private Date releaseDate; // 发布日期
 	private Integer clickHit; // 查看次数
 	private Integer replyHit; // 回复次数
+	private Integer likeHit;  // 点赞次数
 	private String content; // 博客内容
 	private String contentNoTag; // 博客内容 无网页标签 Lucene分词用
 	private BlogTypeDTO blogTypeDTO; // 博客类型
@@ -178,14 +179,22 @@ public class BlogDTO implements Serializable {
 	public void setPicPath(String picPath) {
 		this.picPath = picPath;
 	}
+	
+	public Integer getLikeHit() {
+		return likeHit;
+	}
+
+	public void setLikeHit(Integer likeHit) {
+		this.likeHit = likeHit;
+	}
 
 	@Override
 	public String toString() {
 		return "BlogDTO [id=" + id + ", title=" + title + ", summary="
 				+ summary + ", releaseDate=" + releaseDate + ", clickHit="
-				+ clickHit + ", replyHit=" + replyHit + ", content=" + content
-				+ ", contentNoTag=" + contentNoTag + ", blogTypeDTO="
-				+ blogTypeDTO + ", blogCount=" + blogCount
+				+ clickHit + ", replyHit=" + replyHit + ", likeHit=" + likeHit
+				+ ", content=" + content + ", contentNoTag=" + contentNoTag
+				+ ", blogTypeDTO=" + blogTypeDTO + ", blogCount=" + blogCount
 				+ ", releaseDateStr=" + releaseDateStr + ", keyWord=" + keyWord
 				+ ", picPath=" + picPath + ", imagesList=" + imagesList + "]";
 	}

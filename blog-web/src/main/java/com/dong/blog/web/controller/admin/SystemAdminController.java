@@ -12,6 +12,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
+import org.dayatang.cache.memcached.MemcachedBasedCache;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,6 +52,8 @@ public class SystemAdminController {
 	private CategoryFacade categoryFacade;
 	@Inject
 	private MenuFacade menuFacade;
+	@Inject
+	private MemcachedBasedCache memcachedBasedCache;
 	
 	/**
 	 * 刷新系统缓存
@@ -93,9 +96,10 @@ public class SystemAdminController {
 				JSONArray jsonArray = JSONArray.fromObject(list, jsonConfig);
 				result.put("rows", jsonArray);
 				result.put("total", 0);
-				Jedis jedis = RedisUtil.getJedis();
+				memcachedBasedCache.put("menuTree", result);
+				/*Jedis jedis = RedisUtil.getJedis();
 				jedis.set("menuTree", result.toString());
-				RedisUtil.returnResource(jedis);
+				RedisUtil.returnResource(jedis);*/
 				break;
 		}
 		

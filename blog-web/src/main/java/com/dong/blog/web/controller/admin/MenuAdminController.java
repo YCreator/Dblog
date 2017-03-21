@@ -12,6 +12,7 @@ import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
 import org.apache.log4j.Logger;
+import org.dayatang.cache.memcached.MemcachedBasedCache;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,6 +39,9 @@ public class MenuAdminController {
 
 	@Inject
 	private MenuFacade menuFacade;
+	
+	@Inject
+	private MemcachedBasedCache memcachedBasedCache;
 
 	@ResponseBody
 	@RequestMapping("/list")
@@ -112,8 +116,6 @@ public class MenuAdminController {
 		return result;
 	}
 	
-	@ResponseBody
-	@RequestMapping("/getMenuTree")
 	public JSONObject getCacheTree() throws Exception {
 		Jedis jedis = RedisUtil.getJedis();
 		String menuTree = jedis.get("menuTree");
@@ -127,6 +129,17 @@ public class MenuAdminController {
 			jedis.set("menuTree", object.toString());
 		}
 		RedisUtil.returnResource(jedis);
+		return object;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/getMenuTree")
+	public JSONObject getMemCacheTree() throws Exception {
+		JSONObject object = (JSONObject) memcachedBasedCache.get("menuTree");
+		if (object == null) {
+			object = getTree();
+			memcachedBasedCache.put("menuTree", object);
+		}
 		return object;
 	}
 

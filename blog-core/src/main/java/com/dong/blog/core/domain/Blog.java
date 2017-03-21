@@ -42,6 +42,8 @@ public class Blog extends AbstractEntity {
 	private Integer clickHit; // 查看次数
 	@Column(name = "reply_hit", nullable = false, columnDefinition = "int(11) default 0")
 	private Integer replyHit; // 回复次数
+	@Column(name = "like_hit", nullable = false, columnDefinition = "int(11) default 0")
+	private Integer likeHit; //点赞次数
 	@Column(columnDefinition = "text")
 	private String content; // 博客内容
 	@JoinColumn(name = "type_id", referencedColumnName = "id")
@@ -169,13 +171,22 @@ public class Blog extends AbstractEntity {
 	public void setPicPath(String picPath) {
 		this.picPath = picPath;
 	}
+	
+	public Integer getLikeHit() {
+		return likeHit;
+	}
+
+	public void setLikeHit(Integer likeHit) {
+		this.likeHit = likeHit;
+	}
 
 	@Override
 	public String toString() {
-		return "Blog [title=" + title + ", releaseDate=" + releaseDate
-				+ ", clickHit=" + clickHit + ", replyHit=" + replyHit
-				+ ", blogType=" + blogType.getId() + ", keyWord=" + keyWord
-				+ ", picPath=" + picPath + "]";
+		return "Blog [title=" + title + ", summary=" + summary
+				+ ", releaseDate=" + releaseDate + ", clickHit=" + clickHit
+				+ ", replyHit=" + replyHit + ", likeHit=" + likeHit
+				+ ", content=" + content + ", blogType=" + blogType
+				+ ", keyWord=" + keyWord + ", picPath=" + picPath + "]";
 	}
 
 	public static Blog getNextBlog(Long id) {

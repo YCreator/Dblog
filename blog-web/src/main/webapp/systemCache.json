@@ -26,7 +26,7 @@
     {
     	"id": "5",
         "name": "系统菜单",
-        "cacheMethod": "redis",
+        "cacheMethod": "memcached",
         "keyName": "menuTree"
     }
 ]

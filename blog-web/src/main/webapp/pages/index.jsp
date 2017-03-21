@@ -54,9 +54,9 @@
 	 - **`count`**: 线条的总数量, 默认: `150`
 	 - **`zIndex`**: 背景的z-index属性，css属性用于控制所在层的位置, 默认: `-1`
 	 -->
-	<script type="text/javascript" color="0,0,255" opacity='0.7'
+	<!-- <script type="text/javascript" color="0,0,255" opacity='0.7'
 		zIndex="-2" count="99"
-		src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+		src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script> -->
 		
 	<header>
 		<script type="text/javascript">
@@ -170,7 +170,7 @@
 				<div class="ms-main" id="ms-main">
 					<div style="display: block;" class="bd bd-news">
 						<ul>
-							<c:forEach var="blog" items="${clickBlogs }">
+							<c:forEach var="blog" items="${replyBlogs }">
 								<li><a
 									href="${pageContext.request.contextPath}/blog/articles/${blog.id}.html">${blog.title }</a></li>
 							</c:forEach>

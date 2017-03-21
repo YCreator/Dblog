@@ -17,5 +17,22 @@
     <!-- 自动扫描 -->
 	<context:component-scan base-package="com.dong.blog.application, com.dong.blog.facade" />    
     <context:property-placeholder location="classpath*:META-INF/props/*.properties" ignore-unresolvable="true"/>
-     
+    
+    <!-- Memcached配置 -->  
+    <bean id="memcachedBasedCache" class="org.dayatang.cache.memcached.MemcachedBasedCache" 
+    	init-method="init">  
+        <property name="servers" value="${memcached.server}"/>
+        <property name="initConn" value="${memcached.initConn}" /> 
+        <property name="minConn" value="${memcached.minConn}" />
+        <property name="maxConn" value="${memcached.maxConn}" />
+        <!-- <property name="maintSleep">  
+            <value>${memcached.maintSleep}</value>  
+        </property> -->  
+        <!-- <property name="nagle">  
+            <value>${memcached.nagle}</value>  
+        </property>   -->
+        <!-- <property name="socketTO">  
+            <value>${memcached.socketTO}</value>  
+        </property>  --> 
+    </bean> 
 </beans>
