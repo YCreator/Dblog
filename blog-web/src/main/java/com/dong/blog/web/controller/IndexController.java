@@ -21,6 +21,8 @@ import com.dong.blog.facade.dto.BlogDTO;
 import com.dong.blog.facade.dto.CategoryDTO;
 import com.dong.blog.facade.dto.PageBean;
 import com.dong.blog.util.StringUtil;
+import com.dong.blog.web.util.ConfigUtil;
+import com.dong.blog.web.util.Configuration;
 import com.dong.blog.web.util.PageUtil;
 
 /**
@@ -132,6 +134,8 @@ public class IndexController {
 		mav.addObject("mainPage", "foreground/myblog/home.jsp");
 		mav.addObject("listPage", "list.jsp");
 		mav.setViewName("index");
+		
+		System.out.println("=============="+ConfigUtil.LOCAL_BLOG_CONTENT_IMG_PATH+"======================");
 		return mav;
 	}
 

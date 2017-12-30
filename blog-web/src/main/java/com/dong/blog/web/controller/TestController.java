@@ -52,7 +52,7 @@ import com.dong.blog.facade.dto.BlogTypeDTO;
 import com.dong.blog.lucene.BlogIndex;
 import com.dong.blog.util.FileUtil;
 import com.dong.blog.web.service.ServerSocketClient;
-import com.dong.blog.web.util.Contance;
+import com.dong.blog.web.util.ConfigUtil;
 import com.dong.blog.web.util.ResponseUtil;
 import com.google.common.io.Files;
 import com.google.common.reflect.TypeToken;
@@ -69,7 +69,7 @@ public class TestController {
 	@Inject
 	BlogFacade blogFacade;
 	
-	private BlogIndex blogIndex = new BlogIndex();
+	private BlogIndex blogIndex = BlogIndex.getInstance();
 	
 	private List<BlogDTO> dtos = new ArrayList<BlogDTO>();
 	
@@ -310,7 +310,7 @@ public class TestController {
 	public String collectBlog(@RequestParam(value="startPage",required=false)Integer startPage
 			, @RequestParam(value="endPage",required=false)Integer endPage
 			, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String url = "ws://localhost:8080/blog-web/websocket/server/client";
+		String url = String.format("ws://%s/blog-web/websocket/server/client", ConfigUtil.SOCKET_CLIENT_HOST);
 		client = new ServerSocketClient(new URI(url), new Draft_17());
 		client.connect();
 		Integer[] types = {1,13,15,16,17,18};
@@ -390,7 +390,7 @@ public class TestController {
 			try {
 				sendMessage(client, "初始化数据源...");
 				String val = String.format("http://www.codeceo.com/article/tag/%s/page/%s", type, page);
-				String urlStr = String.format("http://192.168.1.190:8845/?url=%s", new String(Base64.encodeBase64(val.getBytes("UTF-8")), "utf-8"));
+				String urlStr = String.format("%s/?url=%s",ConfigUtil.GATHER_SERVICE_HOST, new String(Base64.encodeBase64(val.getBytes("UTF-8")), "utf-8"));
 				URL url = new URL(urlStr);
 				HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
 				httpConn.setReadTimeout(60000);
@@ -428,8 +428,8 @@ public class TestController {
 			    				continue;
 			    			}
 			    			try {
-			    				FileUtil.download(imgUrl, Contance.LOCAL_BLOG_CONTENT_IMG_PATH, fileName);
-			    				maps.put(imgUrl, String.format("%s%s/%s", Contance.IMAGE_SERVICE_HOST, Contance._BLOG_CONTENT_IMG_PATH, fileName));
+			    				FileUtil.download(imgUrl, ConfigUtil.LOCAL_BLOG_CONTENT_IMG_PATH, fileName);
+			    				maps.put(imgUrl, String.format("%s%s/%s", ConfigUtil.IMAGE_SERVICE_HOST, ConfigUtil._BLOG_CONTENT_IMG_PATH, fileName));
 			    			} catch(Exception e) {
 			    				e.printStackTrace();
 			    			}
@@ -451,7 +451,7 @@ public class TestController {
 				    int newHeight = 200;
 				    
 				    String name = dto.getPicPath().replace("http://static.codeceo.com/images/", "").replaceAll("/", "-");	
-				    File imgFile = new File(Contance.LOCAL_BLOG_IMAGES_PATH, name);
+				    File imgFile = new File(ConfigUtil.LOCAL_BLOG_IMAGES_PATH, name);
 				    BufferedImage image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_BGR);
 				    OutputStream os = new FileOutputStream(imgFile);
 				    Graphics graphics = image.createGraphics();  
@@ -460,7 +460,7 @@ public class TestController {
 				    os.flush();
 				    input.close();  
 				    os.close(); 
-			    	dto.setPicPath(String.format("%s%s/%s", Contance.IMAGE_SERVICE_HOST, Contance._BLOG_IMAGES_PATH, name));
+			    	dto.setPicPath(String.format("%s%s/%s", ConfigUtil.IMAGE_SERVICE_HOST, ConfigUtil._BLOG_IMAGES_PATH, name));
 			    	sendMessage(client, "成功抓取博客：\""+dto.getTitle()+"\"");
 			    	dtos.add(dto);
 			    }
@@ -498,7 +498,7 @@ public class TestController {
 	
 	@RequestMapping("/socket")
 	public String socket() throws Exception{
-		String url = "ws://localhost:8080/blog-web/websocket/server/client";
+		String url = String.format("ws://%s/blog-web/websocket/server/client", ConfigUtil.SOCKET_CLIENT_HOST);
 		WebSocketClient client = new ServerSocketClient(new URI(url), new Draft_17());
 		client.connect();
 		String message = "hello";

@@ -5,6 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="referrer" content="no-referrer" />
 <meta charset="gb2312">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -223,7 +224,7 @@
 				</ul>
 			</div>
 			<div class="ad">
-				<img src="http://192.168.1.190:8089/blog/images/03.jpg">
+				<img src="http://39.106.161.242:8089/blog/images/03.jpg">
 			</div>
 
 			<div class="tit01">

@@ -31,7 +31,7 @@ import com.dong.blog.facade.dto.BloggerDTO;
 import com.dong.blog.facade.dto.CategoryDTO;
 import com.dong.blog.facade.dto.LinkDTO;
 import com.dong.blog.facade.dto.MenuDTO;
-import com.dong.blog.web.util.RedisUtil;
+import com.dong.blog.infra.redis.RedisUtil;
 
 /**
  * 管理员系统Controller层

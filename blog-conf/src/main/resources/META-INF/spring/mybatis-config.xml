@@ -6,6 +6,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	
 	<!-- 别名 -->
 	<typeAliases>
-		<package name="com.dong.entity"/>
+		<package name="com.dong.blog.core.domain"/>
 	</typeAliases>
 </configuration>

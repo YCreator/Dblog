@@ -34,5 +34,9 @@
         <!-- <property name="socketTO">  
             <value>${memcached.socketTO}</value>  
         </property>  --> 
+    </bean>
+    
+    <bean id="blogIndex" class="com.dong.blog.lucene.BlogIndex">
+    	<property name="lucenePath" value="${app.lucene.path}" />
     </bean> 
 </beans>

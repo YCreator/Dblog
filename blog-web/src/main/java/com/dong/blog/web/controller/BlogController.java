@@ -36,7 +36,8 @@ public class BlogController {
 	private CommentFacade commentFacade;
 		
 	// 博客索引
-	private BlogIndex blogIndex=new BlogIndex();
+	
+	private BlogIndex blogIndex=BlogIndex.getInstance();
 	
 	/**
 	 * 请求博客详细信息

@@ -24,8 +24,8 @@ import com.dong.blog.core.domain.MenuType;
 import com.dong.blog.facade.MenuFacade;
 import com.dong.blog.facade.dto.MenuDTO;
 import com.dong.blog.facade.dto.PageBean;
+import com.dong.blog.infra.redis.RedisUtil;
 import com.dong.blog.util.StringUtil;
-import com.dong.blog.web.util.RedisUtil;
 
 /**
  * 菜单管理层

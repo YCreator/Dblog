@@ -1,4 +1,12 @@
 eclipse.preferences.version=1
+encoding//src/main/java=UTF-8
+encoding//src/main/java/com/dong/blog/web/controller/TestController.java=UTF-8
 encoding//src/main/resources=UTF-8
+encoding//src/main/resources/META-INF/props/config.properties=UTF-8
+encoding//src/main/resources/META-INF/props/database.properties=UTF-8
+encoding//src/main/resources/META-INF/props/memcached.properties=UTF-8
+encoding//src/main/resources/META-INF/props/user-config.properties=UTF-8
+encoding//src/main/resources/log4j.properties=UTF-8
 encoding//src/main/webapp/lib/ueditor=GBK
 encoding//src/main/webapp/pages/errors/404.jsp=UTF-8
+encoding/<project>=UTF-8

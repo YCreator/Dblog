@@ -34,7 +34,6 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 import com.dong.blog.facade.dto.BlogDTO;
-import com.dong.blog.util.Contance;
 import com.dong.blog.util.DateUtil;
 import com.dong.blog.util.StringUtil;
 
@@ -45,9 +44,23 @@ import com.dong.blog.util.StringUtil;
  *
  */
 public class BlogIndex {
+	
+	private static BlogIndex mBlogIndex;
+	
+	private String lucenePath = "/";
 
 	private Directory dir = null;
-
+	
+	
+	
+	public String getLucenePath() {
+		return lucenePath;
+	}
+	
+	public void setLucenePath(String lucenePath) {
+		this.lucenePath = lucenePath;
+	}
+	
 	/**
 	 * 获取IndexWriter实例
 	 * 
@@ -55,7 +68,7 @@ public class BlogIndex {
 	 * @throws Exception
 	 */
 	private IndexWriter getWriter() throws Exception {
-		dir = FSDirectory.open(Paths.get(Contance.LUCENE_PATHT));
+		dir = FSDirectory.open(Paths.get(lucenePath));
 		SmartChineseAnalyzer analyzer = new SmartChineseAnalyzer();
 		IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
 		IndexWriter writer = new IndexWriter(dir, iwc);
@@ -138,7 +151,7 @@ public class BlogIndex {
 	 * @throws Exception
 	 */
 	public List<BlogDTO> searchBlog(String q) throws Exception {
-		dir = FSDirectory.open(Paths.get("C://lucene"));
+		dir = FSDirectory.open(Paths.get(lucenePath));
 		IndexReader reader = DirectoryReader.open(dir);
 		IndexSearcher is = new IndexSearcher(reader);
 		BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
@@ -195,5 +208,13 @@ public class BlogIndex {
 			blogList.add(blog);
 		}
 		return blogList;
+	}
+	
+	public static BlogIndex getInstance() {
+		return mBlogIndex;
+	}
+	
+	public static void setInstance(BlogIndex blogIndex) {
+		mBlogIndex = blogIndex;
 	}
 }

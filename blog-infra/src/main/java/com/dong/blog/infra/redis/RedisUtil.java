@@ -1,4 +1,4 @@
-package com.dong.blog.web.util;
+package com.dong.blog.infra.redis;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;

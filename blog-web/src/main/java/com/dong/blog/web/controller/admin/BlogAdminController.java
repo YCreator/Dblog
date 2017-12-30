@@ -34,7 +34,7 @@ import com.dong.blog.facade.dto.PageBean;
 import com.dong.blog.lucene.BlogIndex;
 import com.dong.blog.util.HtmlUtil;
 import com.dong.blog.util.StringUtil;
-import com.dong.blog.web.util.Contance;
+import com.dong.blog.web.util.ConfigUtil;
 import com.google.gson.Gson;
 
 
@@ -54,7 +54,7 @@ public class BlogAdminController {
 	private BlogTypeFacade blogTypeFacade;
 	
 	// 博客索引
-	private BlogIndex blogIndex = new BlogIndex();
+	private BlogIndex blogIndex = BlogIndex.getInstance();
 	
 	/**
 	 * 添加或者修改博客信息
@@ -171,10 +171,10 @@ public class BlogAdminController {
 			String imageName = imageFile.getOriginalFilename();
 			String imgForm = imageName.substring(imageName.lastIndexOf(".") + 1, imageName.length());
 			String name = String.format("%s.%s", System.currentTimeMillis(), imgForm);
-			File imgFile = new File(Contance.LOCAL_BLOG_IMAGES_PATH, name);
+			File imgFile = new File(ConfigUtil.LOCAL_BLOG_IMAGES_PATH, name);
 			imageFile.transferTo(imgFile);
 			result.put("success", true);
-			result.put("imgPath", String.format("%s%s/%s", Contance.IMAGE_SERVICE_HOST, Contance._BLOG_IMAGES_PATH, name));
+			result.put("imgPath", String.format("%s%s/%s", ConfigUtil.IMAGE_SERVICE_HOST, ConfigUtil._BLOG_IMAGES_PATH, name));
 		} else {
 			
 			result.put("success", false);
@@ -194,7 +194,7 @@ public class BlogAdminController {
 	    int newWidth = 245;  
 	    int newHeight = 200;
 	    String name = String.format("%s.%s", System.currentTimeMillis(), "jpg");
-	    File imgFile = new File(Contance.LOCAL_BLOG_IMAGES_PATH, name);
+	    File imgFile = new File(ConfigUtil.LOCAL_BLOG_IMAGES_PATH, name);
 	    BufferedImage image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_BGR);
 	    OutputStream os = new FileOutputStream(imgFile);
 	    Graphics graphics = image.createGraphics();  
@@ -204,7 +204,7 @@ public class BlogAdminController {
 	    input.close();  
 	    os.close(); 
 	    result.put("success", true);
-		result.put("imgPath", String.format("%s%s/%s", Contance.IMAGE_SERVICE_HOST, Contance._BLOG_IMAGES_PATH, name));
+		result.put("imgPath", String.format("%s%s/%s", ConfigUtil.IMAGE_SERVICE_HOST, ConfigUtil._BLOG_IMAGES_PATH, name));
 		return result;
 	}
 	
