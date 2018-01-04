@@ -256,8 +256,8 @@
 	</article>
 	
 	<footer>
-		<p class="ft-copyright">Dong博客 Design by DanceSmile
-			蜀ICP备11002373号-1</p>
+		<p class="ft-copyright">Dong博客 Design by Dong
+			<a href="http://www.miitbeian.gov.cn/" ><font color=white>粤ICP备18001000号-1</font></a></p>
 		<div id="tbox">
 			<a id="togbook" href="javascript:bind();"></a>
 			<!-- onclick='easemobim.bind({tenantId: 21064, emgroup: "订单客服"})' -->
@@ -265,45 +265,6 @@
 		</div>
 	</footer>
 	
-	<script type="text/javascript">
-		window.easemobim = window.easemobim || {};
-		easemobim.config = {
-			hide : true, //是否隐藏小的悬浮按钮
-			autoConnect : true, //自动连接
-			resources : true, //是否启用收消息同步
-
-			visitor : {
-				trueName : 'ling',
-				qq : '567**34',
-				phone : '188****8888',
-				companyName : '环信',
-				userNickname : 'hello16',
-				description : '描述信息',
-				email : '123456@**.com'
-			},
-
-		};
-
-		function bind() {
-			easemobim.bind({
-				tenantId : 21064,
-				emgroup : "订单客服",
-				onready : function() {
-				},
-
-				onmessage : function(message) {
-				},
-
-				onsessionclosed : function() {
-					$.cookie('订单客服21064', '', {
-						path : '/'
-					});
-				},
-			});
-		}
-	</script>
-	<script src='//kefu.easemob.com/webim/easemob.js?tenantId=21064'
-		async='async'></script>
 </body>
 <%
 	if (request.getAttribute("clickBlogs") != null) {

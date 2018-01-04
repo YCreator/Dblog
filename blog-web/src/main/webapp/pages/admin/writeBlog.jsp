@@ -12,8 +12,9 @@
 	href="${pageContext.request.contextPath}/lib/jquery-easyui-1.3.3/themes/icon.css">
 <style type="text/css">
 .uploadImg {
-
+	
 }
+
 #myimg {
 	max-width: 200px;
 }
@@ -21,8 +22,9 @@
 #imageFile {
 	
 }
+
 .img-type-title {
-	margin:5px;
+	margin: 5px;
 }
 </style>
 <script src="http://www.codefans.net/ajaxjs/jquery-1.6.2.min.js"></script>
@@ -48,7 +50,7 @@
 	function previewImg(obj) {
 		if (checkImage) {
 			var objUrl = getObjectURL(obj.files[0]);
-			console.log("objUrl = "+objUrl) ;
+			console.log("objUrl = " + objUrl);
 			if (objUrl) {
 				$("#myimg").attr("src", objUrl);
 				$("#netImage").val("");
@@ -116,7 +118,7 @@
 	function checkImage() {
 		var picPath = $("#imageFile").val();
 		var type = picPath.substring(picPath.lastIndexOf(".") + 1,
-				picPaht.lenght).toLowerCase();
+				picPath.lenght).toLowerCase();
 		if (type != "jpg" && type != "png" && type != "bmp" && type != "gif") {
 			alert("请上传正确的图片格式 ");
 			return false;
@@ -145,7 +147,7 @@
 			return obj.value;
 		}
 	}
-	
+
 	function uploadImg() {
 		var picPath = $("#imageFile").val();
 		var pic = $("#netImage").val();
@@ -167,7 +169,7 @@
 					}
 				});
 			} */
-		} else if(picPath != null && picPath != '') {
+		} else if (picPath != null && picPath != '') {
 			requestUploadImage("${pageContext.request.contextPath}/admin/blog/uploadImg.do");
 			/* if (checkParams()) {
 				$("#fm").form("submit", {
@@ -186,31 +188,31 @@
 				});
 			}	 */
 		} else {
-			$("#picPath").val("/resources/images/no_picture.jpg");
+			$("#picPath").val("http://img.dbvips.com/blog/images/no_picture.jpg");
 			submitData();
 		}
-		 
+
 	}
-	
+
 	function requestUploadImage(url) {
 		if (checkParams()) {
 			$("#fm").form("submit", {
-				url: url,
-				success: function(result) {
+				url : url,
+				success : function(result) {
 					var result = eval('(' + result + ')');
 					if (result.success) {
 						$("#picPath").val(result.imgPath);
 						submitData();
 					} else {
 						alert("图片上传失败， 已使用默认图片 ");
-						$("#picPath").val("/resources/images/no_picture.jpg");
-						submitData();	
+						$("#picPath").val("http://img.dbvips.com/blog/images/no_picture.jpg");
+						submitData();
 					}
 				}
 			});
 		}
 	}
-	
+
 	function checkParams() {
 		var title = $("#title").val();
 		var blogTypeId = $("#blogTypeId").combobox("getValue");
@@ -226,9 +228,9 @@
 		} else if (content == null || content == '') {
 			alert("请输入内容！");
 			return false;
-		/* } else if(picPath == null || picPath == '') {
-			alert("请选择一张介绍图！");
-			return false; */
+			/* } else if(picPath == null || picPath == '') {
+				alert("请选择一张介绍图！");
+				return false; */
 		} else {
 			return true;
 		}
@@ -236,59 +238,63 @@
 </script>
 </head>
 <body style="margin: 10px">
-<form id="fm" method="post" enctype="multipart/form-data">
-			
-	<div id="p" class="easyui-panel" title="编写博客" style="padding: 10px">
-		<table cellspacing="20px">
-			<tr>
-				<td width="80px">博客标题：</td>
-				<td><input type="text" id="title" name="title"
-					style="width: 400px;" /></td>
-			</tr>
-			<tr>
-				<td>所属类别：</td>
-				<td><select class="easyui-combobox" style="width: 154px"
-					id="blogTypeId" name="blogType.id" editable="false"
-					panelHeight="auto">
-						<option value="">请选择博客类别...</option>
-						<c:forEach var="blogType" items="${blogTypeCountList }">
-							<option value="${blogType.id }">${blogType.typeName }</option>
-						</c:forEach>
-				</select></td>
-			</tr>
-			<tr>
-				<td valign="top">博客内容：</td>
-				<td><script id="editor" type="text/plain"
-						style="width:100%;height:500px;"></script></td>
-			</tr>
-			<tr>
-				<td>关键字：</td>
-				<td><input type="text" id="keyWord" name="keyWord"
-					style="width: 400px;" />&nbsp;(多个关键字中间用空格隔开)</td>
-			</tr>
-			<tr>
-				<td>图片介绍：</td>
-				<td><div class="img-type-title">本地图片</div><div class="uploadImg" ><img id="myimg" alt="" src=""> <input type="file"
-					id="imageFile" name="imageFile" style="width: 400px;"
-					multiple="multiple" onchange="previewImg(this);" /></div></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><div class="img-type-title">网络图片</div><input type="text" id="netImage" name="netImage" size="50" /></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="hidden" id="picPath" name="picPath" 
-					style="width: 400px;" /></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><a href="javascript:uploadImg()" class="easyui-linkbutton"
-					data-options="iconCls:'icon-submit'">发布博客</a></td>
-			</tr>
-			
-		</table>
-	</div>
+	<form id="fm" method="post" enctype="multipart/form-data">
+
+		<div id="p" class="easyui-panel" title="编写博客" style="padding: 10px">
+			<table cellspacing="20px">
+				<tr>
+					<td width="80px">博客标题：</td>
+					<td><input type="text" id="title" name="title"
+						style="width: 400px;" /></td>
+				</tr>
+				<tr>
+					<td>所属类别：</td>
+					<td><select class="easyui-combobox" style="width: 154px"
+						id="blogTypeId" name="blogType.id" editable="false"
+						panelHeight="auto">
+							<option value="">请选择博客类别...</option>
+							<c:forEach var="blogType" items="${blogTypeCountList }">
+								<option value="${blogType.id }">${blogType.typeName }</option>
+							</c:forEach>
+					</select></td>
+				</tr>
+				<tr>
+					<td valign="top">博客内容：</td>
+					<td><script id="editor" type="text/plain"
+							style="width:100%;height:500px;"></script></td>
+				</tr>
+				<tr>
+					<td>关键字：</td>
+					<td><input type="text" id="keyWord" name="keyWord"
+						style="width: 400px;" />&nbsp;(多个关键字中间用空格隔开)</td>
+				</tr>
+				<tr>
+					<td>图片介绍：</td>
+					<td><div class="img-type-title">本地图片</div>
+						<div class="uploadImg">
+							<img id="myimg" alt="" src=""> <input type="file"
+								id="imageFile" name="imageFile" style="width: 400px;"
+								multiple="multiple" onchange="previewImg(this);" />
+						</div></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><div class="img-type-title">网络图片</div>
+						<input type="text" id="netImage" name="netImage" size="50" /></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="hidden" id="picPath" name="picPath"
+						style="width: 400px;" /></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><a href="javascript:uploadImg()" class="easyui-linkbutton"
+						data-options="iconCls:'icon-submit'">发布博客</a></td>
+				</tr>
+
+			</table>
+		</div>
 	</form>
 	<script type="text/javascript">
 		//实例化编辑器

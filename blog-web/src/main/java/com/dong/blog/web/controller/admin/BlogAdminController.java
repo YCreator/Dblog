@@ -174,9 +174,9 @@ public class BlogAdminController {
 			File imgFile = new File(ConfigUtil.LOCAL_BLOG_IMAGES_PATH, name);
 			imageFile.transferTo(imgFile);
 			result.put("success", true);
-			result.put("imgPath", String.format("%s%s/%s", ConfigUtil.IMAGE_SERVICE_HOST, ConfigUtil._BLOG_IMAGES_PATH, name));
+			String imgUrl = String.format("%s%s/%s", ConfigUtil.IMAGE_SERVICE_HOST, ConfigUtil._BLOG_IMAGES_PATH, name);
+			result.put("imgPath", imgUrl);
 		} else {
-			
 			result.put("success", false);
 		}
 		return result;

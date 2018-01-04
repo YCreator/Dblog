@@ -16,7 +16,8 @@ import com.dong.blog.core.AbstractEntity;
  */
 @Entity
 @Table(name = "t_blogger")
-@NamedQueries({ @NamedQuery(name = "Blogger.findByUsername", query = "select _blogger from Blogger _blogger where _blogger.username= :username") })
+@NamedQueries({ @NamedQuery(name = "Blogger.findByUsername", query = "select _blogger from Blogger _blogger where _blogger.username= :username"),
+				@NamedQuery(name = "Blogger.updatePassword", query = "update Blogger _blogger set _blogger.password= :password where _blogger.id=1")})
 public class Blogger extends AbstractEntity {
 
 	/**
@@ -88,6 +89,11 @@ public class Blogger extends AbstractEntity {
 	public static Blogger findByUsername(String name) {
 		return getRepository().createNamedQuery("Blogger.findByUsername")
 				.addParameter("username", name).singleResult();
+	}
+	
+	public static int updatePassword(String password) {
+		return getRepository().createNamedQuery("Blogger.updatePassword")
+				.addParameter("password", password).executeUpdate();
 	}
 
 	@Override

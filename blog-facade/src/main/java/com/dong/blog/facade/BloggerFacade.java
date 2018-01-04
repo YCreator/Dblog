@@ -7,5 +7,7 @@ public interface BloggerFacade extends BaseFacade<BloggerDTO, Long>{
 	BloggerDTO findByUsername(String username);
 	
 	BloggerDTO getBlogger(); //获取管理员信息
+	
+	boolean updatePassword(String password);
 
 }

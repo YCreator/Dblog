@@ -102,4 +102,9 @@ public class BloggerFacadeImpl implements BloggerFacade {
 		return this.get(1L);
 	}
 
+	public boolean updatePassword(String password) {
+		// TODO Auto-generated method stub
+		return Blogger.updatePassword(password) > 0;
+	}
+
 }

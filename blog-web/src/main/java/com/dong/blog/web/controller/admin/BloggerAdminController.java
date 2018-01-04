@@ -86,10 +86,8 @@ public class BloggerAdminController {
 	public Map<String, Object> modifyPassword(String newPassword)
 			throws Exception {
 
-		BloggerDTO blogger = new BloggerDTO();
-		blogger.setPassword(CryptographyUtil.md5(newPassword, "java1234"));
-		boolean isUpdateSuccess = bloggerFacade.update(blogger);
-
+		boolean isUpdateSuccess = bloggerFacade.updatePassword(CryptographyUtil.md5(newPassword, "java1234"));
+		
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("success", isUpdateSuccess);
 		return result;

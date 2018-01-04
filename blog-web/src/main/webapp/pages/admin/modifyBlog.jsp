@@ -28,21 +28,37 @@
 <script type="text/javascript" charset="gbk"
 	src="${pageContext.request.contextPath}/lib/ueditor/lang/zh-cn/zh-cn.js"></script>
 <script type="text/javascript">
-	
 	$(document).ready(function() {
-		
+
 	});
 
 	//选择图片预览
 	function previewImg(obj) {
-		if (checkImage) {
+		if (checkImage()) {
 			var objUrl = getObjectURL(obj.files[0]);
 			console.log("objUrl = " + objUrl);
 			if (objUrl) {
 				$("#myimg").attr("src", objUrl);
-				$("#picPath").val("");
+				$("#netImage").val("");
 			}
 		}
+	}
+
+	function checkImage() {
+		var picPath = $("#imageFile").val();
+		var type = picPath.substring(picPath.lastIndexOf(".") + 1,
+				picPath.lenght).toLowerCase();
+		if (type != "jpg" && type != "png" && type != "bmp" && type != "gif") {
+			alert("请上传正确的图片格式 ");
+			return false;
+		}
+		return true;
+		var img = new Image();
+		//var obj = $("#imageFile").files.item(0).getAsDataURL();
+		alert($("#imageFile").val());
+
+		//img.src = getFullPath($("#imageFile"));
+
 	}
 
 	//建立一個可存取到該file的url
@@ -94,24 +110,34 @@
 
 	function uploadImg() {
 		if (checkParams()) {
-			var pic = $("#picPath").val();
-			if (picPath == null || picPath == '') {
-				$("#fm").form("submit",
-						{
-								url : "${pageContext.request.contextPath}/admin/blog/uploadImg.do",
-								success : function(result) {
-									var result = eval('(' + result + ')');
-									if (result.success) {
-										$("#picPath").val(result.imgPath);
-										submitData();
-									} else {
-										alert("error");
-									}
-								}
-						});
+			var picPath = $("#imageFile").val();
+			var pic = $("#netImage").val();
+			if (pic != null && pic != '') {
+				requestUploadImage("${pageContext.request.contextPath}/admin/blog/uploadNetImg.do");
+			} else if (picPath != null || picPath != '') {
+				requestUploadImage("${pageContext.request.contextPath}/admin/blog/uploadImg.do");
 			} else {
 				submitData();
 			}
+		}
+	}
+	
+	function requestUploadImage(url) {
+		if (checkParams()) {
+			$("#fm").form("submit", {
+				url : url,
+				success : function(result) {
+					var result = eval('(' + result + ')');
+					if (result.success) {
+						$("#picPath").val(result.imgPath);
+						submitData();
+					} else {
+						alert("图片上传失败， 已使用默认图片 ");
+						$("#picPath").val("http://img.dbvips.com/blog/images/no_picture.jpg");
+						submitData();
+					}
+				}
+			});
 		}
 	}
 
@@ -168,11 +194,17 @@
 				</tr>
 				<tr>
 					<td>图片介绍：</td>
-					<td><div class="uploadImg">
+					<td><div class="img-type-title">本地图片</div>
+						<div class="uploadImg">
 							<img id="myimg" alt="" src=""> <input type="file"
 								id="imageFile" name="imageFile" style="width: 400px;"
 								multiple="multiple" onchange="previewImg(this);" />
 						</div></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><div class="img-type-title">网络图片</div> <input type="text"
+						id="netImage" name="netImage" size="50" /></td>
 				</tr>
 				<tr>
 					<td></td>
@@ -181,15 +213,13 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td><a href="javascript:uploadImg()"
-						class="easyui-linkbutton" data-options="iconCls:'icon-submit'">发布博客</a>
-					</td>
+					<td><a href="javascript:uploadImg()" class="easyui-linkbutton"
+						data-options="iconCls:'icon-submit'">发布博客</a></td>
 				</tr>
 			</table>
 		</div>
 	</form>
 	<script type="text/javascript">
-		
 		//实例化编辑器
 		//建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
 		var ue = UE.getEditor('editor', {
@@ -197,31 +227,43 @@
 			autoFloatEnabled : false
 		});
 
-		ue.addListener(
-				"ready",
-				function() {
-					//通过ajax请求数据
-					UE.ajax.request(
-							"${pageContext.request.contextPath}/admin/blog/findById.do",
-							{
-								method : "post",
-								async : false,
-								data : {
-										"id" : "${param.id}"
-								},
-								onsuccess : function(result) {
-										result = eval("("
-												+ result.responseText
-												+ ")");
-										$("#title").val(result.title);
-										$("#keyWord").val(result.keyWord);
-										$("#blogTypeId").combobox("setValue",result.blogTypeDTO.id);
-										$("#picPath").val(result.picPath);
-										UE.getEditor('editor').setContent(result.content);
-										$("#myimg").attr("src", "${pageContext.request.contextPath}"+result.picPath);
-									}
-							});
-		});
+		ue
+				.addListener(
+						"ready",
+						function() {
+							//通过ajax请求数据
+							UE.ajax
+									.request(
+											"${pageContext.request.contextPath}/admin/blog/findById.do",
+											{
+												method : "post",
+												async : false,
+												data : {
+													"id" : "${param.id}"
+												},
+												onsuccess : function(result) {
+													result = eval("("
+															+ result.responseText
+															+ ")");
+													$("#title").val(
+															result.title);
+													$("#keyWord").val(
+															result.keyWord);
+													$("#blogTypeId")
+															.combobox(
+																	"setValue",
+																	result.blogTypeDTO.id);
+													$("#picPath").val(
+															result.picPath);
+													UE
+															.getEditor('editor')
+															.setContent(
+																	result.content);
+													$("#myimg").attr("src",
+															result.picPath);
+												}
+											});
+						});
 	</script>
 </body>
 </html>

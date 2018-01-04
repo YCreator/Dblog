@@ -1,3 +1,4 @@
+<%@page import="com.dong.blog.web.util.ConfigUtil"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -19,6 +20,8 @@
 		border-color:#cccccc;
 	}
 </style>
+<%@page import="com.dong.blog.web.util.ConfigUtil " %>
+<% String ws = String.format("ws://%s/blog-web/websocket/client/client", ConfigUtil.SOCKET_CLIENT_HOST); %>
 <script type="text/javascript">
  var websocket = null;
  
@@ -40,7 +43,7 @@
 
 //判断当前浏览器是否支持WebSocket
 if('WebSocket' in window){
- websocket = new WebSocket("ws://localhost:8080/blog-web/websocket/client/client");
+ websocket = new WebSocket("<%=ws%>");
 }
 else{
  alert('Not support websocket')
