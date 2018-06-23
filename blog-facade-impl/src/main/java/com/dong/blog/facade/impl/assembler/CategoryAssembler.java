@@ -7,24 +7,27 @@ import com.dong.blog.core.domain.BlogType;
 import com.dong.blog.core.domain.Category;
 import com.dong.blog.facade.dto.BlogTypeDTO;
 import com.dong.blog.facade.dto.CategoryDTO;
-import com.dong.blog.facade.impl.exception.AssemblerException;
 import com.dong.blog.util.BeanCopierUtil;
 
-public class CategoryMapper extends AbstractMapper<Category, CategoryDTO> {
+public class CategoryAssembler extends AbstractAssembler<Category, CategoryDTO> {
 
-	public CategoryDTO transformBeanData(Category source) throws AssemblerException {
+	public CategoryDTO toDto(Category source) {
 		CategoryDTO dto = new CategoryDTO();
-		BeanCopierUtil.copyProperties(source, dto);
-		Set<BlogType> sets = source.getBlogTypes();
-		for (BlogType blogType : sets) {
-			BlogTypeDTO blogTypeDTO = new BlogTypeDTO();
-			BeanCopierUtil.copyProperties(blogType, blogTypeDTO);
-			dto.getList().add(blogTypeDTO);
+		try {
+			BeanCopierUtil.copyProperties(source, dto);
+			Set<BlogType> sets = source.getBlogTypes();
+			for (BlogType blogType : sets) {
+				BlogTypeDTO blogTypeDTO = new BlogTypeDTO();
+				BeanCopierUtil.copyProperties(blogType, blogTypeDTO);
+				dto.getList().add(blogTypeDTO);
+			}
+		} catch (Exception e) {
+
 		}
 		return dto;
 	}
 
-	public Category transformEntityData(CategoryDTO source) throws AssemblerException {
+	public Category toEntity(CategoryDTO source) {
 		Category category = new Category();
 		BeanCopierUtil.copyProperties(source, category);
 		Set<BlogType> set = new HashSet<BlogType>();
@@ -35,9 +38,7 @@ public class CategoryMapper extends AbstractMapper<Category, CategoryDTO> {
 		return category;
 	}
 
-	@Override
-	public Category transformEntityData(Category target, CategoryDTO source)
-			throws AssemblerException {
+	public Category transformEntityData(Category target, CategoryDTO source) {
 		target.setCategoryName(source.getCategoryName());
 		target.setSort(source.getSort());
 		Set<BlogType> set = new HashSet<BlogType>();

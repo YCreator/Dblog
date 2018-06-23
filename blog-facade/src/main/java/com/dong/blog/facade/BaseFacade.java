@@ -23,7 +23,7 @@ public interface BaseFacade<T, PK extends Serializable> {
 	 * @param t
 	 * @return
 	 */
-	T save(T t);
+	void save(T t);
 	
 	/**
 	 * 修改数据

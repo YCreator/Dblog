@@ -76,7 +76,7 @@ public class BlogTypeAdminController {
 		
 		boolean isUpdateSuccess = false;
 		if(blogType.getId() == null){
-			blogType = blogTypeFacade.save(blogType);
+			blogTypeFacade.save(blogType);
 		}else{
 			isUpdateSuccess = blogTypeFacade.update(blogType);
 		}
@@ -100,8 +100,7 @@ public class BlogTypeAdminController {
 		Map<String, Object> result=new HashMap<String, Object>();
 		for(int i = 0; i < idsStr.length; i++){
 			BlogTypeDTO blogTypeDTO = blogTypeFacade.get(Long.valueOf(idsStr[i]));
-			List<BlogDTO> dto = blogFacade.getBlogsByProperty("blogType", blogTypeDTO);
-			if(dto.size() > 0){
+			if(blogFacade.blogInBlogTypeExist(blogTypeDTO)){
 				result.put("exist", "博客类别下有博客，不能删除！");
 				result.put("success", false);
 			}else{

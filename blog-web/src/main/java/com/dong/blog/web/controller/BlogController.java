@@ -56,8 +56,9 @@ public class BlogController {
 			mav.addObject("keyWords",null);			
 		}
 		mav.addObject("blog", blogDTO);
-		blogDTO.setClickHit(blogDTO.getClickHit() + 1);
-		blogFacade.updateClickHit(blogDTO.getId(), blogDTO.getClickHit()); // 博客点击次数加1
+		
+		Integer clickHit = blogFacade.upClickHit(blogDTO.getId()); // 博客点击次数加1
+		blogDTO.setClickHit(clickHit);
 		
 		CommentDTO commentDTO = new CommentDTO();
 		commentDTO.setBlogDTO(blogDTO);

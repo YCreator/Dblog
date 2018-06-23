@@ -2,7 +2,7 @@ package com.dong.blog.facade.dto;
 
 import java.io.Serializable;
 
-public class PlurTypeDTO implements Serializable {
+public class PlurPositionDTO implements Serializable {
 	
 	private Long id;
 	private String name;

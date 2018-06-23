@@ -335,7 +335,7 @@ public class TestController {
 					Thread.sleep(500);
 					try {
 						BlogDTO dto = dtos.get(i);
-						dto = blogFacade.save(dto);
+						blogFacade.save(dto);
 				    	blogIndex.addIndex(dto);
 					} catch(Exception e) {
 						e.printStackTrace();

@@ -1,6 +1,5 @@
 package com.dong.blog.facade.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,8 +17,8 @@ import com.dong.blog.core.domain.Comment;
 import com.dong.blog.facade.CommentFacade;
 import com.dong.blog.facade.dto.BlogDTO;
 import com.dong.blog.facade.dto.CommentDTO;
-import com.dong.blog.facade.impl.assembler.BlogMapper;
-import com.dong.blog.facade.impl.assembler.CommentMapper;
+import com.dong.blog.facade.impl.assembler.BlogAssembler;
+import com.dong.blog.facade.impl.assembler.CommentAssembler;
 
 @Named
 @Transactional(rollbackFor=Exception.class)
@@ -30,43 +29,23 @@ public class CommentFacadeImpl implements CommentFacade {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommentDTO get(Long pk) {
-		CommentDTO commentDTO = null;
-		try {
-			commentDTO = new CommentMapper().transformBeanData(application.load(pk));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return commentDTO;
+		Comment comment = application.load(pk);
+		return new CommentAssembler().toDto(comment);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommentDTO> findAll() {
-		List<CommentDTO> list = null;
-		 try {
-			list = (List<CommentDTO>) new CommentMapper().transformBeanDatas(application.findAll());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return list;
+		List<Comment> list = application.findAll();
+		return new CommentAssembler().toDtos(list);
 	}
 
-	public CommentDTO save(CommentDTO t) {
-		try {
-			Comment comment = new CommentMapper().transformEntityData(t);
-			BlogDTO blogDTO = t.getBlogDTO();
-			if (blogDTO != null) {
-				Blog blog = new BlogMapper().transformEntityData(blogDTO);
-				comment.setBlog(blog);
-			}
-			comment = application.save(comment);
-			t.setId(comment.getId());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return t;
+	public void save(CommentDTO t) {
+		Comment comment = new CommentAssembler().toEntity(t);
+		BlogDTO blogDTO = t.getBlogDTO();
+		Blog blog = new BlogAssembler().toEntity(blogDTO);
+		comment.setBlog(blog);
+		comment = application.save(comment);
+		t.setId(comment.getId());
 	}
 
 	public boolean update(CommentDTO t) {
@@ -80,9 +59,7 @@ public class CommentFacadeImpl implements CommentFacade {
 	}
 
 	public void removes(Long[] pks) {
-		for (Long pk : pks) {
-			remove(pk);
-		}
+		for (Long pk : pks) remove(pk);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -94,25 +71,16 @@ public class CommentFacadeImpl implements CommentFacade {
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Page<CommentDTO> getPage(CommentDTO dto, int currentPage,
 			int pageSize) {
-		List<CommentDTO> list = new ArrayList<CommentDTO>();
-		Page<Comment> pages = null;
-		
-		try {
-			CommentMapper mapper = new CommentMapper();
-			Comment comment = mapper.transformEntityData(dto);
-			BlogDTO blogDTO = dto.getBlogDTO();
-			if (blogDTO != null) {
-				Blog blog = new BlogMapper().transformEntityData(blogDTO);
-				comment.setBlog(blog);
-			}
-			
-			pages = application.getPage(comment, currentPage, pageSize);
-			Logger.getLogger(this.getClass()).debug("=================>"+pages.getData().size());
-			list = (List<CommentDTO>) mapper.transformBeanDatas(pages.getData());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		CommentAssembler mapper = new CommentAssembler();
+		Comment comment = mapper.toEntity(dto);
+		BlogDTO blogDTO = dto.getBlogDTO();
+		if (blogDTO != null) {
+			Blog blog = new BlogAssembler().toEntity(blogDTO);
+			comment.setBlog(blog);
 		}
+		Page<Comment> pages = application.getPage(comment, currentPage, pageSize);
+		Logger.getLogger(this.getClass()).debug("=================>"+pages.getData().size());
+		List<CommentDTO> list = (List<CommentDTO>) mapper.toDtos(pages.getData());
 		return new Page<CommentDTO>(pages.getStart(), pages.getResultCount(), pageSize, list);
 	}
 

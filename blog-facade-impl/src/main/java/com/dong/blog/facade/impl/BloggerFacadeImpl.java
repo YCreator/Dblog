@@ -12,58 +12,43 @@ import com.dong.blog.application.BloggerApplication;
 import com.dong.blog.core.domain.Blogger;
 import com.dong.blog.facade.BloggerFacade;
 import com.dong.blog.facade.dto.BloggerDTO;
-import com.dong.blog.facade.impl.assembler.BloggerMapper;
+import com.dong.blog.facade.impl.assembler.BloggerAssembler;
 
 @Named
 @Transactional(rollbackFor = Exception.class)
 public class BloggerFacadeImpl implements BloggerFacade {
 
 	@Inject
-	BloggerApplication application;
+	private BloggerApplication application;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BloggerDTO get(Long pk) {
-		BloggerDTO bloggerDTO = null;
-		try {
-			bloggerDTO = new BloggerMapper().transformBeanData(application.load(pk));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return bloggerDTO;
+		Blogger blogger = application.load(pk);
+		return new BloggerAssembler().toDto(blogger);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<BloggerDTO> findAll() {
 		// TODO Auto-generated method stub
-		List<BloggerDTO> list = null;
-		try {
-			list = (List<BloggerDTO>) new BloggerMapper()
-					.transformBeanDatas(application.findAll());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return list;
+		List<Blogger> list = application.findAll();
+		return new BloggerAssembler().toDtos(list);
 	}
 
-	public BloggerDTO save(BloggerDTO t) {
-		try {
-			Blogger blogger = new BloggerMapper().transformEntityData(t);
-			blogger = application.save(blogger);
-			t.setId(blogger.getId());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return t;
+	public void save(BloggerDTO t) {
+		Blogger blogger = new BloggerAssembler().toEntity(t);
+		blogger = application.save(blogger);
+		t.setId(blogger.getId());
 	}
 
 	public boolean update(BloggerDTO t) {
 		boolean isSuccess = false;
-		Blogger blogger = application.get(t.getId());
 		try {
-			new BloggerMapper().transformEntityData(blogger, t);
+			Blogger blogger = application.get(t.getId());
+			blogger.setImageName(t.getImageName());
+			blogger.setNickName(t.getNickName());
+			blogger.setUsername(t.getUsername());
+			blogger.setProFile(t.getProFile());
+			blogger.setSign(t.getSign());
 			isSuccess = true;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -78,23 +63,13 @@ public class BloggerFacadeImpl implements BloggerFacade {
 	}
 
 	public void removes(Long[] pks) {
-		for (Long pk : pks) {
-			remove(pk);
-		}
+		for (Long pk : pks) remove(pk);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BloggerDTO findByUsername(String username) {
-		// TODO Auto-generated method stub
-		BloggerDTO bloggerDTO = null;
-		try {
-			bloggerDTO = new BloggerMapper().transformBeanData(application
-					.findByUsername(username));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return bloggerDTO;
+		Blogger blogger = application.findByUsername(username);
+		return new BloggerAssembler().toDto(blogger);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -103,7 +78,6 @@ public class BloggerFacadeImpl implements BloggerFacade {
 	}
 
 	public boolean updatePassword(String password) {
-		// TODO Auto-generated method stub
 		return Blogger.updatePassword(password) > 0;
 	}
 

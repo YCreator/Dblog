@@ -71,7 +71,7 @@ public class MenuAdminController {
 		menuDTO.setIsParent(MenuType.isParent(menuDTO.getMenuType()));
 		if (menuDTO.getId() == null) {
 			menuDTO.setCreateTime(new Date());
-			menuDTO = menuFacade.save(menuDTO);
+			menuFacade.save(menuDTO);
 			isSuccess = menuDTO.getId() != null;
 		} else {
 			isSuccess = menuFacade.update(menuDTO);

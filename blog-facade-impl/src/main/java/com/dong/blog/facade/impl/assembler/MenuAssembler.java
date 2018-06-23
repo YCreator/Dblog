@@ -2,27 +2,28 @@ package com.dong.blog.facade.impl.assembler;
 
 import com.dong.blog.core.domain.Menu;
 import com.dong.blog.facade.dto.MenuDTO;
-import com.dong.blog.facade.impl.exception.AssemblerException;
 import com.dong.blog.util.BeanCopierUtil;
 
-public class MenuMapper extends AbstractMapper<Menu, MenuDTO> {
+public class MenuAssembler extends AbstractAssembler<Menu, MenuDTO> {
 
-	public MenuDTO transformBeanData(Menu source) throws AssemblerException {
+	public MenuDTO toDto(Menu source) {
 		MenuDTO dto = new MenuDTO();
-		BeanCopierUtil.copyProperties(source, dto);
-		dto.setMenuType(source.getType().getLabel());
+		try {
+			BeanCopierUtil.copyProperties(source, dto);
+			dto.setMenuType(source.getType().getLabel());
+		} catch (Exception e) {
+
+		}
 		return dto;
 	}
 
-	public Menu transformEntityData(MenuDTO source) throws AssemblerException {
+	public Menu toEntity(MenuDTO source) {
 		Menu menu = new Menu();
 		BeanCopierUtil.copyProperties(source, menu);
 		return menu;
 	}
 
-	@Override
-	public Menu transformEntityData(Menu target, MenuDTO source)
-			throws AssemblerException {
+	public Menu transformEntityData(Menu target, MenuDTO source) {
 		target.setDescription(source.getDescription());
 		target.setIcon(source.getIcon());
 		target.setPageUrl(source.getPageUrl());

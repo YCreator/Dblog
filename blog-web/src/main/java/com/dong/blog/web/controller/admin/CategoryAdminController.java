@@ -80,7 +80,7 @@ public class CategoryAdminController {
 		}
 		boolean isUpdateSuccess = false;
 		if (dto.getId() == null) {
-			dto = categoryFacade.save(dto);
+			categoryFacade.save(dto);
 		} else {
 			isUpdateSuccess = categoryFacade.update(dto);
 		}

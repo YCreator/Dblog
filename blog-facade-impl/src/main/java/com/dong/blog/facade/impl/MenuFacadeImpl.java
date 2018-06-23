@@ -19,8 +19,7 @@ import com.dong.blog.core.domain.MenuType;
 import com.dong.blog.core.domain.Taccountability;
 import com.dong.blog.facade.MenuFacade;
 import com.dong.blog.facade.dto.MenuDTO;
-import com.dong.blog.facade.impl.assembler.MenuMapper;
-import com.dong.blog.facade.impl.exception.AssemblerException;
+import com.dong.blog.facade.impl.assembler.MenuAssembler;
 
 @Named
 @Transactional(rollbackFor = Exception.class)
@@ -35,48 +34,33 @@ public class MenuFacadeImpl implements MenuFacade {
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public MenuDTO get(Long pk) {
 		// TODO Auto-generated method stub
-		MenuDTO dto = null;
-		try {
-			Menu menu = application.load(pk);
-			dto = new MenuMapper().transformBeanData(menu);
-		} catch (AssemblerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return dto;
+		Menu menu = application.load(pk);
+		return new MenuAssembler().toDto(menu);
 	}
 
 	public List<MenuDTO> findAll() {
-		List<MenuDTO> list = null;
-		try {
-			list = (List<MenuDTO>) new MenuMapper().transformBeanDatas(application.findAll());
-		} catch (AssemblerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return list;
+		List<Menu> list = application.findAll();
+		return new MenuAssembler().toDtos(list);
 	}
 
-	public MenuDTO save(MenuDTO t) {
-		try {
-			Menu menu = new MenuMapper().transformEntityData(t);
-			menu.setType(MenuType.getType(t.getMenuType()));
-			application.save(menu);
-			t.setId(menu.getId());
-		} catch (AssemblerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return t;
+	public void save(MenuDTO t) {
+		Menu menu = new MenuAssembler().toEntity(t);
+		menu.setType(MenuType.getType(t.getMenuType()));
+		application.save(menu);
+		t.setId(menu.getId());
 	}
 
 	public boolean update(MenuDTO t) {
 		boolean isSuccess = false;
 		Menu menu = application.get(t.getId());
 		try {
-			new MenuMapper().transformEntityData(menu, t);
+			menu.setDescription(t.getDescription());
+			menu.setIcon(t.getIcon());
+			menu.setPageUrl(t.getPageUrl());
+			menu.setTitle(t.getTitle());
+			menu.setSort(t.getSort());
 			isSuccess = true;
-		} catch (AssemblerException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -88,9 +72,7 @@ public class MenuFacadeImpl implements MenuFacade {
 	}
 
 	public void removes(Long[] pks) {
-		for(Long id : pks) {
-			application.remove(id);
-		}
+		for(Long id : pks) application.remove(id);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -100,17 +82,12 @@ public class MenuFacadeImpl implements MenuFacade {
 		for (Menu menu : menus) {
 			List<Menu> children = tApplication.getMenuByParent(menu);
 			if (children.size() > 0) {
-				try {
-					MenuMapper mapper = new MenuMapper();
-					List<MenuDTO> menuDTOs = (List<MenuDTO>) mapper.transformBeanDatas(children);
-					Set<MenuDTO> set = new LinkedHashSet<MenuDTO>(menuDTOs);
-					MenuDTO dto = mapper.transformBeanData(menu);
-					dto.setChildren(set);
-					list.add(dto);
-				} catch (AssemblerException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				MenuAssembler mapper = new MenuAssembler();
+				List<MenuDTO> menuDTOs = (List<MenuDTO>) mapper.toDtos(children);
+				Set<MenuDTO> set = new LinkedHashSet<MenuDTO>(menuDTOs);
+				MenuDTO dto = mapper.toDto(menu);
+				dto.setChildren(set);
+				list.add(dto);
 			}
 		}
 		return list;
@@ -118,121 +95,69 @@ public class MenuFacadeImpl implements MenuFacade {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<MenuDTO> getParentMenus() {
-		List<MenuDTO> list = null;
-		try {
-			list = (List<MenuDTO>) new MenuMapper().transformBeanDatas(application.getAllParentMenu());
-		} catch (AssemblerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return list;
+		List<Menu> list = application.getAllParentMenu();
+		return new MenuAssembler().toDtos(list);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<MenuDTO> getChildMenus() {
-		List<MenuDTO> list = null;
-		try {
-			list = (List<MenuDTO>) new MenuMapper().transformBeanDatas(application.getAllChildrenMenu());
-		} catch (AssemblerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return list;
+		List<Menu> list = application.getAllChildrenMenu();
+		return new MenuAssembler().toDtos(list);
 	}
 
 	public boolean addMenuRelationShip(MenuDTO parent, MenuDTO child) {
 		boolean isSuccess = false;
-		MenuMapper mapper = new MenuMapper();
-		try {
-			Menu p = mapper.transformEntityData(parent);
-			Menu c = mapper.transformEntityData(child);
-			Taccountability<Menu, Menu> t = tApplication.addChildToParent(p, c);
-			isSuccess = t.getId() != null && t.getId() != 0;
-		} catch (AssemblerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		MenuAssembler mapper = new MenuAssembler();
+		Menu p = mapper.toEntity(parent);
+		Menu c = mapper.toEntity(child);
+		Taccountability<Menu, Menu> t = tApplication.addChildToParent(p, c);
+		isSuccess = t.getId() != null && t.getId() != 0;
 		// TODO Auto-generated method stub
 		return isSuccess;
 	}
 
 	public boolean removeMenuRelationByParent(MenuDTO parent) {
 		boolean isSuccess = false;
-		try {
-			Menu p = new MenuMapper().transformEntityData(parent);
-			isSuccess = tApplication.delChildRelation(p);
-		} catch (AssemblerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Menu p = new MenuAssembler().toEntity(parent);
+		isSuccess = tApplication.delChildRelation(p);
 		return isSuccess;
 	}
 
 	public boolean removeMenuRelation(MenuDTO parent, MenuDTO child) {
 		boolean isSuccess = false;
-		MenuMapper mapper = new MenuMapper();
-		try {
-			Menu p = mapper.transformEntityData(parent);
-			Menu c = mapper.transformEntityData(child);
-			isSuccess = tApplication.delChildRelationByParent(p, c);
-		} catch (AssemblerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		MenuAssembler mapper = new MenuAssembler();
+		Menu p = mapper.toEntity(parent);
+		Menu c = mapper.toEntity(child);
+		isSuccess = tApplication.delChildRelationByParent(p, c);
 		return isSuccess;
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Page<MenuDTO> pageQuery(int currentPage, int pageSize) {
 		Page<Menu> pages = application.pageQuery(currentPage, pageSize);
-		List<MenuDTO> dtos = new ArrayList<MenuDTO>();
-		try {
-			dtos = (List<MenuDTO>) new MenuMapper().transformBeanDatas(pages.getData());
-		} catch (AssemblerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		List<MenuDTO> dtos = new MenuAssembler().toDtos(pages.getData());
 		return new Page<MenuDTO>(pages.getStart(), pages.getResultCount(), pageSize, dtos);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<MenuDTO> getAllChildNoParent() {
 		List<Menu> list = tApplication.getAllChildNoParent();
-		List<MenuDTO> dtos = new ArrayList<MenuDTO>();
-		try {
-			dtos = (List<MenuDTO>) new MenuMapper().transformBeanDatas(list);
-		} catch (AssemblerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		List<MenuDTO> dtos = new MenuAssembler().toDtos(list);
 		return dtos;
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public MenuDTO getParentMenuByChild(MenuDTO child) {
-		MenuMapper mapper = new MenuMapper();
-		MenuDTO dto = new MenuDTO();
-		try {
-			Menu menu = tApplication.getParentByChild(mapper.transformEntityData(child));
-			dto = mapper.transformBeanData(menu);
-		} catch (AssemblerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return dto;
+		MenuAssembler mapper = new MenuAssembler();
+		Menu menu = tApplication.getParentByChild(mapper.toEntity(child));
+		return mapper.toDto(menu);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public boolean hasMenuRelationship(MenuDTO menu) {
-		try {
-			Menu m = new MenuMapper().transformEntityData(menu);
-			Long count = tApplication.getMenuRelationshipCount(m);
-			return count != null && count > 0;
-		} catch (AssemblerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
+		Menu m = new MenuAssembler().toEntity(menu);
+		Long count = tApplication.getMenuRelationshipCount(m);
+		return count != null && count > 0;
 	}
 
 	public Long getCount() {

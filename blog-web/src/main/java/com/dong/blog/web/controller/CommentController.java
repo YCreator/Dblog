@@ -54,7 +54,7 @@ public class CommentController {
 			if (comment.getId() == null) {
 				comment.setCommentDate(new Date());
 				comment.setState(0);
-				comment = commentFacade.save(comment);
+				commentFacade.save(comment);
 			}
 			result.put("success", comment.getId() != null);
 		}

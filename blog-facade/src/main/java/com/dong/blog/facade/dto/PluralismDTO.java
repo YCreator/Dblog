@@ -21,11 +21,13 @@ public class PluralismDTO implements Serializable {
 	
 	private Integer sort;
 	
-	private PlurTypeDTO plurTypeDTO;
+	private PlurPositionDTO plurPositionDTO;
 
 	private Date releaseDate; // 发布日期
 	
 	private Boolean display;
+	
+	private String plurType;
 	
 	public Long getId() {
 		return id;
@@ -83,12 +85,12 @@ public class PluralismDTO implements Serializable {
 		this.sort = sort;
 	}
 
-	public PlurTypeDTO getPlurTypeDTO() {
-		return plurTypeDTO;
+	public PlurPositionDTO getPlurPositionDTO() {
+		return plurPositionDTO;
 	}
 
-	public void setPlurTypeDTO(PlurTypeDTO plurTypeDTO) {
-		this.plurTypeDTO = plurTypeDTO;
+	public void setPlurPositionDTO(PlurPositionDTO plurPositionDTO) {
+		this.plurPositionDTO = plurPositionDTO;
 	}
 
 	public Date getReleaseDate() {
@@ -106,6 +108,15 @@ public class PluralismDTO implements Serializable {
 	public void setDisplay(Boolean display) {
 		this.display = display;
 	}
+
+	public String getPlurType() {
+		return plurType;
+	}
+
+	public void setPlurType(String plurType) {
+		this.plurType = plurType;
+	}
+	
 	
 	
 

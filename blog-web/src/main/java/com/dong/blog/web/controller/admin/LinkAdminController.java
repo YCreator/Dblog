@@ -66,7 +66,7 @@ public class LinkAdminController {
 		boolean isUpdateSuccess = false; // 操作的记录条数
 		
 		if(link.getId() == null) {
-			link = linkFacade.save(link);
+			linkFacade.save(link);
 		} else {
 			isUpdateSuccess = linkFacade.update(link);
 		}

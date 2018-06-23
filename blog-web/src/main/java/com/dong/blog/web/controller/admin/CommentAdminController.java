@@ -115,7 +115,7 @@ public class CommentAdminController {
 				// 该博客的回复次数加1
 				comment = commentFacade.get(Long.parseLong(idsStr[i]));
 				BlogDTO blogDTO = comment.getBlogDTO();
-				blogFacade.updateReplyHit(blogDTO.getId(), blogDTO.getReplyHit() + 1);
+				blogDTO.setReplyHit(blogFacade.upReplyHit(blogDTO.getId()));
 			}
 		}
 		Map<String, Object> result=new HashMap<String, Object>();

@@ -18,8 +18,7 @@
 <meta name="description" content="" />
 <link href="${pageContext.request.contextPath}/css/contance.css"
 	rel="stylesheet">
-<link
-	href="${pageContext.request.contextPath}/images/mini_logo.ico"
+<link href="${pageContext.request.contextPath}/images/mini_logo.ico"
 	rel="SHORTCUT ICON">
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/lib/bootstrap3/css/bootstrap.min.css">
@@ -31,11 +30,9 @@
 <link
 	href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css"
 	rel="stylesheet">
-<link
-	href="${pageContext.request.contextPath}/css/base.css"
+<link href="${pageContext.request.contextPath}/css/base.css"
 	rel="stylesheet">
-<link
-	href="${pageContext.request.contextPath}/css/index.css"
+<link href="${pageContext.request.contextPath}/css/index.css"
 	rel="stylesheet">
 <script type="text/javascript"
 	src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -58,7 +55,7 @@
 	<!-- <script type="text/javascript" color="0,0,255" opacity='0.7'
 		zIndex="-2" count="99"
 		src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script> -->
-		
+
 	<header>
 		<script type="text/javascript">
 			var checkData = function() {
@@ -84,7 +81,7 @@
 				});
 			}
 		</script>
-		
+
 		<div class="topbg">
 			<ul class="topnav">
 				<li class="tag"><a
@@ -116,7 +113,7 @@
 				</form>
 			</div>
 		</div>
-		
+
 		<nav id="topnav" class="f_r">
 			<ul>
 				<li><a href="${pageContext.request.contextPath}/index.html">文章首页</a></li>
@@ -125,20 +122,18 @@
 						href="${pageContext.request.contextPath}/index/${category.id }.html">${category.categoryName }</a></li>
 				</c:forEach>
 			</ul>
-			<script
-				src="${pageContext.request.contextPath}/js/nav.js"></script>
+			<script src="${pageContext.request.contextPath}/js/nav.js"></script>
 		</nav>
 	</header>
-	
+
 	<article>
 		<div class="l_box f_l">
 			<jsp:include page="${mainPage }"></jsp:include>
 		</div>
-		
+
 		<div class="r_box f_r">
 			<div class="ad300x100">
-				<img
-					src="${pageContext.request.contextPath}/images/ad300x100.jpg">
+				<img src="${pageContext.request.contextPath}/images/ad300x100.jpg">
 			</div>
 			<div class="moreSelect" id="lp_right_select">
 				<script>
@@ -254,17 +249,19 @@
 		</div>
 		<!--r_box end -->
 	</article>
-	
+
 	<footer>
-		<p class="ft-copyright">Dong博客 Design by Dong
-			<a href="http://www.miitbeian.gov.cn/" ><font color=white>粤ICP备18001000号-1</font></a></p>
+		<p class="ft-copyright">
+			Dong博客 Design by Dong <a href="http://www.miitbeian.gov.cn/"><font
+				color=white>粤ICP备18001000号-1</font></a>
+		</p>
 		<div id="tbox">
 			<a id="togbook" href="javascript:bind();"></a>
 			<!-- onclick='easemobim.bind({tenantId: 21064, emgroup: "订单客服"})' -->
 			<a id="gotop" href="javascript:backToTop()"></a>
 		</div>
 	</footer>
-	
+
 </body>
 <%
 	if (request.getAttribute("clickBlogs") != null) {
@@ -274,6 +271,10 @@
 	if (request.getAttribute("dateBlogs") != null) {
 		application.setAttribute("dateBlogs",
 				request.getAttribute("dateBlogs"));
+	}
+	if (request.getAttribute("replyBlogs") != null) {
+		application.setAttribute("replyBlogs",
+				request.getAttribute("replyBlogs"));
 	}
 %>
 </html>

@@ -1,7 +1,6 @@
 package com.dong.blog.facade.impl;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,62 +16,49 @@ import com.dong.blog.core.domain.Blog;
 import com.dong.blog.core.domain.BlogType;
 import com.dong.blog.facade.BlogFacade;
 import com.dong.blog.facade.dto.BlogDTO;
+import com.dong.blog.facade.dto.BlogTypeDTO;
 import com.dong.blog.facade.dto.CategoryDTO;
-import com.dong.blog.facade.impl.assembler.BlogMapper;
-import com.dong.blog.facade.impl.assembler.BlogTypeMapper;
+import com.dong.blog.facade.impl.assembler.BlogAssembler;
+import com.dong.blog.facade.impl.assembler.BlogTypeAssembler;
 
 @Named
 @Transactional(rollbackFor = Exception.class)
 public class BlogFacadeImpl implements BlogFacade {
 
 	@Inject
-	BlogApplication application;
+	private BlogApplication application;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BlogDTO get(Long pk) {
-		BlogDTO blogDTO = null;
-		try {
-			Blog blog = application.load(pk);
-			blogDTO = new BlogMapper().transformBeanData(blog);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return blogDTO;
+		Blog blog = application.loadEntity(Blog.class, pk);
+		return new BlogAssembler().toDto(blog);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<BlogDTO> findAll() {
-		List<BlogDTO> list = null;
-		try {
-			list = (List<BlogDTO>) new BlogMapper()
-					.transformBeanDatas(application.findAll());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return list;
+		List<Blog> blogs = application.findAll(Blog.class);
+		return new BlogAssembler().toDtos(blogs);
 	}
 
-	public BlogDTO save(BlogDTO t) {
-		try {
-			Blog blog = new BlogMapper().transformEntityData(t);
-			BlogType blogType = new BlogTypeMapper().transformEntityData(t
-					.getBlogTypeDTO());
-			blog.setBlogType(blogType);
-			blog = application.save(blog);
-			t.setId(blog.getId());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return t;
+	public void save(BlogDTO t) {
+		Blog blog = new BlogAssembler().toEntity(t);
+		BlogType blogType = new BlogTypeAssembler()
+				.toEntity(t.getBlogTypeDTO());
+		blog = application.save(blog, blogType);
+		t.setId(blog.getId());
 	}
 
 	public boolean update(BlogDTO t) {
 		boolean isSuccess = false;
-		Blog blog = application.get(t.getId());
+		Blog blog = application.getEntity(Blog.class, t.getId());
 		try {
-			new BlogMapper().transformEntityData(blog, t);
+			blog.setTitle(t.getTitle());
+			blog.setPicPath(t.getPicPath());
+			blog.setKeyWord(t.getKeyWord());
+			blog.setContent(t.getContent());
+			blog.setSummary(t.getSummary());
+			blog.setBlogType(BlogType.load(BlogType.class, t.getBlogTypeDTO()
+					.getId()));
 			isSuccess = true;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -86,9 +72,8 @@ public class BlogFacadeImpl implements BlogFacade {
 	}
 
 	public void removes(Long[] pks) {
-		for (Long pk : pks) {
-			remove(pk);
-		}
+		for (Long pk : pks)
+			application.remove(pk);
 	}
 
 	public BigInteger getTotal(Map<String, Object> params) {
@@ -96,60 +81,29 @@ public class BlogFacadeImpl implements BlogFacade {
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Page<BlogDTO> pageQuery(Map<String, Object> map, int currentPage,
-			int pageSize) {
-		Page<Blog> pages = application.pageQuery(map, currentPage, pageSize);
-		List<Blog> list = pages.getData();
-		List<BlogDTO> dtos = new ArrayList<BlogDTO>();
-		try {
-			dtos = (List<BlogDTO>) new BlogMapper().transformBeanDatas(list);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return new Page<BlogDTO>(pages.getStart(), pages.getResultCount(),
-				pageSize, dtos);
-	}
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BlogDTO getLastBlog(Long id) {
-		BlogDTO blogDTO = null;
-		try {
-			blogDTO = new BlogMapper().transformBeanData(application
-					.getLastBlog(id));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return blogDTO;
+		Blog blog = application.getLastBlog(id);
+		return new BlogAssembler().toDto(blog);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BlogDTO getNextBlog(Long id) {
-		BlogDTO blogDTO = null;
-		try {
-			blogDTO = new BlogMapper().transformBeanData(application
-					.getNextBlog(id));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return blogDTO;
+		Blog blog = application.getNextBlog(id);
+		return new BlogAssembler().toDto(blog);
 	}
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BlogDTO> getBlogsByProperty(String propertyName,
-			Object propertyValue) {
+	public Integer upClickHit(Long id) {
 		// TODO Auto-generated method stub
-		return null;
+		Blog blog = application.getEntity(Blog.class, id);
+		application.upClickHit(blog);
+		return blog.getClickHit();
 	}
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BlogDTO> getBlogsByProperties(Map<String, Object> properties) {
-		return null;
-	}
-
-	public boolean updateClickHit(Long id, Integer clickHit) {
+	public Integer upReplyHit(Long id) {
 		// TODO Auto-generated method stub
-		return application.updateClickHit(id, clickHit);
+		Blog blog = application.getEntity(Blog.class, id);
+		application.upReplyHit(blog);
+		return blog.getReplyHit();
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -157,20 +111,23 @@ public class BlogFacadeImpl implements BlogFacade {
 			int pageSize) {
 		Page<Blog> pages = application.pageQueryByCate(dto.getId(),
 				currentPage, pageSize);
-		List<BlogDTO> dtos = new ArrayList<BlogDTO>();
-		try {
-			dtos = (List<BlogDTO>) new BlogMapper().transformBeanDatas(pages
-					.getData());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		List<BlogDTO> dtos = new BlogAssembler().toDtos(pages.getData());
 		return new Page<BlogDTO>(pages.getStart(), pages.getResultCount(),
 				pageSize, dtos);
 	}
 
-	public boolean updateReplyHit(Long id, Integer replyHit) {
-		// TODO Auto-generated method stub
-		return application.updateReplyHit(id, replyHit);
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Page<BlogDTO> pageQuery(Map<String, Object> map, int currentPage,
+			int pageSize) {
+		Page<Blog> pages = application.pageQuery(map, currentPage, pageSize);
+		List<Blog> list = pages.getData();
+		List<BlogDTO> dtos = new BlogAssembler().toDtos(list);
+		return new Page<BlogDTO>(pages.getStart(), pages.getResultCount(),
+				pageSize, dtos);
 	}
 
+	public boolean blogInBlogTypeExist(BlogTypeDTO dto) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

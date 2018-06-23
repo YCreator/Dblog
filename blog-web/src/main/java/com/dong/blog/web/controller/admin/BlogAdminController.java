@@ -69,7 +69,7 @@ public class BlogAdminController {
 		boolean isUpdateSuccess = false;
 		
 		if (blog.getId()==null) {
-			blog = blogFacade.save(blog);
+			blogFacade.save(blog);
 			blogIndex.addIndex(blog); // 添加博客索引
 		} else {
 			blog.setBlogTypeDTO(blogTypeFacade.get(blog.getBlogTypeDTO().getId()));
